@@ -14,37 +14,22 @@
     "text": "About this site\n\n1 + 1\n\n[1] 2"
   },
   {
-<<<<<<< HEAD
     "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html",
     "href": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html",
-=======
-    "objectID": "Hands-on Ex/Hands-on Ex 1/Hands-on Ex1.html",
-    "href": "Hands-on Ex/Hands-on Ex 1/Hands-on Ex1.html",
->>>>>>> 7ede05a7392915254b43ca493a3143ec2ee69b8f
     "title": "Hands-on Excercise 1",
     "section": "",
     "text": "The code chunk below uses p_load() of pacman package to check if tidyverse packages are installed in the computer. If they are, then they will be launched into R.\n\npacman::p_load(tidyverse)\n\n\n\n\n\nexam_data &lt;- read.csv(\"Exam_data.csv\")"
   },
   {
-<<<<<<< HEAD
     "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#install-and-launching-r-packages",
     "href": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#install-and-launching-r-packages",
-=======
-    "objectID": "Hands-on Ex/Hands-on Ex 1/Hands-on Ex1.html#install-and-launching-r-packages",
-    "href": "Hands-on Ex/Hands-on Ex 1/Hands-on Ex1.html#install-and-launching-r-packages",
->>>>>>> 7ede05a7392915254b43ca493a3143ec2ee69b8f
     "title": "Hands-on Excercise 1",
     "section": "",
     "text": "The code chunk below uses p_load() of pacman package to check if tidyverse packages are installed in the computer. If they are, then they will be launched into R.\n\npacman::p_load(tidyverse)"
   },
   {
-<<<<<<< HEAD
     "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#importing-the-data",
     "href": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#importing-the-data",
-=======
-    "objectID": "Hands-on Ex/Hands-on Ex 1/Hands-on Ex1.html#importing-the-data",
-    "href": "Hands-on Ex/Hands-on Ex 1/Hands-on Ex1.html#importing-the-data",
->>>>>>> 7ede05a7392915254b43ca493a3143ec2ee69b8f
     "title": "Hands-on Excercise 1",
     "section": "",
     "text": "exam_data &lt;- read.csv(\"Exam_data.csv\")"
