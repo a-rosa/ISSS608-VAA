@@ -63,39 +63,11 @@
     "text": "Histograms: geom_histograms()\nThe code chunk below is an example to create a simple histogram by using values in MATHS field of exam_data\n\nggplot(data=exam_data, aes(x = MATHS)) +\n  geom_histogram()"
   },
   {
-    "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#modifying-geometric-object-by-changing-geom",
-    "href": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#modifying-geometric-object-by-changing-geom",
-    "title": "Hands-on Excercise 1",
-    "section": "Modifying geometric object by changing geom()",
-    "text": "Modifying geometric object by changing geom()\nLets use histogram as an example. Bins argument is the number of bins. Fill argument is the shade of the histogram. Color is the outline color of the bars. So, the code below means that the number of bins is 20, with light blue shade outlined with black.\n\nggplot(data=exam_data, aes(x= MATHS)) +\n  geom_histogram(bins=20, color='black', fill='light blue')"
-  },
-  {
-    "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#modifying-geometric-object-by-changing-aes",
-    "href": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#modifying-geometric-object-by-changing-aes",
-    "title": "Hands-on Excercise 1",
-    "section": "Modifying geometric object by changing aes()",
-    "text": "Modifying geometric object by changing aes()\nWe could add a subgroup by using colour, fill, shape argument in aes().\n\nggplot(data=exam_data,\n       aes(x = MATHS, \n           colour = GENDER)) +\n  geom_density()\n\n\n\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(x = MATHS, \n           fill = GENDER)) +\n  geom_histogram(bins=20, color='black')\n\n\n\n\n\n\n\n\n\nggplot(data=exam_data,\n       aes(x = MATHS, \n           y = ENGLISH, \n           shape = GENDER)) +\n  geom_point()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nScatterplot can use shape and colour. Bar and histogram can use fill. Density can use colour. Dot plot can use shape, colour and fill. Alpha can also be used in aes() which controls the opacity."
-  },
-  {
-    "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#density-geom-density",
-    "href": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#density-geom-density",
-    "title": "Hands-on Excercise 1",
-    "section": "Density: geom-density()",
-    "text": "Density: geom-density()\ngeom-density() computes and plots kernel density estimate, which is smoothed version of the histogram. Useful alternative to the histogram for continuous data that comes from an underlying smooth distribution.\n\nggplot(data=exam_data, aes(x = MATHS)) +\n  geom_density()"
-  },
-  {
     "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#density-geom_density",
     "href": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#density-geom_density",
     "title": "Hands-on Excercise 1",
     "section": "Density: geom_density()",
     "text": "Density: geom_density()\ngeom_density() computes and plots kernel density estimate, which is smoothed version of the histogram. Useful alternative to the histogram for continuous data that comes from an underlying smooth distribution.\n\nggplot(data=exam_data, aes(x = MATHS)) +\n  geom_density()"
-  },
-  {
-    "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#boxplot-geom_bosplot",
-    "href": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#boxplot-geom_bosplot",
-    "title": "Hands-on Excercise 1",
-    "section": "Boxplot: geom_bosplot()",
-    "text": "Boxplot: geom_bosplot()\ngeom_boxplot() displays continous value list. It visualises five summary statistics (the median, two hinges and two whiskers), and all “outlying” points individually.\n\nggplot(data=exam_data, \n       aes(y = MATHS, x = GENDER)) +\n  geom_boxplot()\n\n\n\n\n\n\n\n\nNotches are used in box plots to help visually assess whether medians of distributions differ. If the notches do not overlap, this is evidence that the medians are different.\n\nggplot(data=exam_data, \n       aes(y = MATHS, x = GENDER)) +\n  geom_boxplot(notch = TRUE)\n\n\n\n\n\n\n\n\nFrom this, it can be seen that the median is not the same."
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#boxplot-geom_boxplot",
@@ -119,18 +91,25 @@
     "text": "Scatterplot: geom_point()\n\nggplot(data=exam_data, \n       aes(x = MATHS, y = ENGLISH)) +\n  geom_point()"
   },
   {
+    "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#modifying-geometric-object-by-changing-geom",
+    "href": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#modifying-geometric-object-by-changing-geom",
+    "title": "Hands-on Excercise 1",
+    "section": "Modifying geometric object by changing geom()",
+    "text": "Modifying geometric object by changing geom()\nLets use histogram as an example. Bins argument is the number of bins. Fill argument is the shade of the histogram. Color is the outline color of the bars. So, the code below means that the number of bins is 20, with light blue shade outlined with black.\n\nggplot(data=exam_data, aes(x= MATHS)) +\n  geom_histogram(bins=20, color='black', fill='light blue')"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#modifying-geometric-object-by-changing-aes",
+    "href": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#modifying-geometric-object-by-changing-aes",
+    "title": "Hands-on Excercise 1",
+    "section": "Modifying geometric object by changing aes()",
+    "text": "Modifying geometric object by changing aes()\nWe could add a subgroup by using colour, fill, shape argument in aes().\n\nggplot(data=exam_data,\n       aes(x = MATHS, \n           colour = GENDER)) +\n  geom_density()\n\n\n\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(x = MATHS, \n           fill = GENDER)) +\n  geom_histogram(bins=20, color='black')\n\n\n\n\n\n\n\n\n\nggplot(data=exam_data,\n       aes(x = MATHS, \n           y = ENGLISH, \n           shape = GENDER)) +\n  geom_point()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nScatterplot can use shape and colour. Bar and histogram can use fill. Density can use colour. Dot plot can use shape, colour and fill. Alpha can also be used in aes() which controls the opacity."
+  },
+  {
     "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#geom-objects-can-be-combined",
     "href": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#geom-objects-can-be-combined",
     "title": "Hands-on Excercise 1",
     "section": "geom objects can be combined",
     "text": "geom objects can be combined\nThe code chunk below combine scatterplot and boxplot.\n\nggplot (data=exam_data,\n        aes(y = MATHS, \n            x = GENDER)) +\n  geom_boxplot() +\n  geom_point(position='jitter', size = 0.5)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nJitter is used for the position so that a random noise is given to very point, which can prevent overplotting where dots might overlap."
-  },
-  {
-    "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#working-with-stat",
-    "href": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#working-with-stat",
-    "title": "Hands-on Excercise 1",
-    "section": "Working with stat()",
-    "text": "Working with stat()\nBelow is a simple boxplot that is incomplete because the positions of the means are not shown.\n\nggplot(data=exam_data,\n       aes(y = MATHS, x = GENDER))+\n  geom_boxplot()\n\n\n\n\n\n\n\n\nNow add stat_summary() function and override default geom.\n\nggplot(data=exam_data,\n       aes(y = MATHS, x = GENDER))+\n  geom_boxplot() +\n  stat_summary(geom = 'point',\n               fun = 'mean',\n               colour = 'red',\n               size = 4)"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#stat_summary-method",
@@ -152,13 +131,6 @@
     "title": "Hands-on Excercise 1",
     "section": "Adding best fit curve on scatterplot",
     "text": "Adding best fit curve on scatterplot\nBelow is a scatterplot between Maths and English grades of students.\n\nggplot(data=exam_data, \n       aes(x = MATHS, y = ENGLISH)) +\n  geom_point()\n\n\n\n\n\n\n\n\nThe interpretability of this graph can be improved by adding a best fit curve. This is done using geom_smooth().\n\nggplot(data=exam_data, \n       aes(x = MATHS, y = ENGLISH)) +\n  geom_point() +\n  geom_smooth(size = 0.5)\n\n\n\n\n\n\n\n\nThe default smoothing method used is loess. But this can be overridden as shown below.\n\nggplot(data=exam_data, \n       aes(x = MATHS, y = ENGLISH)) +\n  geom_point() +\n  geom_smooth(method = lm,\n              linewidth = 0.5)"
-  },
-  {
-    "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#working-with-facet_wrap",
-    "href": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#working-with-facet_wrap",
-    "title": "Hands-on Excercise 1",
-    "section": "Working with facet_wrap()",
-    "text": "Working with facet_wrap()\nfacet_wrap() wraps a 1d sequence of panels into 2d. This is generally a better use of screen spae than facet_grid() because most displays are roughly rectangular. The code chunk below plots a trellis plot using facet_wrap().\n\nggplot(data=exam_data,\n       aes(x = MATHS)) +\n  geom_histogram(bins = 20) +\n  facet_wrap(~ CLASS)"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html#facet_wrap-function",
