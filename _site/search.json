@@ -7,13 +7,6 @@
     "text": "Welcome to ISSS608 Visual Analytics and Applications. In this website, you will find my coursework prepared for this course."
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
-  },
-  {
     "objectID": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html",
     "href": "Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html",
     "title": "Hands-on Excercise 1",
@@ -159,5 +152,75 @@
     "title": "Hands-on Excercise 1",
     "section": "coord_cartesian() function",
     "text": "coord_cartesian() function\nThe scatterplot below is slightly misleading because the y-axis and the x-axis range are not equal.\n\nggplot(data=exam_data, \n       aes(x = MATHS, y = ENGLISH)) +\n  geom_point() +\n  geom_smooth(method = lm,\n              linewidth = 0.5)\n\n\n\n\n\n\n\n\nLets fix both the y-axis and x-axis range from 0-100. The code chunk below does that.\n\nggplot(data=exam_data, \n       aes(x = MATHS, y = ENGLISH)) +\n  geom_point() +\n  geom_smooth(method = lm,\n              linewidth = 0.5) +\n  coord_cartesian(xlim = c(0,100),\n                  ylim = c(0,100))"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html",
+    "href": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html",
+    "title": "Hands-on Exercise 2 - Beyond ggplot2 Fundamentals",
+    "section": "",
+    "text": "For this exercise, besides tidyverse, four R packages will be used. They are:\n\nggrepel: provides geoms for ggplot2 to repel overlapping text labels\nggthemes: provides some extra themes, geoms, and scales for ggplot2\nhrbrthemes: provides typography-centric thems and theme components for ggplot2\npatchwork: for preparing composite figure created using ggplot2\n\nThe code chunk below will check if the packages needed are installed and load them into R environment.\n\npacman::p_load(ggrepel, patchwork, ggthemes,\n               hrbrthemes, tidyverse)\n\n\n\n\nThe data file used is called Exam_data which consists of year end examination grades of a cohort of primary 3 students from a local school. It is in csv file format.\n\nexam_data &lt;- read_csv(\"Exam_data.csv\")\nsummary(exam_data)\n\n      ID               CLASS              GENDER              RACE          \n Length:322         Length:322         Length:322         Length:322        \n Class :character   Class :character   Class :character   Class :character  \n Mode  :character   Mode  :character   Mode  :character   Mode  :character  \n                                                                            \n                                                                            \n                                                                            \n    ENGLISH          MATHS          SCIENCE     \n Min.   :21.00   Min.   : 9.00   Min.   :15.00  \n 1st Qu.:59.00   1st Qu.:58.00   1st Qu.:49.25  \n Median :70.00   Median :74.00   Median :65.00  \n Mean   :67.18   Mean   :69.33   Mean   :61.16  \n 3rd Qu.:78.00   3rd Qu.:85.00   3rd Qu.:74.75  \n Max.   :96.00   Max.   :99.00   Max.   :96.00  \n\n\nFrom the summary, there area total of seven attributes in the exam_data data frame. Four of them are categorical data type and the other three are continuous data type.\n\nCategorical attributes are: ID, CLASS, GENDER and RACE\nContinuous attributes are: MATHS, ENGLISH and SCIENCE"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#installing-and-loading-required-libraries",
+    "href": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#installing-and-loading-required-libraries",
+    "title": "Hands-on Exercise 2 - Beyond ggplot2 Fundamentals",
+    "section": "",
+    "text": "For this exercise, besides tidyverse, four R packages will be used. They are:\n\nggrepel: provides geoms for ggplot2 to repel overlapping text labels\nggthemes: provides some extra themes, geoms, and scales for ggplot2\nhrbrthemes: provides typography-centric thems and theme components for ggplot2\npatchwork: for preparing composite figure created using ggplot2\n\nThe code chunk below will check if the packages needed are installed and load them into R environment.\n\npacman::p_load(ggrepel, patchwork, ggthemes,\n               hrbrthemes, tidyverse)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#importing-data",
+    "href": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#importing-data",
+    "title": "Hands-on Exercise 2 - Beyond ggplot2 Fundamentals",
+    "section": "",
+    "text": "The data file used is called Exam_data which consists of year end examination grades of a cohort of primary 3 students from a local school. It is in csv file format.\n\nexam_data &lt;- read_csv(\"Exam_data.csv\")\nsummary(exam_data)\n\n      ID               CLASS              GENDER              RACE          \n Length:322         Length:322         Length:322         Length:322        \n Class :character   Class :character   Class :character   Class :character  \n Mode  :character   Mode  :character   Mode  :character   Mode  :character  \n                                                                            \n                                                                            \n                                                                            \n    ENGLISH          MATHS          SCIENCE     \n Min.   :21.00   Min.   : 9.00   Min.   :15.00  \n 1st Qu.:59.00   1st Qu.:58.00   1st Qu.:49.25  \n Median :70.00   Median :74.00   Median :65.00  \n Mean   :67.18   Mean   :69.33   Mean   :61.16  \n 3rd Qu.:78.00   3rd Qu.:85.00   3rd Qu.:74.75  \n Max.   :96.00   Max.   :99.00   Max.   :96.00  \n\n\nFrom the summary, there area total of seven attributes in the exam_data data frame. Four of them are categorical data type and the other three are continuous data type.\n\nCategorical attributes are: ID, CLASS, GENDER and RACE\nContinuous attributes are: MATHS, ENGLISH and SCIENCE"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#ggtheme-package",
+    "href": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#ggtheme-package",
+    "title": "Hands-on Exercise 2 - Beyond ggplot2 Fundamentals",
+    "section": "ggtheme package",
+    "text": "ggtheme package\nggtheme provides ggplot2 themes that replicate the look fo plots by Edward Tufte, Stephen Few, Fivethirteight, The Economist, Stata, Excel and The Wall Street Journal among others.\nThe code below used The Exonomist theme.\n\nggplot(data=exam_data,\n       aes(x = MATHS)) +\n  geom_histogram(bins = 20, \n                 boundary = 100,\n                 color = \"grey25\",\n                 fill = \"grey90\") +\n  ggtitle(\"Distribution of Maths score\") +\n  theme_economist()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nIt has many themes and provides some extra geoms and scales for ggplot2. Consult this site to see the various options."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#hrbrthemes-packages",
+    "href": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#hrbrthemes-packages",
+    "title": "Hands-on Exercise 2 - Beyond ggplot2 Fundamentals",
+    "section": "hrbrthemes packages",
+    "text": "hrbrthemes packages\nhrbrthemes package provides base theme that focuses on typograohic elements including where various lables are placed as well as the fonts that are used.\n\nggplot(data=exam_data,\n       aes(x = MATHS)) +\n  geom_histogram(bins = 20, \n                 boundary = 100,\n                 color = \"grey25\",\n                 fill = \"grey90\") +\n  ggtitle(\"Distribution of Maths score\") +\n  theme_ipsum()\n\n\n\n\n\n\n\n\nThe second goal centers around productivity for a production workflow where presenting something needs to be visually clean and readable to increase reader’s engagement. Consult this site to learn more.\n\nggplot(data=exam_data,\n       aes(x = MATHS)) +\n  geom_histogram(bins = 20, \n                 boundary = 100,\n                 color = \"grey25\",\n                 fill = \"grey90\") +\n  ggtitle(\"Distribution of Maths score\") +\n  theme_ipsum(axis_title_size = 18,\n              base_size = 15,\n              grid = 'Y')\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTipWhat can be learnt from the code chunk above?\n\n\n\n\naxis_title_size: controls font size of the axis title\nbase_size: controls the size of axis label\ngrid: controls the lines in the graph, in this case remove the x-axis grid lines"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#patchwork-methods",
+    "href": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#patchwork-methods",
+    "title": "Hands-on Exercise 2 - Beyond ggplot2 Fundamentals",
+    "section": "patchwork methods",
+    "text": "patchwork methods\nThere are several extension function that support composite figure by combining several graphs such as grid.arrange() of gridExtra package and plot_grid() of cowplot package. This section will focus on an extension called patchwork which is specially designed for combining ggplot2 graphs into a single figure.\nPatchwok package has a very simple syntax wherewe can create layouts super easily. Here’s the general syntax:\n\nTwo-column layout using the plus sign +\nSubplot group ysing paranthesis ()\nTwo-row layout using division sign /\nPlot beside each other using |\n\nExamples:\n\nCombine 2 ggplot graphscombine 3 ggplot graphs\n\n\n\np1 + p2\n\n\n\n\n\n\n\n\n\n\n\n(p1 / p2) | p3\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nAnother way is to use wrap_plots() to directly plot all the graphs into one section. Use #| fig-width and #| fig-height to change the size or scale of the figure. This one uses 15 and 7 respectively.\n\nwrap_plots(p1, p2, p3)\n\n\n\n\n\n\n\n\n\n\nTo learn more, refer to Plot Assembly. The site has information about adding a table or some text and how to place it to the left of the graph."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#creating-composite-figure-with-tag",
+    "href": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#creating-composite-figure-with-tag",
+    "title": "Hands-on Exercise 2 - Beyond ggplot2 Fundamentals",
+    "section": "Creating composite figure with tag",
+    "text": "Creating composite figure with tag\nIn order to identify subplots in text, patchwork also provides auto-tagging capabilities as shown below.\n\n((p1 / p2) | p3) +\n  plot_annotation(tag_levels = 'I')"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#creating-figure-with-inser",
+    "href": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#creating-figure-with-inser",
+    "title": "Hands-on Exercise 2 - Beyond ggplot2 Fundamentals",
+    "section": "Creating figure with inser",
+    "text": "Creating figure with inser\nIt is also possible to insert one or more plots or graphic elements freely on top or below another plot using inset_element().\n\np3 + inset_element(p2, \n                   left = 0.02, \n                   bottom = 0.7, \n                   right = 0.5, \n                   top = 1,\n                   align_to = 'full')\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nalign_to specifies where the element should be relative to. ‘panel’ is the default, ‘full’ is for the whole image, ‘plot’ is for the plot area of the main layer."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#creating-composite-figure-using-patchwork-and-ggtheme",
+    "href": "Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html#creating-composite-figure-using-patchwork-and-ggtheme",
+    "title": "Hands-on Exercise 2 - Beyond ggplot2 Fundamentals",
+    "section": "Creating composite figure using patchwork and ggtheme",
+    "text": "Creating composite figure using patchwork and ggtheme\n\npatchwork &lt;- ((p1 / p2) | p3) +\n  plot_annotation(tag_levels = \"1\")\npatchwork & theme_economist(dkpanel=TRUE) \n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nIt is not possible to add both ggtheme and hrbrtheme as both as solid themes so adding both would result on the last theme added. For example if the code was pathwork & theme_economist() & theme_ipsum() the output will have the ipsum theme and no economist theme."
   }
 ]
