@@ -1,5 +1,5 @@
 ---
-title: "Hands-on Excercise 1"
+title: "Hands-on Excercise 1 - Layered Grammar of Graphics: ggplot Methods"
 author: "Amelia Rosalind"
 date: "April 17, 2026"
 date-modified: "last-modified"
@@ -477,6 +477,7 @@ ggplot(data=exam_data,
 ```
 
 ## `theme_minimal()`
+
 ```{r}
 ggplot(data=exam_data,
        aes(x = RACE)) +
