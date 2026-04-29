@@ -1,0 +1,26 @@
+---
+title: "Hands-on Exercise 3 - Interactive Data Visualisation"
+author: "Amelia Rosalind"
+date: "April 22, 2026"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+# Getting Started
+
+R packages needed:
+
+-   ggiraph: making ggplot graphic interactive
+-   plotly: plotting interactive statistical graphs
+-   DT: provide a R interface to JavaScript library DataTables that create interactive table on html page
+-   tidyverse: support data science, analysis and communication task including creating static graphs
+-   patchwork: combine multiple ggplot graphs into one figure
+
+```{r}
+pacman::p_load(ggiraph, plotly, patchwork,
+               DT, tidyverse)
+```

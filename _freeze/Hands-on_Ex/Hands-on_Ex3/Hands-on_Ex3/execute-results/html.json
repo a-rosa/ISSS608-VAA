@@ -1,0 +1,15 @@
+{
+  "hash": "9512de3a1b50229895f5411950fd1776",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Hands-on Exercise 3 - Interactive Data Visualisation\"\nauthor: \"Amelia Rosalind\"\ndate: \"April 22, 2026\"\ndate-modified: \"last-modified\"\nexecute: \n  eval: true\n  echo: true\n  warning: false\n  freeze: true\n---\n\n# Getting Started\n\nR packages needed:\n\n-   ggiraph: making ggplot graphic interactive\n-   plotly: plotting interactive statistical graphs\n-   DT: provide a R interface to JavaScript library DataTables that create interactive table on html page\n-   tidyverse: support data science, analysis and communication task including creating static graphs\n-   patchwork: combine multiple ggplot graphs into one figure\n\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(ggiraph, plotly, patchwork,\n               DT, tidyverse)\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\npackage 'fontBitstreamVera' successfully unpacked and MD5 sums checked\npackage 'fontLiberation' successfully unpacked and MD5 sums checked\npackage 'fontquiver' successfully unpacked and MD5 sums checked\npackage 'gdtools' successfully unpacked and MD5 sums checked\npackage 'ggiraph' successfully unpacked and MD5 sums checked\n\nThe downloaded binary packages are in\n\tC:\\Users\\Elena\\AppData\\Local\\Temp\\RtmpKIxVF6\\downloaded_packages\n```\n\n\n:::\n\n::: {.cell-output .cell-output-stdout}\n\n```\npackage 'lazyeval' successfully unpacked and MD5 sums checked\npackage 'crosstalk' successfully unpacked and MD5 sums checked\npackage 'plotly' successfully unpacked and MD5 sums checked\n\nThe downloaded binary packages are in\n\tC:\\Users\\Elena\\AppData\\Local\\Temp\\RtmpKIxVF6\\downloaded_packages\n```\n\n\n:::\n\n::: {.cell-output .cell-output-stdout}\n\n```\npackage 'DT' successfully unpacked and MD5 sums checked\n\nThe downloaded binary packages are in\n\tC:\\Users\\Elena\\AppData\\Local\\Temp\\RtmpKIxVF6\\downloaded_packages\n```\n\n\n:::\n:::\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
