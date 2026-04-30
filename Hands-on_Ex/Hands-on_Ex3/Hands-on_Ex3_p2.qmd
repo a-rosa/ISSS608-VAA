@@ -32,12 +32,14 @@ Before you start making animated graphs, you should first ask yourself: Does it 
 ## Installation of required libraries
 
 |  |  |
-|------------------------------|------------------------------------------|
+|--------|------------------|
 | [plotly](https://plotly.com/r/) | R library for plotting interactive statistical graphs |
 | [gganimate](https://gganimate.com) | ggplot extension for creating animated statistical graphs |
 | [gifski](https://cran.r-project.org/web/packages/gifski/index.html) | converts video frames to GIF animations using png1uant's fancy features for efficient cross-frae palettes and temporal dithering. It produces anumated GIFs that use thousands of colors per frame. |
 | [gapminder](https://cran.r-project.org/web/packages/gapminder/index.html) | an excerpt of the data available at Gapminder.org. We just want to use its country_colors scheme. |
 | [tidyverse](https://tidyverse.org) | a family of modern R packages specially designed to support data science, analysis and communication taks inclyding creating static statistical graphs |
+
+: {tbl-colwidths="[15,85]"}
 
 ```{r}
 pacman::p_load(readxl, gifski, gapminder,
@@ -85,4 +87,3 @@ globalPop <- read_xls("GlobalPopulation.xls",
   mutate(across(col, as.factor)) %>%
   mutate(Year = as.integer(Year))
 ```
-

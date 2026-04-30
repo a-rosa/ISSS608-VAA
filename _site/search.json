@@ -333,13 +333,13 @@
     "href": "Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3_p2.html#installation-of-required-libraries",
     "title": "Hands-on Exercise 3 Part 2 - Programming Animated Statistical Graphics with R",
     "section": "Installation of required libraries",
-    "text": "Installation of required libraries\n\n\n\nplotly\nR library for plotting interactive statistical graphs\n\n\ngganimate\nggplot extension for creating animated statistical graphs"
+    "text": "Installation of required libraries\n\n\n\n\n\n\n\nplotly\nR library for plotting interactive statistical graphs\n\n\ngganimate\nggplot extension for creating animated statistical graphs\n\n\ngifski\nconverts video frames to GIF animations using png1uant’s fancy features for efficient cross-frae palettes and temporal dithering. It produces anumated GIFs that use thousands of colors per frame.\n\n\ngapminder\nan excerpt of the data available at Gapminder.org. We just want to use its country_colors scheme.\n\n\ntidyverse\na family of modern R packages specially designed to support data science, analysis and communication taks inclyding creating static statistical graphs\n\n\n\n\npacman::p_load(readxl, gifski, gapminder,\n               plotly, gganimate, tidyverse)"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3_p2.html#importing-data",
     "href": "Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3_p2.html#importing-data",
     "title": "Hands-on Exercise 3 Part 2 - Programming Animated Statistical Graphics with R",
     "section": "Importing data",
-    "text": "Importing data\nafsfds"
+    "text": "Importing data\nIn this hands-on exercise, the Data worksheet from GlobalPopulation Excel workbook will be used. The code chunk below is used to import the data from GlobalPopulation by using appropriate R package from tidyverse family.\n\ncol &lt;- c(\"Country\", \"Continent\")\nglobalPop &lt;- read_xls(\"GlobalPopulation.xls\",\n                      sheet=\"Data\") %&gt;%\n  mutate_each_(funs(factor(.)), col) %&gt;%\n  mutate(Year = as.integer(Year))\n\n\n\n\n\n\n\nNoteThings to learn from the code chunk above\n\n\n\n\nread_xls() of readxl package is used to import the Excel worksheet\nmutate_each_() of dplyr package is used to convert all character data type into factor\nmutate of dplyr package is used to convert data values of Year field into integer\n\n\n\nUnfortunately, mutate_each_() was deprecated in dplyr 0.7.0. and funs() was deprecated in dplyr 0.8.0. In view of this, we will re-write the code by using mutate_at() as shown in the code chunk below.\n\ncol &lt;- c(\"Country\", \"Continent\")\nglobalPop &lt;- read_xls(\"GlobalPopulation.xls\",\n                      sheet=\"Data\") %&gt;%\n  mutate_at(col, as.factor) %&gt;%\n  mutate(Year = as.integer(Year))\n\nacross() is also another alternative that can be used to derive the same outputs.\n\ncol &lt;- c(\"Country\", \"Continent\")\nglobalPop &lt;- read_xls(\"GlobalPopulation.xls\",\n                      sheet=\"Data\") %&gt;%\n  mutate(across(col, as.factor)) %&gt;%\n  mutate(Year = as.integer(Year))"
   }
 ]
