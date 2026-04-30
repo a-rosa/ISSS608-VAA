@@ -320,5 +320,26 @@
     "title": "Hands-on Exercise 3 - Interactive Data Visualisation",
     "section": "Linked brushing",
     "text": "Linked brushing\nIt is possible to create interactive coordinated visalisations where selecting data points in one widget automatically highlights or filters the corresponding data in another widget. Brush here mean click or drag to select data points in one chart. So a linked brushing means that by dragging to select data points in one chart, the same data points are simultaneously highlighted in another chart or table.\n\nCodeOutput plot\n\n\n\nd &lt;- highlight_key(exam_data) \np &lt;- ggplot(d, \n            aes(ENGLISH, \n                MATHS)) + \n  geom_point(size=1) +\n  coord_cartesian(xlim=c(0,100),\n                  ylim=c(0,100))\n\ngg &lt;- highlight(ggplotly(p),        \n                \"plotly_selected\")  \n\ncrosstalk::bscols(gg,               \n                  DT::datatable(d), \n                  widths = 5)        \n\n\n\n\n\n\n\nNote\n\n\n\n\nhighlight() is a function of plotly package. It sets a variety of optins for brushing multiple plots. These options are primarily designed for linking multuple ploly graphs, and may not behave as expected when linking plotly to another htmlwidget package via crosstalk. In some cases, other htmlwidgets will respect these options, such as persistent selection in leaflet.\nbscols() is a helper function of crosstalk package It makes it easy to put HTML elements side by side. It can be called directly from the console but is especially designed to work in a R Markdown document. Warning: This will bring in all of Bootstrap!"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3_p2.html",
+    "href": "Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3_p2.html",
+    "title": "Hands-on Exercise 3 Part 2 - Programming Animated Statistical Graphics with R",
+    "section": "",
+    "text": "When creating animations, the plot does not actually move. Instead, many individual plots are built and then stitched together as movie frames, just like an old-school flip book or cartoon. Each frame is a different plot when conveying motion, which is buil using some relevant subset of the aggregate data. The subset drives the flow of the animation when stitched back together."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3_p2.html#installation-of-required-libraries",
+    "href": "Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3_p2.html#installation-of-required-libraries",
+    "title": "Hands-on Exercise 3 Part 2 - Programming Animated Statistical Graphics with R",
+    "section": "Installation of required libraries",
+    "text": "Installation of required libraries\n\n\n\nplotly\nR library for plotting interactive statistical graphs\n\n\ngganimate\nggplot extension for creating animated statistical graphs"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3_p2.html#importing-data",
+    "href": "Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3_p2.html#importing-data",
+    "title": "Hands-on Exercise 3 Part 2 - Programming Animated Statistical Graphics with R",
+    "section": "Importing data",
+    "text": "Importing data\nafsfds"
   }
 ]

@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Amelia Rosalind">
+<meta name="dcterms.date" content="2026-04-30">
 
-<title>ISSS608-VAA</title>
+<title>Hands-on Exercise 3 Part 2 - Programming Animated Statistical Graphics with R – ISSS608-VAA</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,23 +28,23 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-9c8f6917bb976eb1370e91c8fae1e261.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-9c8f6917bb976eb1370e91c8fae1e261.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -82,7 +84,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">ISSS608-VAA</span>
     </a>
   </div>
@@ -98,19 +100,19 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-excercise">    
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html">
  <span class="dropdown-text">Hands-on Exercise 1</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html">
  <span class="dropdown-text">Hands-on Exercise 2</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3_p1.html">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3_p1.html">
  <span class="dropdown-text">Hands-on Exercise 3 Part 1</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3_p2.html">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3_p2.html">
  <span class="dropdown-text">Hands-on Exercise 3 Part 2</span></a>
   </li>  
     </ul>
@@ -118,11 +120,11 @@ ul.task-list li input[type="checkbox"] {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
@@ -136,23 +138,53 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#basic-concepts-of-animation" id="toc-basic-concepts-of-animation" class="nav-link active" data-scroll-target="#basic-concepts-of-animation">Basic Concepts of Animation</a></li>
+  <li><a href="#terminology" id="toc-terminology" class="nav-link" data-scroll-target="#terminology">Terminology</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting Started</a>
+  <ul class="collapse">
+  <li><a href="#installation-of-required-libraries" id="toc-installation-of-required-libraries" class="nav-link" data-scroll-target="#installation-of-required-libraries">Installation of required libraries</a></li>
+  <li><a href="#importing-data" id="toc-importing-data" class="nav-link" data-scroll-target="#importing-data">Importing data</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">ISSS608-VAA</h1>
+<h1 class="title">Hands-on Exercise 3 Part 2 - Programming Animated Statistical Graphics with R</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Amelia Rosalind </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 30, 2026</p>
+    </div>
+  </div>
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">May 1, 2026</p>
+    </div>
+  </div>
     
   </div>
   
@@ -161,9 +193,56 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Welcome to <strong>ISSS608 Visual Analytics and Applications</strong>. In this website, you will find my coursework prepared for this course.</p>
+<section id="basic-concepts-of-animation" class="level1">
+<h1>Basic Concepts of Animation</h1>
+<p>When creating animations, the plot does not actually move. Instead, many individual plots are built and then stitched together as movie frames, just like an old-school flip book or cartoon. Each frame is a different plot when conveying motion, which is buil using some relevant subset of the aggregate data. The subset drives the flow of the animation when stitched back together.</p>
+<p><img src="image1.jpg" class="img-fluid"></p>
+</section>
+<section id="terminology" class="level1">
+<h1>Terminology</h1>
+<p>Before we dive into the steps for creating an animated statistical grpah, it’s important to understand some of the key concepts and terminology related to this type fo visualization.</p>
+<ol type="1">
+<li>Frame: In an animated line graph, each frame represents a different point in time or a different category. When the drame changes, the data points on the graph are updated to reflect the new data.</li>
+<li>Animation Attributes: They are the settings hat control how the animation behaves. For example, you can specify the duration of each frame, teh easing function used to transition between frames, and whether to start the animation from the current frame or from the beginning.</li>
+</ol>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Before you start making animated graphs, you should first ask yourself: Does it make sense to go through the effort? If you a conducting an exploratory data analysis, an animated graphic may not be worth the time investment. However, if you are giving a presentation, a few well-placed animated graphics can help an audience connect with your topic remarkably better than static counterparts.</p>
+</div>
+</div>
+</section>
+<section id="getting-started" class="level1">
+<h1>Getting Started</h1>
+<section id="installation-of-required-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="installation-of-required-libraries">Installation of required libraries</h2>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td><a href="https://plotly.com/r/">plotly</a></td>
+<td>R library for plotting interactive statistical graphs</td>
+</tr>
+<tr class="even">
+<td><a href="https://plotly.com/r/">gganimate</a></td>
+<td>ggplot extension for creating animated statistical graphs</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="importing-data" class="level2">
+<h2 class="anchored" data-anchor-id="importing-data">Importing data</h2>
+<p>afsfds</p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

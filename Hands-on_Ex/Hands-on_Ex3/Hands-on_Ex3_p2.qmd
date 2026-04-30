@@ -1,0 +1,88 @@
+---
+title: "Hands-on Exercise 3 Part 2 - Programming Animated Statistical Graphics with R"
+author: "Amelia Rosalind"
+date: "April 30, 2026"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: false
+---
+
+# Basic Concepts of Animation
+
+When creating animations, the plot does not actually move. Instead, many individual plots are built and then stitched together as movie frames, just like an old-school flip book or cartoon. Each frame is a different plot when conveying motion, which is buil using some relevant subset of the aggregate data. The subset drives the flow of the animation when stitched back together.
+
+![](image1.jpg)
+
+# Terminology
+
+Before we dive into the steps for creating an animated statistical grpah, it's important to understand some of the key concepts and terminology related to this type fo visualization.
+
+1.  Frame: In an animated line graph, each frame represents a different point in time or a different category. When the drame changes, the data points on the graph are updated to reflect the new data.
+2.  Animation Attributes: They are the settings hat control how the animation behaves. For example, you can specify the duration of each frame, teh easing function used to transition between frames, and whether to start the animation from the current frame or from the beginning.
+
+::: callout-tip
+Before you start making animated graphs, you should first ask yourself: Does it make sense to go through the effort? If you a conducting an exploratory data analysis, an animated graphic may not be worth the time investment. However, if you are giving a presentation, a few well-placed animated graphics can help an audience connect with your topic remarkably better than static counterparts.
+:::
+
+# Getting Started
+
+## Installation of required libraries
+
+|  |  |
+|------------------------------|------------------------------------------|
+| [plotly](https://plotly.com/r/) | R library for plotting interactive statistical graphs |
+| [gganimate](https://gganimate.com) | ggplot extension for creating animated statistical graphs |
+| [gifski](https://cran.r-project.org/web/packages/gifski/index.html) | converts video frames to GIF animations using png1uant's fancy features for efficient cross-frae palettes and temporal dithering. It produces anumated GIFs that use thousands of colors per frame. |
+| [gapminder](https://cran.r-project.org/web/packages/gapminder/index.html) | an excerpt of the data available at Gapminder.org. We just want to use its country_colors scheme. |
+| [tidyverse](https://tidyverse.org) | a family of modern R packages specially designed to support data science, analysis and communication taks inclyding creating static statistical graphs |
+
+```{r}
+pacman::p_load(readxl, gifski, gapminder,
+               plotly, gganimate, tidyverse)
+```
+
+## Importing data
+
+In this hands-on exercise, the Data worksheet from GlobalPopulation Excel workbook will be used. The code chunk below is used to import the data from GlobalPopulation by using appropriate R package from tidyverse family. 
+
+```{r}
+#| eval: false
+col <- c("Country", "Continent")
+globalPop <- read_xls("GlobalPopulation.xls",
+                      sheet="Data") %>%
+  mutate_each_(funs(factor(.)), col) %>%
+  mutate(Year = as.integer(Year))
+```
+
+::: callout-note
+### Things to learn from the code chunk above
+
+-   `read_xls()` of readxl package is used to import the Excel worksheet
+-   `mutate_each_()` of dplyr package is used to convert all character data type into factor
+-   `mutate` of dplyr package is used to convert data values of Year field into integer
+:::
+
+Unfortunately, `mutate_each_()` was deprecated in dplyr 0.7.0. and funs() was deprecated in dplyr 0.8.0. In view of this, we will re-write the code by using `mutate_at()` as shown in the code chunk below.
+
+```{r}
+col <- c("Country", "Continent")
+globalPop <- read_xls("GlobalPopulation.xls",
+                      sheet="Data") %>%
+  mutate_at(col, as.factor) %>%
+  mutate(Year = as.integer(Year))
+```
+
+`across()` is also another alternative that can be used to derive the same outputs.
+
+```{r}
+#| eval: false
+col <- c("Country", "Continent")
+globalPop <- read_xls("GlobalPopulation.xls",
+                      sheet="Data") %>%
+  mutate(across(col, as.factor)) %>%
+  mutate(Year = as.integer(Year))
+```
+
