@@ -1,0 +1,14 @@
+---
+title: "Hands-on Exercise 4 Part 3 - Visualising Uncertainty"
+author: "Amelia Rosalind"
+date: "May 6, 2026"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+
+
