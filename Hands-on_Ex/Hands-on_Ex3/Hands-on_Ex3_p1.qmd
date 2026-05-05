@@ -32,7 +32,7 @@ pacman::p_load(ggiraph, plotly, patchwork,
 Exam_data.csv is used for this exercise. `read_csv()` is used to read the csv file and import Exam_data into R.
 
 ```{r}
-exam_data <- read_csv("Exam_data.csv")
+exam_data <- read_csv("data/Exam_data.csv")
 ```
 
 # Interactive Data Visualisation - ggiraph methods
@@ -397,8 +397,8 @@ DT::datatable(exam_data, class= "compact")
 It is possible to create interactive coordinated visalisations where selecting data points in one widget automatically highlights or filters the corresponding data in another widget. Brush here mean click or drag to select data points in one chart. So a linked brushing means that by dragging to select data points in one chart, the same data points are simultaneously highlighted in another chart or table.
 
 :::: panel-tabset
-
 ### Code
+
 ```{r}
 #| eval: false
 d <- highlight_key(exam_data) 
@@ -423,6 +423,7 @@ crosstalk::bscols(gg,
 :::
 
 ### Output plot
+
 ```{r}
 #| echo: false
 d <- highlight_key(exam_data) 

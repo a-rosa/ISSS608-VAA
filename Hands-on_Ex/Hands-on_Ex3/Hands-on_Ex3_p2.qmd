@@ -53,7 +53,7 @@ In this hands-on exercise, the Data worksheet from GlobalPopulation Excel workbo
 ```{r}
 #| eval: false
 col <- c("Country", "Continent")
-globalPop <- read_xls("GlobalPopulation.xls",
+globalPop <- read_xls("data/GlobalPopulation.xls",
                       sheet="Data") %>%
   mutate_each_(funs(factor(.)), col) %>%
   mutate(Year = as.integer(Year))
@@ -71,7 +71,7 @@ Unfortunately, `mutate_each_()` was deprecated in dplyr 0.7.0. and funs() was de
 
 ```{r}
 col <- c("Country", "Continent")
-globalPop <- read_xls("GlobalPopulation.xls",
+globalPop <- read_xls("data/GlobalPopulation.xls",
                       sheet="Data") %>%
   mutate_at(col, as.factor) %>%
   mutate(Year = as.integer(Year))
@@ -82,7 +82,7 @@ globalPop <- read_xls("GlobalPopulation.xls",
 ```{r}
 #| eval: false
 col <- c("Country", "Continent")
-globalPop <- read_xls("GlobalPopulation.xls",
+globalPop <- read_xls("data/GlobalPopulation.xls",
                       sheet="Data") %>%
   mutate(across(col, as.factor)) %>%
   mutate(Year = as.integer(Year))
