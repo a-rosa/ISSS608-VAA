@@ -1,5 +1,5 @@
 ---
-title: "Hands-on Exercise 4 Part 2"
+title: "Hands-on Exercise 4 Part 2 - Visual Statistical Analysis"
 author: "Amelia Rosalind"
 date: "May 6, 2026"
 date-modified: "last-modified"
@@ -9,3 +9,131 @@ execute:
   warning: false
   freeze: true
 ---
+
+# Visual Statistical Analysis with ggstatsplot
+
+[ggstatsplot](https://www.indrapatil.com/ggstatsplot/index.html) is an extension of ggplot package for creating graphics with defauls from statistical tests included in the information-rich plots themselves.
+
+# Getting Started
+
+## Installing of required packages
+
+ggstatsplot and tidyverse is enough for this exercise.
+
+```{r}
+pacman::p_load(ggstatsplot, tidyverse)
+```
+
+## Importing data
+
+For this exercise, Exam_data.csv is used.
+
+```{r}
+exam <- read_csv("data/Exam_data.csv")
+```
+
+# One-sample Test: gghistostats() method
+
+The code chunk below will create a visual of one-sample test on English scores using [gghistostats()](https://www.indrapatil.com/ggstatsplot/reference/gghistostats.html).
+
+```{r}
+set.seed(1234)
+
+gghistostats(
+  data = exam,
+  x = ENGLISH,
+  type = "bayes",
+  test.value = 60,
+  xlab = "English scores"
+)
+```
+
+## Unpacking the Bayes Factor
+
+A Bayes factor is the ratio of the likelihood of one particular hypothesis to the likelihood of another. It can be interpreted as a measure of the strength of evidence in favor of one theory among two competing theories.
+
+That's because the Bayes factor gives us a way to evaluate the data in facor of a null hypothesis, and to use external information to do so. It tells us what the weight of the evidence is in favor of a given hypothesis.
+
+When we are comparing two hypotheses, H1 (the alternative hypothesis) and H0 (the null hypothesis), the Bayes Factor is often written as B10. It can be defined mathematically as
+
+![](image1.jpg)
+
+The Schwarz criterion is one of the easiest ways to calculate rough approximation of the Bayes factor.
+
+## How to interpret Bayes Factor
+
+A Bayes Factor can be any positive number. One of the most ocmmon interpretations is one firstly proposed by Harold Jeffereys (1961) and slightly modeified by Lee and Wagenmakers in 2013:
+
+![](image2.jpg)
+
+# Two-sample Mean Test: ggbetweenstats() method
+
+The code chunk below, [ggbetweenstats()](https://www.indrapatil.com/ggstatsplot/reference/ggbetweenstats.html) is used to build a visual for two-sample mean test of Maths scores by gender.
+
+```{r}
+ggbetweenstats(data = exam,
+               x = GENDER, 
+               y = MATHS,
+               type = "np",
+               messages = FALSE)
+```
+
+# Oneway ANOVA Test: ggbetweenstats() method
+
+`ggbetweenstats()` can be used to build a visual for one-way ANOVA test as shown in the code chunk below.
+
+```{r}
+ggbetweenstats(data = exam,
+               x = RACE, 
+               y = ENGLISH,
+               type = "p",
+               mean.ci = TRUE, 
+               pairwise.comparisons = TRUE, 
+               pairwise.display = "s",
+               p.adjust.method = "fdr",
+               messages = FALSE)
+```
+
+::: callout-note
+Argument for `pairwise.display`:
+
+-   "ns" --\> only non-significant
+-   "s" --\> only significant 
+-   "all" --\> everything
+:::
+
+# ggbetweenstats() - Summary of tests
+
+![](image3.jpg)
+![](image4.jpg)
+![](image5.jpg)
+
+# Significant Test of Correlation: ggscatterstats() method
+
+In the code chunk below, [ggscaterstats()](https://www.indrapatil.com/ggstatsplot/reference/ggscatterstats.html) is used to build a visual for significant test of correlation between Maths score and English scores.
+
+```{r}
+ggscatterstats(data = exam,
+               x = MATHS,
+               y = ENGLISH,
+               marginal = FALSE)
+```
+
+# Signidicant Test of Association (Dependence): ggbarstats() method
+
+First, the Maths scores is binned into a 4-class variable using [cut()](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/cut).
+
+```{r}
+exam1 <- exam %>% 
+  mutate(MATHS_bins = 
+           cut(MATHS, 
+               breaks = c(0,60,75,85,100)))
+```
+
+Then using that, we can use [ggbarstats()](https://www.indrapatil.com/ggstatsplot/reference/ggbarstats.html) to build a visual for significant test of association.
+
+```{r}
+ggbarstats(exam1, 
+           x = MATHS_bins, 
+           y = GENDER)
+```
