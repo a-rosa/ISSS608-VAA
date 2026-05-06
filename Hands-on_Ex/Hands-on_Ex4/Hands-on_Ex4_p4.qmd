@@ -1,5 +1,5 @@
 ---
-title: "Hands-on Exercise 4 Part 4"
+title: "Hands-on Exercise 4 Part 4 - Funnel Plots for Fair Comparisons"
 author: "Amelia Rosalind"
 date: "May 6, 2026"
 date-modified: "last-modified"
@@ -10,4 +10,200 @@ execute:
   freeze: true
 ---
 
+# Getting Started
+
+## Installing of required packages
+
+|           |                                                 |
+|-----------|-------------------------------------------------|
+| tidyverse | a family of R packages for data science process |
+| plotly | for creating interactive plot |
+| FunnelPlotR | for creating funnel plot |
+| knitr | for building static html table |
+
+: {tbl-colwidths="\[15,85\]"}
+
+```{r}
+pacman::p_load(tidyverse, FunnelPlotR, plotly, knitr)
+```
+
+## Importing data
+
+In this section, COVID-19_DKI_JAKARTA will be used. The data was donwloaded from [Open Data Covid-19 Provinsi DKI Jakarta portal](https://riwayat-file-covid-19-dki-jakarta-jakartagis.hub.arcgis.com). For this hands-one exercise, we are going to compare the cumulative COVID-19 cases and death by sub-district as at 31st July 2021, DKI Jakarta. 
+
+The code chunk below imports ata into R and save it into a tibble data rfame object called covid19. 
+
+```{r}
+covid19 <- read_csv("data/COVID-19_DKI_Jakarta.csv") %>%
+  mutate_if(is.character, as.factor)
+```
+
+```{r}
+#| echo: false
+library(knitr)
+kable(head(covid19))
+```
+
+# FunnelPlotR methods
+
+[FunnelPlotR](https://nhs-r-community.github.io/FunnelPlotR/) packge uses ggplot to generate funnel plots. It requires a `numerator` (events of interest), `denominator` (population to be considered) and `group`. The key arguments selected for customisation are:
+
+-   `limit`: plot limits (95 or 99)
+-   `label_outliers`: to label outliers (true or false)
+-   `Poisson_limits`: to add Poisson limits to the plot
+-   `OD_adjust`: to add overdispersed limits to the plot
+-   `xrange` and `yrange`: to specify the range to display for axes, acts like a zoom function
+-   other aesthetic components such as graph title, acis labels etc
+
+## Basic plot
+
+```{r}
+funnel_plot(
+  .data = covid19,
+  numerator = Positive,
+  denominator = Death,
+  group = `Sub-district`
+)
+```
+
+::: callout-tip
+### Things to learn from the code chunk
+
+-   `group` argument here is different from scatterplot. Here, it defines the level of the points to be plotted (i.e. Sub-district, District, City). If City is chosen, there are only six data points.
+-   By default `data_type` argument is "SR" (standard ratio)
+-   `limit` accepted values 95 or 99 corresponding to 95% or 99.8% quantiles of the distribution
+:::
+
+## Makeover 1
+
+Lets change the numerator and denominator values so that the comparison is insteadlly the fatality rate (deaths per positive case). `data_type` is also changed to "PR" (proportion) which will give us the direct ratio and not scaled. And set range for x and y axis.
+
+```{r}
+funnel_plot(
+  .data = covid19,
+  numerator = Death, #
+  denominator = Positive, #
+  group = `Sub-district`,
+  data_type = "PR",     #
+  xrange = c(0, 6500),  #
+  yrange = c(0, 0.05)   #
+)
+```
+
+## Final touches
+
+Add cosmetic/labelling improvements:
+
+-   `label = NA` to remove default outlier labels that clutter plot
+-   `title = "..."` to add proper descriptive plot title
+-   `x_label` and `y_label` to add proper title to x and y axis
+
+```{r}
+#| fig-width: 8
+#| fig-height: 5.5
+funnel_plot(
+  .data = covid19,
+  numerator = Death,
+  denominator = Positive,
+  group = `Sub-district`,
+  data_type = "PR",   
+  xrange = c(0, 6500),  
+  yrange = c(0, 0.05),
+  label = NA,
+  title = "Cumulative COVID-19 Fatality Rate by Cumulative Total Number of Positive Cases", #          
+  x_label = "Cumulative COVID-19 Positive Cases", #
+  y_label = "Cumulative Fatality Rate"  #
+)
+```
+
+# Funnel Plot for Fair Visual Comparison: ggplto method
+
+## Compute basic derived fields
+
+To plot the funnel plot from scratch, we need to derive cumulative detah rate and standard error of cumulative death rate
+
+```{r}
+df <- covid19 %>%
+  mutate(rate = Death / Positive) %>%
+  mutate(rate.se = sqrt((rate*(1-rate)) / (Positive))) %>%
+  filter(rate > 0)
+```
+
+Next, the fit.mean is computed.
+
+```{r}
+fit.mean <- weighted.mean(df$rate, 1/df$rate.se^2)
+```
+
+## Calculate lower and upper limits for 95% and 99.9% CI
+
+```{r}
+number.seq <- seq(1, max(df$Positive), 1)
+number.ll95 <- fit.mean - 1.96 * sqrt((fit.mean*(1-fit.mean)) / (number.seq)) 
+number.ul95 <- fit.mean + 1.96 * sqrt((fit.mean*(1-fit.mean)) / (number.seq)) 
+number.ll999 <- fit.mean - 3.29 * sqrt((fit.mean*(1-fit.mean)) / (number.seq)) 
+number.ul999 <- fit.mean + 3.29 * sqrt((fit.mean*(1-fit.mean)) / (number.seq)) 
+dfCI <- data.frame(number.ll95, number.ul95, number.ll999, 
+                   number.ul999, number.seq, fit.mean)
+```
+
+## Plot a static funnel plot
+
+```{r}
+p <- ggplot(df, aes(x = Positive, y = rate)) +
+  geom_point(aes(label=`Sub-district`), 
+             alpha=0.4) +
+  geom_line(data = dfCI, 
+            aes(x = number.seq, 
+                y = number.ll95), 
+            size = 0.4, 
+            colour = "grey40", 
+            linetype = "dashed") +
+  geom_line(data = dfCI, 
+            aes(x = number.seq, 
+                y = number.ul95), 
+            size = 0.4, 
+            colour = "grey40", 
+            linetype = "dashed") +
+  geom_line(data = dfCI, 
+            aes(x = number.seq, 
+                y = number.ll999), 
+            size = 0.4, 
+            colour = "grey40") +
+  geom_line(data = dfCI, 
+            aes(x = number.seq, 
+                y = number.ul999), 
+            size = 0.4, 
+            colour = "grey40") +
+  geom_hline(data = dfCI, 
+             aes(yintercept = fit.mean), 
+             size = 0.4, 
+             colour = "grey40") +
+  coord_cartesian(ylim=c(0,0.05)) +
+  annotate("text", x = 1, y = -0.13, label = "95%", size = 3, colour = "grey40") + 
+  annotate("text", x = 4.5, y = -0.18, label = "99%", size = 3, colour = "grey40") + 
+  ggtitle("Cumulative Fatality Rate by Cumulative Number of COVID-19 Cases") +
+  xlab("Cumulative Number of COVID-19 Cases") + 
+  ylab("Cumulative Fatality Rate") +
+  theme_light() +
+  theme(plot.title = element_text(size=12),
+        legend.position = c(0.91,0.85), 
+        legend.title = element_text(size=7),
+        legend.text = element_text(size=7),
+        legend.background = element_rect(colour = "grey60", linetype = "dotted"),
+        legend.key.height = unit(0.3, "cm"))
+p
+```
+
+## Interactive funnel plot
+
+The funnel plot created using ggplot can be made interactive with `ggplotly()`.
+
+```{r}
+fp_ggplotly <- ggplotly(p,
+  tooltip = c("label", 
+              "x", 
+              "y"))
+fp_ggplotly
+```
 
