@@ -32,14 +32,14 @@ Before you start making animated graphs, you should first ask yourself: Does it 
 ## Installation of required libraries
 
 |  |  |
-|--------|------------------|
+|-----------------------|------------------------------------------------|
 | [plotly](https://plotly.com/r/) | R library for plotting interactive statistical graphs |
 | [gganimate](https://gganimate.com) | ggplot extension for creating animated statistical graphs |
 | [gifski](https://cran.r-project.org/web/packages/gifski/index.html) | converts video frames to GIF animations using png1uant's fancy features for efficient cross-frae palettes and temporal dithering. It produces anumated GIFs that use thousands of colors per frame. |
 | [gapminder](https://cran.r-project.org/web/packages/gapminder/index.html) | an excerpt of the data available at Gapminder.org. We just want to use its country_colors scheme. |
 | [tidyverse](https://tidyverse.org) | a family of modern R packages specially designed to support data science, analysis and communication task including creating static statistical graphs |
 
-: {tbl-colwidths="[15,85]"}
+: {tbl-colwidths="\[15,85\]"}
 
 ```{r}
 pacman::p_load(readxl, gifski, gapminder,
@@ -48,7 +48,7 @@ pacman::p_load(readxl, gifski, gapminder,
 
 ## Importing data
 
-In this hands-on exercise, the Data worksheet from GlobalPopulation Excel workbook will be used. The code chunk below is used to import the data from GlobalPopulation by using appropriate R package from tidyverse family. 
+In this hands-on exercise, the Data worksheet from GlobalPopulation Excel workbook will be used. The code chunk below is used to import the data from GlobalPopulation by using appropriate R package from tidyverse family.
 
 ```{r}
 #| eval: false
@@ -101,6 +101,7 @@ gganimate extensd the grammar of grahics as implemented by ggplot to include the
 ## Building a static population bubble plot
 
 Below is a basic static bubble plot
+
 ```{r}
 ggplot(globalPop, aes(x = Old, y = Young, 
                       size = Population, 
@@ -135,7 +136,7 @@ ggplot(globalPop, aes(x = Old, y = Young,
 ### Things to learn from the code chunk
 
 -   `transition_time()` of gganimate is used to create transitio through distinct states in time (ex. Year)
--   'ease_aes()` is used ot control easing of aesthetics. The default is linear. Other methods are: quadratic, cubic, quartic, quintic, sine, circular, exponential, elastic, back, and bounce
+-   'ease_aes()\` is used ot control easing of aesthetics. The default is linear. Other methods are: quadratic, cubic, quartic, quintic, sine, circular, exponential, elastic, back, and bounce
 :::
 
 # Animated Data Visualisation: plotly
@@ -209,4 +210,3 @@ bp <- globalPop %>%
   layout(showlegend = FALSE)
 bp
 ```
-

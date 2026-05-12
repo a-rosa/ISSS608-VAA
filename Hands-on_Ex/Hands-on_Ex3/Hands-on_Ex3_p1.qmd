@@ -1,5 +1,5 @@
 ---
-title: "Hands-on Exercise 3 - Interactive Data Visualisation"
+title: "Hands-on Exercise 3 Part 1 - Interactive Data Visualisation"
 author: "Amelia Rosalind"
 date: "April 28, 2026"
 date-modified: "last-modified"
