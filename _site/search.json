@@ -795,6 +795,7 @@
     "section": "",
     "text": "ggtern\nggplot extension specially designed to plot ternanry diagrams\n\n\nPlotly R\nR package for creating interactive web-based graphs via plotly’s JavaScript graphing library\n\n\ntidyverse\na family of modern R packages specially designed to support data science, analysis and communication task including creating static statistical graphs\n\n\n\n\npacman::p_load(plotly, ggtern, tidyverse)\n\n\n\n\nFor this exercise, Singapore Residents by Planning AreaSubzone, Age Group, Sex adn Type of Dwelling from June 2000-2018 data will be used.\n\npop_data &lt;- read_csv(\"data/respopagsex2000to2018_tidy.csv\")\n\n\n\n\nUse mutate() function of dplyr package to derive three new measures, namely: young, active and old.\n\nagpop_mutated &lt;- pop_data %&gt;%\n  dplyr::mutate(Year = as.character(Year))%&gt;%\n  spread(AG, Population)%&gt;%\n  mutate(YOUNG = rowSums(.[4:8]))%&gt;%\n  mutate(ACTIVE = rowSums(.[9:16]))%&gt;%\n  mutate(OLD = rowSums(.[17:21]))%&gt;%\n  mutate(TOTAL = rowSums(.[22:24]))%&gt;%\n  filter(Year == \"2018\")%&gt;%\n  filter(TOTAL &gt; 0)",
     "crumbs": [
+      "Exercise 5",
       "Part 1"
     ]
   },
@@ -805,6 +806,7 @@
     "section": "",
     "text": "ggtern\nggplot extension specially designed to plot ternanry diagrams\n\n\nPlotly R\nR package for creating interactive web-based graphs via plotly’s JavaScript graphing library\n\n\ntidyverse\na family of modern R packages specially designed to support data science, analysis and communication task including creating static statistical graphs\n\n\n\n\npacman::p_load(plotly, ggtern, tidyverse)",
     "crumbs": [
+      "Exercise 5",
       "Part 1"
     ]
   },
@@ -815,6 +817,7 @@
     "section": "",
     "text": "For this exercise, Singapore Residents by Planning AreaSubzone, Age Group, Sex adn Type of Dwelling from June 2000-2018 data will be used.\n\npop_data &lt;- read_csv(\"data/respopagsex2000to2018_tidy.csv\")",
     "crumbs": [
+      "Exercise 5",
       "Part 1"
     ]
   },
@@ -825,6 +828,7 @@
     "section": "",
     "text": "Use mutate() function of dplyr package to derive three new measures, namely: young, active and old.\n\nagpop_mutated &lt;- pop_data %&gt;%\n  dplyr::mutate(Year = as.character(Year))%&gt;%\n  spread(AG, Population)%&gt;%\n  mutate(YOUNG = rowSums(.[4:8]))%&gt;%\n  mutate(ACTIVE = rowSums(.[9:16]))%&gt;%\n  mutate(OLD = rowSums(.[17:21]))%&gt;%\n  mutate(TOTAL = rowSums(.[22:24]))%&gt;%\n  filter(Year == \"2018\")%&gt;%\n  filter(TOTAL &gt; 0)",
     "crumbs": [
+      "Exercise 5",
       "Part 1"
     ]
   },
@@ -835,6 +839,7 @@
     "section": "Static ternary diagram",
     "text": "Static ternary diagram\nUse ggern() function fo fftern package to create a simple ternary plot.\n\nggtern(data=agpop_mutated, aes(x=YOUNG, y=ACTIVE, z=OLD)) +\n  geom_point() +\n  labs(title=\"Population structure, 2015\") +\n  theme_rgbw()",
     "crumbs": [
+      "Exercise 5",
       "Part 1"
     ]
   },
@@ -845,6 +850,7 @@
     "section": "Interactive ternary diagram",
     "text": "Interactive ternary diagram\n\nlabel &lt;- function(txt) {\n  list(\n    text = txt, \n    x = 0.1, y = 1,\n    ax = 0, ay = 0,\n    xref = \"paper\", yref = \"paper\", \n    align = \"center\",\n    font = list(family = \"serif\", size = 15, color = \"white\"),\n    bgcolor = \"#b3b3b3\", bordercolor = \"black\", borderwidth = 2\n  )\n}\n\naxis &lt;- function(txt) {\n  list(\n    title = txt, tickformat = \".0%\", tickfont = list(size = 10)\n  )\n}\n\nternaryAxes &lt;- list(\n  aaxis = axis(\"Young\"), \n  baxis = axis(\"Active\"), \n  caxis = axis(\"Old\")\n)\n\nplot_ly(\n  agpop_mutated, \n  a = ~YOUNG, \n  b = ~ACTIVE, \n  c = ~OLD, \n  color = I(\"black\"), \n  type = \"scatterternary\"\n) %&gt;%\n  layout(\n    annotations = label(\"Ternary Markers\"), \n    ternary = ternaryAxes\n  )",
     "crumbs": [
+      "Exercise 5",
       "Part 1"
     ]
   }
