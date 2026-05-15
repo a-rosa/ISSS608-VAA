@@ -1,6 +1,7 @@
 ---
 title: "Hands-on Exercise 5 Part 3 - Heatmap for Visualising and Analysing Multivariate Data"
 author: "Amelia Rosalind"
+date: "May 15, 2026"
 date-modified: "last-modified"
 execute: 
   eval: true
