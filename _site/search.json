@@ -853,5 +853,159 @@
       "Exercise 5",
       "Part 1"
     ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html",
+    "title": "Hands-on Exercise 5 Part 2",
+    "section": "",
+    "text": "Correlation coefficient measures the type and strength of the relationship between two variables, ranging from -1 (perfect inverse relationship) to 1 (perfect positive relationship), with 0 indicating no linear relationship.\nWhen working with multiple variables, these coefficients are arranged in a correlation matrix, which is used for three main purpose:\n\nexploring pairwise relationships between variables\nfeeding into other analyses (like factor analysis or linear regression)\ndiagnosing issues in other analyses\n\nFor large datasets, a corrgram is a visual tool that displays correlations by representing their sign and magnitude, while also reordering variables so that similar ones appear together for easier pattern recognition.",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#introduction",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#introduction",
+    "title": "Hands-on Exercise 5 Part 2",
+    "section": "",
+    "text": "Correlation coefficient measures the type and strength of the relationship between two variables, ranging from -1 (perfect inverse relationship) to 1 (perfect positive relationship), with 0 indicating no linear relationship.\nWhen working with multiple variables, these coefficients are arranged in a correlation matrix, which is used for three main purpose:\n\nexploring pairwise relationships between variables\nfeeding into other analyses (like factor analysis or linear regression)\ndiagnosing issues in other analyses\n\nFor large datasets, a corrgram is a visual tool that displays correlations by representing their sign and magnitude, while also reordering variables so that similar ones appear together for easier pattern recognition.",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#installing-of-required-packages",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#installing-of-required-packages",
+    "title": "Hands-on Exercise 5 Part 2",
+    "section": "Installing of required packages",
+    "text": "Installing of required packages\n\npacman::p_load(corrplot, ggstatsplot, tidyverse)",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#importing-data",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#importing-data",
+    "title": "Hands-on Exercise 5 Part 2",
+    "section": "Importing data",
+    "text": "Importing data\nFor this exercise, the Wine Quality Data Set of UCI Machine Leatning Reposutory will be used. The data set consists of 13 variables and 6497 observations.\n\nwine &lt;- read.csv(\"data/wine_quality.csv\")",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#basic-correlation-matrix",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#basic-correlation-matrix",
+    "title": "Hands-on Exercise 5 Part 2",
+    "section": "Basic correlation matrix",
+    "text": "Basic correlation matrix\nFigure below shows the scatter plot matrix of Wine quality Data in a 11 by 11 matrix.\n\npairs(wine[,1:11])\n\n\n\n\n\n\n\n\nThe required input of pairs() can be a matrix or data frame. The code chunk used to create the scatterplot matrix is relatively simple. It uses the default pairs function. The code chunk above uses column 1 to 11. The code chunk below uses column 12 to 12.\n\npairs(wine[,2:12])",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#drawing-lower-corner",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#drawing-lower-corner",
+    "title": "Hands-on Exercise 5 Part 2",
+    "section": "Drawing lower corner",
+    "text": "Drawing lower corner\npairs() function of R Graphics provided many customisation arguments. For exmaple, it is a common practice to show either the upper half or lower half of the correlation matrix instead of both. This is because a correlation matrix is symmetric.\nTo show the lower hald of the correlation matrix, the upper.panel argument will be used as shown in the code chunk below.\n\npairs(wine[,2:12], upper.panel = NULL)\n\n\n\n\n\n\n\n\nSimilarly, you can display the upper half of the correlation matrix instead by using the code chunk below.\n\npairs(wine[,2:12], lower.panel = NULL)",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#including-correlation-coefficients",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#including-correlation-coefficients",
+    "title": "Hands-on Exercise 5 Part 2",
+    "section": "Including correlation coefficients",
+    "text": "Including correlation coefficients\nTo show the correlation coefficient fo each pair of variables instead of scatter plot, panel.cor function will be used. This will also show higher correlations in a larger font.\n\npanel.cor &lt;- function(x, y, digits=2, prefix=\"\", cex.cor, ...) {\n  usr &lt;- par(\"usr\")\n  on.exit(par(usr))\n  par(usr = c(0, 1, 0, 1))\n  r &lt;- abs(cor(x, y, use=\"complete.obs\"))\n  txt &lt;- format(c(r, 0.123456789), digits=digits)[1]\n  txt &lt;- paste(prefix, txt, sep=\"\")\n  if(missing(cex.cor)) cex.cor &lt;- 0.8/strwidth(txt)\n  text(0.5, 0.5, txt, cex = cex.cor * (1+r) / 2)\n}\n\npairs(wine[,2:12], upper.panel = panel.cor)",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#basic-plot",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#basic-plot",
+    "title": "Hands-on Exercise 5 Part 2",
+    "section": "Basic plot",
+    "text": "Basic plot\nOne of the advantage of using ggcorrmat() over many other methods to visualise a correlation matrix is it’s ability o provide a comprehensive and yet professional statistical report as shown in the figure below.\n\nggstatsplot::ggcorrmat(\n  data = wine,\n  corr.vars = 1:11,\n  ggcorrplot.args = list(outline.color = \"black\",\n                         hc.order = TRUE,\n                         tl.cex = 10),\n  title = \"Correlogram for wine dataset\",\n  subtitle = \"Four pairs are no significant at p &lt; 0.05\"\n)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nThings to learn from the code chunk above: - cor.vars argument is used to compute the correlation matrix needed to build the corrgram - ggcorrplot.args argument provide additional (mostly aesthetic) arguments that will be passed to ggcorrplot::ggcorrplot function. The list should avoid any of the following arguments since they are already internally being used: corr, method, p.mat, sig.level, ggtheme, colors, lab, pch, legend.title, digits\nThe sample sub-code chunk can be used to control specific components of the plot such as the font size of the x-axis, y-axis, and the statistical report.\n\nggplot.component = list(\n    theme(text=element_text(size=5),\n      axis.text.x = element_text(size = 8),\n      axis.text.y = element_text(size = 8)))",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#getting-started-with-corrplot",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#getting-started-with-corrplot",
+    "title": "Hands-on Exercise 5 Part 2",
+    "section": "Getting started with corrplot",
+    "text": "Getting started with corrplot\nWe need to comput the correlatin matrix of wine data frame first.\n\nwine.cor &lt;- cor(wine[, 1:11])\n\nNext, corrplot() is used to plot the corrgram by using all the default setting as shown in the code chunk below.\n\ncorrplot(wine.cor)\n\n\n\n\n\n\n\n\nNotice that the default visual object used to plot the corrgram is circle. The default layout of the corrgram is a symmetric matrix. The default colour scheme is diverging blue-red. Bkue colors are used to represent pair variables with positive correlation coefficients and red colors are used to represent pair variables with negative correlation coefficients. The intensity of the color or also known as saturation is used to represent the strength of the correlation coefficient. Darker colors indicate relatively stronger linear relationship between the paired variables. On the other hand, lighter colors indicate relatively weaker linear relationship.",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#working-with-visual-geometrics",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#working-with-visual-geometrics",
+    "title": "Hands-on Exercise 5 Part 2",
+    "section": "Working with visual geometrics",
+    "text": "Working with visual geometrics\nIn corrplot package, there are seven visual geometric (parameter method) can be used to encode the attribute values. They are: circle, square, ellipse, number, shade, color and pie. The default is circle. As shown in the previous section, the default visual geometric of corrplot matrix is circle. However, this default setting can be changed by using the method argument as shown in the code chunk below.\n\ncorrplot(wine.cor, \n         method = \"ellipse\")",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#working-with-layout",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#working-with-layout",
+    "title": "Hands-on Exercise 5 Part 2",
+    "section": "Working with layout",
+    "text": "Working with layout\ncorrplor() supports three layout types: “full”, “upper” or “lower”. The default is “full” which display full matrix. The default setting can be changed by using the type argument of corrplot().\n\ncorrplot(wine.cor, \n         method = \"ellipse\", \n         type=\"lower\")\n\n\n\n\n\n\n\n\nThe default layout of the corrgram can be further customised. For example, arguments diag and tl.col are used to turn off the diagonal cells and to change the axis text label color to black color respectively as shown in the code chunk and figure below.\n\ncorrplot(wine.cor, \n         method = \"ellipse\", \n         type=\"lower\",\n         diag = FALSE,\n         tl.col = \"black\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nOther layout arguments that can be experimented on: tl.pos, tl.cex, tl.offset, cl.pos, cl.cex and cl.offset",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#working-with-mixed-layout",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#working-with-mixed-layout",
+    "title": "Hands-on Exercise 5 Part 2",
+    "section": "Working with mixed layout",
+    "text": "Working with mixed layout\nWith corrplot package, it is possible to design corrgram with mixed visual matrix of one half and numerical matrix on the other half. In order to create a coorgram with mized layout, the corrplot.mixed(), a wrapped function for mixed visualisation style will be used.\n\ncorrplot.mixed(wine.cor, \n               lower = \"ellipse\", \n               upper = \"number\",\n               tl.pos = \"lt\",\n               diag = \"l\",\n               tl.col = \"black\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nNotice that argument lower and upper are used to define the visualisation method used. In this case, ellipse is used to map the lower half of the corrgram and numerical matrix (i,e, number) is used to map the upper hald of the corrgram. The argument tl.pos, on the other hand, is used to specify the placement of the axis label. Lastly, the diag argument is used to specify the glyph on the principal diagonal of the corrgram.",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#combinign-corrgram-with-significant-test.",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#combinign-corrgram-with-significant-test.",
+    "title": "Hands-on Exercise 5 Part 2",
+    "section": "Combinign corrgram with significant test.",
+    "text": "Combinign corrgram with significant test.\nIn the statistical analysis, we are also interested to know which pair of variables their correlation coefficients are statistically significant.\nWith corrplot package, we can use the cor.mtest() to compute the p-values and confidence interval for eac pair of variables.\n\nwine.sig = cor.mtest(wine.cor, conf.level= .95)\n\nWe can then use the p.mat argument of corrplot function as shown in the code chunk below.\n\ncorrplot(wine.cor,\n         method = \"number\",\n         type = \"lower\",\n         diag = FALSE,\n         tl.col = \"black\",\n         tl.srt = 45,\n         p.mat = wine.sig$p,\n         sig.level = .05)\n\n\n\n\n\n\n\n\nAs you can see, the corrgram reveals that not all correlation pairs are statically significant. For example the correlation between total sulfur dioxide and free sulfur dioxide is statistically significant at significant level of 0.1 but the not the pair between total sulfur dioxide and citric acid.",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#reorder-a-corrgram",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#reorder-a-corrgram",
+    "title": "Hands-on Exercise 5 Part 2",
+    "section": "Reorder a corrgram",
+    "text": "Reorder a corrgram\nMatrix reorder is very important for mining the hiden structure and pattern in corrgram. By default, the order of attributes of a corrgram is sorted according to the correlation matrix (i.e. “original”). The default setting can be over-write by using argument of corrplot(). Currently, corrplot package support four sorting methods, they are:\n\n“AOE”: for angular order of the eigenvector\n“FPC”:for the first principal component order\n“hclust”: for hierarchical clustering order, and “hclust.method” for the agglomeration method to be used\n\n“hclust.method” should be one of “ward”, “single”, “complete”, “average”, mcquitty”, “median” or “centroid”\n\n“alphabet” for alphabetical order\n\n\nAOEhclust\n\n\n\ncorrplot.mixed(wine.cor, \n               lower = \"ellipse\", \n               upper = \"number\",\n               tl.pos = \"lt\",\n               diag = \"l\",\n               order=\"AOE\",\n               tl.col = \"black\")\n\n\n\n\n\n\n\n\n\n\nIf using “hclust”, corrplot() can draw rectabgle around the corrgram based on teh results of hierarchical clustering.\n\ncorrplot(wine.cor, \n         method = \"ellipse\", \n         tl.pos = \"lt\",\n         tl.col = \"black\",\n         order=\"hclust\",\n         hclust.method = \"ward.D\",\n         addrect = 3)",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
   }
 ]
