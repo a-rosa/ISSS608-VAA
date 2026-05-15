@@ -55,6 +55,8 @@ website:
               href: "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p3.qmd"
             - text: "Part 4"
               href: "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p4.qmd"
+            - text: "Part 5"
+              href: "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p5.qmd"
 
 format:
   html:
