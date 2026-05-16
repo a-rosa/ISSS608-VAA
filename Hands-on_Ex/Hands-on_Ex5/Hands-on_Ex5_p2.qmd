@@ -138,6 +138,8 @@ ggplot.component = list(
 Since ggstatsplot is am extension of ggplot, it also supports faceting, However the feature is not available in `ggcormat()` but in the [grouped_ggcorrmat()](https://www.indrapatil.com/ggstatsplot/reference/grouped_ggcorrmat.html) of ggstatsplot.
 
 ```{r}
+#| fig-width: 13
+#| fig-height: 5
 grouped_ggcorrmat(
   data = wine,
   cor.vars = 1:11,
@@ -223,6 +225,8 @@ Other layout arguments that can be experimented on: `tl.pos`, `tl.cex`, `tl.offs
 With corrplot package, it is possible to design corrgram with mixed visual matrix of one half and numerical matrix on the other half. In order to create a coorgram with mized layout, the [corrplot.mixed()](https://www.rdocumentation.org/packages/corrplot/versions/0.84/topics/corrplot.mixed), a wrapped function for mixed visualisation style will be used.
 
 ```{r}
+#| fig-width: 7
+#| fig-height: 7
 corrplot.mixed(wine.cor, 
                lower = "ellipse", 
                upper = "number",
@@ -248,6 +252,8 @@ wine.sig = cor.mtest(wine.cor, conf.level= .95)
 We can then use the p.mat argument of corrplot function as shown in the code chunk below.
 
 ```{r}
+#| fig-width: 7
+#| fig-height: 7
 corrplot(wine.cor,
          method = "number",
          type = "lower",
@@ -270,10 +276,12 @@ Matrix reorder is very important for mining the hiden structure and pattern in c
     -   "hclust.method" should be one of "ward", "single", "complete", "average", mcquitty", "median" or "centroid"
 -   "alphabet" for alphabetical order
 
-::: {.panel-tabset}
+::: panel-tabset
 ### AOE
 
 ```{r}
+#| fig-width: 7
+#| fig-height: 7
 corrplot.mixed(wine.cor, 
                lower = "ellipse", 
                upper = "number",
