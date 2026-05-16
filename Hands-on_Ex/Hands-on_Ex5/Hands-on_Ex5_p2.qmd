@@ -239,7 +239,7 @@ corrplot.mixed(wine.cor,
 Notice that argument lower and upper are used to define the visualisation method used. In this case, ellipse is used to map the lower half of the corrgram and numerical matrix (i,e, number) is used to map the upper hald of the corrgram. The argument `tl.pos`, on the other hand, is used to specify the placement of the axis label. Lastly, the `diag` argument is used to specify the glyph on the principal diagonal of the corrgram.
 :::
 
-## Combinign corrgram with significant test.
+## Combining corrgram with significant test.
 
 In the statistical analysis, we are also interested to know which pair of variables their correlation coefficients are statistically significant.
 

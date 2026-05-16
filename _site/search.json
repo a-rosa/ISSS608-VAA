@@ -1502,5 +1502,27 @@
       "Exercise 5",
       "Part 5"
     ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p5.html#defining-hierarchy",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p5.html#defining-hierarchy",
+    "title": "Hands-on Exercise 5 Part 5 - Treemap Visualisation with R",
+    "section": "Defining hierarchy",
+    "text": "Defining hierarchy\nGroup by Planning Region\n\nggplot(data=realis2018_selected, \n       aes(area = `Total Unit Sold`,\n           fill = `Median Unit Price ($ psm)`,\n           subgroup = `Planning Region`),\n       start = \"topleft\") + \n  geom_treemap()\n\n\n\n\n\n\n\n\nGroup by Planning Area\n\nggplot(data=realis2018_selected, \n       aes(area = `Total Unit Sold`,\n           fill = `Median Unit Price ($ psm)`,\n           subgroup = `Planning Region`,\n           subgroup2 = `Planning Area`)) + \n  geom_treemap()\n\n\n\n\n\n\n\n\nAdding boundary line\n\nggplot(data=realis2018_selected, \n       aes(area = `Total Unit Sold`,\n           fill = `Median Unit Price ($ psm)`,\n           subgroup = `Planning Region`,\n           subgroup2 = `Planning Area`)) + \n  geom_treemap() +\n  geom_treemap_subgroup2_border(colour = \"gray40\",\n                                size = 2) +\n  geom_treemap_subgroup_border(colour = \"gray20\")",
+    "crumbs": [
+      "Exercise 5",
+      "Part 5"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#combining-corrgram-with-significant-test.",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5_p2.html#combining-corrgram-with-significant-test.",
+    "title": "Hands-on Exercise 5 Part 2 - Visual Correlation Analysis",
+    "section": "Combining corrgram with significant test.",
+    "text": "Combining corrgram with significant test.\nIn the statistical analysis, we are also interested to know which pair of variables their correlation coefficients are statistically significant.\nWith corrplot package, we can use the cor.mtest() to compute the p-values and confidence interval for eac pair of variables.\n\nwine.sig = cor.mtest(wine.cor, conf.level= .95)\n\nWe can then use the p.mat argument of corrplot function as shown in the code chunk below.\n\ncorrplot(wine.cor,\n         method = \"number\",\n         type = \"lower\",\n         diag = FALSE,\n         tl.col = \"black\",\n         tl.srt = 45,\n         p.mat = wine.sig$p,\n         sig.level = .05)\n\n\n\n\n\n\n\n\nAs you can see, the corrgram reveals that not all correlation pairs are statically significant. For example the correlation between total sulfur dioxide and free sulfur dioxide is statistically significant at significant level of 0.1 but the not the pair between total sulfur dioxide and citric acid.",
+    "crumbs": [
+      "Exercise 5",
+      "Part 2"
+    ]
   }
 ]

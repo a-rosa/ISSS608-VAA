@@ -270,7 +270,7 @@ ggplot(data=realis2018_selected,
   scale_fill_gradient(low = "light blue", high = "blue")
 ```
 
-## Definign hierarchy
+## Defining hierarchy
 
 Group by Planning Region
 
