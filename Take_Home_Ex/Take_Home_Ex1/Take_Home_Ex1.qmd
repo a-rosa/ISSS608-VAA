@@ -73,7 +73,7 @@ insurance <- insurance %>%
                   legal_protection_premium,
                   occupants_premium, total_exposure,
                   liability_exposure),
-                ~ as.numeric(gsub(",", ".", .)))) %>%
+                ~ as.numeric(.))) %>%
   # Convert categoricals to factors
   mutate(across(c(policy_type, policy_status, business_type,
                   payment_frequency,bonus_score, fuel_type,
@@ -141,6 +141,7 @@ nrow(insurance)
 
 ```{r}
 kable(head(insurance))
+summary(insurance)
 ```
 
 The final dataset now have 352,219 rows remaining, and 48 columns in total with the new column made. The data types are also all correct. 
@@ -158,12 +159,5 @@ Key metrics that can influence profitability are variables that concern how much
 -   total_premium: the revenue
 -   total_claims: frequency of losses
 -   loss_ratio: standard insurance profitability metric
-
-
-```{r}
-ggplot(data=insurance, aes(x = total_incurred)) +
-  geom_histogram(bins=100) +
-  ggtitle("Distribution of Total Incurred (Cost)")
-```
 :::
 
