@@ -366,4 +366,220 @@ hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 :::
 
+## Distribution of other risk factors
 
+::: panel-tabset
+### driver_age
+
+```{r}
+summary(insurance$driver_age)
+```
+
+```{r}
+box_da <- ggplot(insurance, aes(y = driver_age, x="")) +
+  geom_boxplot(outlier.colour="lightgreen") +
+  geom_point(aes(x = "", 
+                 y = mean(insurance$driver_age)),
+             colour = "red", 
+             size = 2, 
+             shape = 18) +
+  coord_flip() +
+  scale_y_continuous(limits = c(15, 95)) +
+  labs(title = "Distribution of Driver's Age") +
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(), 
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    panel.grid.major = element_blank(),
+     plot.background = element_rect(fill="white",
+                                    colour="white")
+  )
+
+hist_da <- ggplot(insurance, aes(x = driver_age)) +
+  geom_histogram(colour = "grey25",
+                 fill = "grey90") +
+  geom_vline(aes(xintercept = mean(driver_age)), 
+             color = "red", linetype = "dashed") +
+  geom_vline(aes(xintercept = median(driver_age)), 
+             color = "blue", linetype = "dashed") +
+  scale_x_continuous(limits = c(15, 95)) +
+  labs(x = "driver_age") +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    plot.background = element_rect(fill="white",
+                                   colour="white")
+  )
+
+hbox <- (box_da / hist_da) +
+  plot_layout(heights = c(1.5, 3.5))
+
+hbox & theme(plot.background = element_rect(fill="white",colour="white"))
+```
+
+### vehicle_age
+
+```{r}
+summary(insurance$vehicle_age)
+```
+
+```{r}
+box_va <- ggplot(insurance, aes(y = vehicle_age, x="")) +
+  geom_boxplot(outlier.colour="lightgreen") +
+  geom_point(aes(x = "", 
+                 y = mean(insurance$vehicle_age)),
+             colour = "red", 
+             size = 2, 
+             shape = 18) +
+  coord_flip() +
+  scale_y_continuous(limits = c(-5, 75)) +
+  labs(title = "Distribution of Vehicle Age") +
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(), 
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    panel.grid.major = element_blank(),
+     plot.background = element_rect(fill="white",
+                                    colour="white")
+  )
+
+hist_va <- ggplot(insurance, aes(x = vehicle_age)) +
+  geom_histogram(colour = "grey25",
+                 fill = "grey90") +
+  geom_vline(aes(xintercept = mean(vehicle_age)), 
+             color = "red", linetype = "dashed") +
+  geom_vline(aes(xintercept = median(vehicle_age)), 
+             color = "blue", linetype = "dashed") +
+  scale_x_continuous(limits = c(-5, 75)) +
+  labs(x = "vehicle_age") +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    plot.background = element_rect(fill="white",
+                                   colour="white")
+  )
+
+hbox <- (box_va / hist_va) +
+  plot_layout(heights = c(1.5, 3.5))
+
+hbox & theme(plot.background = element_rect(fill="white",colour="white"))
+```
+
+### driving_experience
+
+```{r}
+summary(insurance$driving_experience)
+```
+
+```{r}
+box_de <- ggplot(insurance, aes(y = driving_experience, x="")) +
+  geom_boxplot(outlier.colour="lightgreen") +
+  geom_point(aes(x = "", 
+                 y = mean(insurance$driving_experience)),
+             colour = "red", 
+             size = 2, 
+             shape = 18) +
+  coord_flip() +
+  scale_y_continuous(limits = c(-5, 75)) +
+  labs(title = "Distribution of Driving Experience") +
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(), 
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    panel.grid.major = element_blank(),
+     plot.background = element_rect(fill="white",
+                                    colour="white")
+  )
+
+hist_de <- ggplot(insurance, aes(x = driving_experience)) +
+  geom_histogram(colour = "grey25",
+                 fill = "grey90") +
+  geom_vline(aes(xintercept = mean(driving_experience)), 
+             color = "red", linetype = "dashed") +
+  geom_vline(aes(xintercept = median(driving_experience)), 
+             color = "blue", linetype = "dashed") +
+  scale_x_continuous(limits = c(-5, 75)) +
+  labs(x = "driving_experience") +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    plot.background = element_rect(fill="white",
+                                   colour="white")
+  )
+
+hbox <- (box_de / hist_de) +
+  plot_layout(heights = c(1.5, 3.5))
+
+hbox & theme(plot.background = element_rect(fill="white",colour="white"))
+```
+
+### policy_type
+
+```{r}
+ggplot(data=insurance, aes(x = policy_type)) +
+  geom_bar(fill = "grey90") +
+  geom_text(stat="count",
+            aes(label=paste0(after_stat(count))),
+            vjust = -0.2,
+            size = 3) +
+  labs(title = "Distribution of Policy Types") +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid.major = element_blank(),
+    plot.background = element_rect(fill="white",
+                                   colour="white")
+  )
+```
+
+### bonus_score
+
+```{r}
+ggplot(data=insurance, aes(x = bonus_score)) +
+  geom_bar(fill = "grey90") +
+  geom_text(stat="count",
+            aes(label=paste0(after_stat(count))),
+            vjust = -0.2,
+            size = 3) +
+  labs(title = "Distribution of Good, Bad, Neutral Claims") +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid.major = element_blank(),
+    plot.background = element_rect(fill="white",
+                                   colour="white")
+  )
+```
+
+### circulation_area
+
+```{r}
+ggplot(data=insurance, aes(x = circulation_area)) +
+  geom_bar(fill = "grey90") +
+  geom_text(stat="count",
+            aes(label=paste0(after_stat(count))),
+            vjust = -0.2,
+            size = 3) +
+  labs(title = "Distribution of Urban vs Rural") +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid.major = element_blank(),
+    plot.background = element_rect(fill="white",
+                                   colour="white")
+  )
+```
+
+:::
