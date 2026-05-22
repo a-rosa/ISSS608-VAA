@@ -15,7 +15,8 @@ execute:
 ## Installing of required packages
 
 ```{r}
-pacman::p_load(corrplot, ggstatsplot, tidyverse, knitr)
+pacman::p_load(corrplot, ggstatsplot, tidyverse, knitr,
+               patchwork, ggthemes, ggdist)
 ```
 
 ## Importing data
@@ -141,23 +142,228 @@ nrow(insurance)
 
 ```{r}
 kable(head(insurance))
-summary(insurance)
 ```
 
 The final dataset now have 352,219 rows remaining, and 48 columns in total with the new column made. The data types are also all correct. 
 
 # Univariate Analysis
 
-## Distribution of key variables
+## Distribution of key variables for probability and volability
 
-::: panel-tabset
-## Profitability
-
-Key metrics that can influence profitability are variables that concern how much is the cost and revenue. So the most relevant variables to look at first are:
+Key metrics that can influence profitability are variables that concern how much is the cost and revenue. Meanwhile, volability concerns the spread and and unpredictability of losses. So the most relevant variables to look at first are:
 
 -   total_incurred: the cost side
 -   total_premium: the revenue
 -   total_claims: frequency of losses
 -   loss_ratio: standard insurance profitability metric
+
+::: panel-tabset
+
+### total_incurred
+
+```{r}
+summary(insurance$total_incurred)
+```
+
+```{r}
+box_cost <- ggplot(insurance, aes(y = total_incurred, x = "")) +
+  geom_boxplot(outlier.colour="lightgreen") +
+  geom_point(aes(x = "", 
+                 y = mean(insurance$total_incurred)),
+             colour = "red", 
+             size = 2, 
+             shape = 18) +
+  coord_flip() +
+  scale_y_continuous(limits = c(-1e+05, 6e+05)) +
+  labs(title = "Distribution of Total Incurred (Cost)") +
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(), 
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    panel.grid.major = element_blank(),
+    plot.background = element_rect(fill="white",
+                                   colour="white")
+  )
+
+hist_cost <- ggplot(insurance, aes(x = total_incurred)) +
+  geom_histogram(bins = 50,
+                 colour = "grey25",
+                 fill = "grey90") +
+  geom_vline(aes(xintercept = mean(total_incurred)), 
+             color = "red", linetype = "dashed") +
+  geom_vline(aes(xintercept = median(total_incurred)), 
+             color = "blue", linetype = "dashed") +
+  scale_x_continuous(limits = c(-1e+05, 6e+05)) +
+  labs(x = "total_incurred") +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    plot.background = element_rect(fill="white",
+                                   colour="white")
+  )
+
+hbox <- (box_cost / hist_cost) +
+  plot_layout(heights = c(1.5, 3.5))
+
+hbox & theme(plot.background = element_rect(fill="white",colour="white"))
+```
+
+### total_premium
+
+```{r}
+summary(insurance$total_premium)
+```
+
+```{r}
+box_rev <- ggplot(insurance, aes(y = total_premium, x = "")) +
+  geom_boxplot(outlier.colour="lightgreen") +
+  geom_point(aes(x = "", 
+                 y = mean(insurance$total_premium)),
+             colour = "red", 
+             size = 2, 
+             shape = 18) +
+  coord_flip() +
+  scale_y_continuous(limits = c(-500, 6000)) +
+  labs(title = "Distribution of Total Premium (Revenue)") +
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(), 
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    panel.grid.major = element_blank(),
+    plot.background = element_rect(fill="white",
+                                   colour="white")
+  )
+
+hist_rev <- ggplot(insurance, aes(x = total_premium)) +
+  geom_histogram(bins = 50,
+                 colour = "grey25",
+                 fill = "grey90") +
+  geom_vline(aes(xintercept = mean(total_premium)), 
+             color = "red", linetype = "dashed") +
+  geom_vline(aes(xintercept = median(total_premium)), 
+             color = "blue", linetype = "dashed") +
+  scale_x_continuous(limits = c(-500, 6000)) +
+  labs(x = "total_premium") +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    plot.background = element_rect(fill="white",
+                                   colour="white")
+  )
+
+hbox <- (box_rev / hist_rev) +
+  plot_layout(heights = c(1.5, 3.5))
+
+hbox & theme(plot.background = element_rect(fill="white",colour="white"))
+```
+
+### total_claims
+
+```{r}
+summary(insurance$total_claims)
+```
+
+```{r}
+box_claims <- ggplot(insurance, aes(y = total_claims, x="")) +
+  geom_boxplot(outlier.colour="lightgreen") +
+  geom_point(aes(x = "", 
+                 y = mean(insurance$total_claims)),
+             colour = "red", 
+             size = 2, 
+             shape = 18) +
+  coord_flip() +
+  scale_y_continuous(limits = c(-5, 25)) +
+  labs(title = "Distribution of Total Claims (Frequency)") +
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(), 
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    panel.grid.major = element_blank(),
+     plot.background = element_rect(fill="white",
+                                    colour="white")
+  )
+
+hist_claims <- ggplot(insurance, aes(x = total_claims)) +
+  geom_histogram(colour = "grey25",
+                 fill = "grey90") +
+  geom_vline(aes(xintercept = mean(total_claims)), 
+             color = "red", linetype = "dashed") +
+  geom_vline(aes(xintercept = median(total_claims)), 
+             color = "blue", linetype = "dashed") +
+  scale_x_continuous(limits = c(-5, 25)) +
+  labs(x = "total_claims") +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    plot.background = element_rect(fill="white",
+                                   colour="white")
+  )
+
+hbox <- (box_claims / hist_claims) +
+  plot_layout(heights = c(1.5, 3.5))
+
+hbox & theme(plot.background = element_rect(fill="white",colour="white"))
+```
+
+### loss_ratio
+
+```{r}
+summary(insurance$loss_ratio)
+```
+
+```{r}
+insurance %>%
+  filter(loss_ratio > 100) %>%
+  select(total_premium, total_incurred, loss_ratio) %>%
+  arrange(desc(loss_ratio))
+```
+
+```{r}
+box_ratio <- ggplot(insurance, aes(y = loss_ratio, x = "")) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_point(aes(x = "", 
+                 y = mean(insurance$loss_ratio)),
+             colour = "red", 
+             size = 2, 
+             shape = 18) +
+  coord_flip() +
+  scale_y_continuous(limits = c(-1, 10)) +
+  labs(title = "Distribution of Loss Ratio") +
+  theme_minimal() +
+  theme(
+    axis.title = element_blank(),
+     plot.background = element_rect(fill="white",
+                                    colour="white")
+  )
+
+hist_ratio <- ggplot(insurance, aes(x = loss_ratio)) +
+  geom_histogram(colour = "grey25",
+                 fill = "grey90") +
+  geom_vline(aes(xintercept = mean(loss_ratio)), 
+             color = "red", linetype = "dashed") +
+  geom_vline(aes(xintercept = median(loss_ratio)), 
+             color = "blue", linetype = "dashed") +
+  scale_x_continuous(limits = c(-1, 10)) +
+  labs(x = "loss_ratio") +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    plot.background = element_rect(fill="white",
+                                   colour="white")
+  )
+
+hbox <- (box_ratio / hist_ratio) +
+  plot_layout(heights = c(1.5, 3.5))
+
+hbox & theme(plot.background = element_rect(fill="white",colour="white"))
+```
 :::
+
 
