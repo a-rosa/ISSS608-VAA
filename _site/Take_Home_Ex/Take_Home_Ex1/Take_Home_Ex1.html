@@ -202,11 +202,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#problems" id="toc-problems" class="nav-link" data-scroll-target="#problems">Problems</a></li>
   </ul></li>
-  <li><a href="#data-wragling" id="toc-data-wragling" class="nav-link" data-scroll-target="#data-wragling">Data Wragling</a>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">Data Wrangling</a>
   <ul class="collapse">
   <li><a href="#cleaning-the-data" id="toc-cleaning-the-data" class="nav-link" data-scroll-target="#cleaning-the-data">Cleaning the data</a></li>
-  <li><a href="#feature-engineering" id="toc-feature-engineering" class="nav-link" data-scroll-target="#feature-engineering">Feature Engineering</a></li>
+  <li><a href="#feature-engineering" id="toc-feature-engineering" class="nav-link" data-scroll-target="#feature-engineering">Feature Engineering</a>
+  <ul class="collapse">
+  <li><a href="#driving_experience" id="toc-driving_experience" class="nav-link" data-scroll-target="#driving_experience">driving_experience</a></li>
+  <li><a href="#loss_ratio" id="toc-loss_ratio" class="nav-link" data-scroll-target="#loss_ratio">loss_ratio</a></li>
+  </ul></li>
   <li><a href="#check-final-data" id="toc-check-final-data" class="nav-link" data-scroll-target="#check-final-data">Check final data</a></li>
+  </ul></li>
+  <li><a href="#univariate-analysis" id="toc-univariate-analysis" class="nav-link" data-scroll-target="#univariate-analysis">Univariate Analysis</a>
+  <ul class="collapse">
+  <li><a href="#distribution-of-key-variables" id="toc-distribution-of-key-variables" class="nav-link" data-scroll-target="#distribution-of-key-variables">Distribution of key variables</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -262,35 +270,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="importing-data" class="level2">
 <h2 class="anchored" data-anchor-id="importing-data">Importing data</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>insurance <span class="ot">&lt;-</span> <span class="fu">read_csv2</span>(<span class="st">"Motor_insurance.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>insurance <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">"Motor_insurance.csv"</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">delim =</span> <span class="st">";"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">.default =</span> <span class="st">"c"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
 <section id="checking-dataset" class="level1">
 <h1>Checking Dataset</h1>
+<p>Before cleaning, first examine the dataset’s structure, summary statistics, and missing values to identify any data quality issues.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(insurance)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 354,140
 Columns: 47
-$ insured_id                  &lt;dbl&gt; 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, …
-$ year                        &lt;dbl&gt; 2022, 2022, 2023, 2024, 2022, 2023, 2024, …
+$ insured_id                  &lt;chr&gt; "1", "2", "2", "2", "3", "3", "3", "4", "4…
+$ year                        &lt;chr&gt; "2022", "2022", "2023", "2024", "2022", "2…
 $ policy_type                 &lt;chr&gt; "COMP_E", "COMP_E", "COMP_E", "COMP_E", "C…
 $ policy_status               &lt;chr&gt; "C", "A", "A", "A", "A", "A", "A", "A", "A…
 $ business_type               &lt;chr&gt; "NB", "P", "P", "P", "NB", "P", "P", "NB",…
 $ payment_frequency           &lt;chr&gt; "A", "A", "A", "A", "S", "S", "S", "A", "A…
 $ bonus_score                 &lt;chr&gt; "G", "G", "G", "G", "G", "G", "G", "G", "G…
-$ driver_age                  &lt;dbl&gt; 48, 43, 44, 45, 45, 46, 47, 32, 33, 34, 39…
-$ vehicle_age                 &lt;dbl&gt; 22, 24, 25, 26, 26, 27, 28, 12, 13, 14, 20…
-$ age_driving_licence         &lt;dbl&gt; 26, 19, 19, 18, 19, 19, 19, 19, 19, 19, 19…
+$ driver_age                  &lt;chr&gt; "48", "43", "44", "45", "45", "46", "47", …
+$ vehicle_age                 &lt;chr&gt; "22", "24", "25", "26", "26", "27", "28", …
+$ age_driving_licence         &lt;chr&gt; "26", "19", "19", "18", "19", "19", "19", …
 $ fuel_type                   &lt;chr&gt; "G", "D", "D", "D", "D", "D", "D", "D", "D…
-$ vehicle_value               &lt;dbl&gt; 1495114425, 650651232, 650651232, 65065123…
-$ seats                       &lt;dbl&gt; 4, 8, 8, 8, 7, 7, 7, 5, 5, 5, 5, 5, 5, 5, …
-$ power_to_weight_ratio       &lt;dbl&gt; 392, 1015, 1015, 1015, 919, 919, 919, 117,…
+$ vehicle_value               &lt;chr&gt; "149511.4425", "65065.1232", "65065.1232",…
+$ seats                       &lt;chr&gt; "4", "8", "8", "8", "7", "7", "7", "5", "5…
+$ power_to_weight_ratio       &lt;chr&gt; "3.92", "10.15", "10.15", "10.15", "9.19",…
 $ vehicle_brand               &lt;chr&gt; "PORSCHE", "MERCEDES", "MERCEDES", "MERCED…
 $ municipality_type           &lt;chr&gt; "I", "I", "I", "I", "I", "I", "I", "I", "I…
 $ circulation_area            &lt;chr&gt; "U", "U", "U", "U", "R", "R", "R", "R", "R…
-$ total_premium               &lt;dbl&gt; 2.795576e+14, 5.466234e+14, 5.487526e+14, …
+$ total_premium               &lt;chr&gt; "279.557557563945", "546.623415106849", "5…
 $ liability_premium           &lt;chr&gt; "30.6023237556165", "114.333356153425", "1…
 $ property_damage_premium     &lt;chr&gt; "121.912689768658", "303.105967487671", "3…
 $ theft_premium               &lt;chr&gt; "112.361488722247", "80.784823960274", "83…
@@ -298,158 +309,96 @@ $ fire_premium                &lt;chr&gt; "3.83244054509589", "7.82686089041096"
 $ glass_premium               &lt;chr&gt; "8.30578787063014", "30.091750730137", "32…
 $ legal_protection_premium    &lt;chr&gt; "2.04362162038356", "7.81274746849314", "7…
 $ occupants_premium           &lt;chr&gt; "0.499205281315068", "2.66790841643835", "…
-$ total_claims                &lt;dbl&gt; 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, …
-$ liability_claims            &lt;dbl&gt; 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ liability_property_claims   &lt;dbl&gt; 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ liability_injury_claims     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ property_claims             &lt;dbl&gt; 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, …
-$ theft_claims                &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ fire_claims                 &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ glass_claims                &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ legal_protection_claims     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ occupants_claims            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ total_incurred              &lt;dbl&gt; 0, 0, 233013, 25863615, 0, 0, 0, 0, 0, 0, …
-$ liability_incurred          &lt;dbl&gt; 0, 0, 233013, 1035, 0, 0, 0, 0, 0, 0, 0, 0…
-$ liability_property_incurred &lt;dbl&gt; 0, 0, 233013, 1035, 0, 0, 0, 0, 0, 0, 0, 0…
-$ liability_injury_incurred   &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ property_incurred           &lt;dbl&gt; 0, 0, 0, 15513615, 0, 0, 0, 0, 0, 0, 0, 0,…
-$ theft_incurred              &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ fire_incurred               &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ glass_incurred              &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ legal_protection_incurred   &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ occupants_incurred          &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ total_claims                &lt;chr&gt; "0", "0", "1", "2", "0", "0", "0", "0", "0…
+$ liability_claims            &lt;chr&gt; "0", "0", "1", "1", "0", "0", "0", "0", "0…
+$ liability_property_claims   &lt;chr&gt; "0", "0", "1", "1", "0", "0", "0", "0", "0…
+$ liability_injury_claims     &lt;chr&gt; "0", "0", "0", "0", "0", "0", "0", "0", "0…
+$ property_claims             &lt;chr&gt; "0", "0", "0", "1", "0", "0", "0", "0", "0…
+$ theft_claims                &lt;chr&gt; "0", "0", "0", "0", "0", "0", "0", "0", "0…
+$ fire_claims                 &lt;chr&gt; "0", "0", "0", "0", "0", "0", "0", "0", "0…
+$ glass_claims                &lt;chr&gt; "0", "0", "0", "0", "0", "0", "0", "0", "0…
+$ legal_protection_claims     &lt;chr&gt; "0", "0", "0", "0", "0", "0", "0", "0", "0…
+$ occupants_claims            &lt;chr&gt; "0", "0", "0", "0", "0", "0", "0", "0", "0…
+$ total_incurred              &lt;chr&gt; "0", "0", "233.013", "2586.3615", "0", "0"…
+$ liability_incurred          &lt;chr&gt; "0", "0", "233.013", "1035", "0", "0", "0"…
+$ liability_property_incurred &lt;chr&gt; "0", "0", "233.013", "1035", "0", "0", "0"…
+$ liability_injury_incurred   &lt;chr&gt; "0", "0", "0", "0", "0", "0", "0", "0", "0…
+$ property_incurred           &lt;chr&gt; "0", "0", "0", "1551.3615", "0", "0", "0",…
+$ theft_incurred              &lt;chr&gt; "0", "0", "0", "0", "0", "0", "0", "0", "0…
+$ fire_incurred               &lt;chr&gt; "0", "0", "0", "0", "0", "0", "0", "0", "0…
+$ glass_incurred              &lt;chr&gt; "0", "0", "0", "0", "0", "0", "0", "0", "0…
+$ legal_protection_incurred   &lt;chr&gt; "0", "0", "0", "0", "0", "0", "0", "0", "0…
+$ occupants_incurred          &lt;chr&gt; "0", "0", "0", "0", "0", "0", "0", "0", "0…
 $ total_exposure              &lt;chr&gt; "0.0986301369863014", "1", "1", "1", "1", …
 $ liability_exposure          &lt;chr&gt; "0.0986301369863014", "1", "1", "1", "1", …</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(insurance)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   insured_id          year      policy_type        policy_status     
- Min.   :     1   Min.   :2022   Length:354140      Length:354140     
- 1st Qu.: 33342   1st Qu.:2023   Class :character   Class :character  
- Median : 66840   Median :2023   Mode  :character   Mode  :character  
- Mean   : 76045   Mean   :2023                                        
- 3rd Qu.:112949   3rd Qu.:2024                                        
- Max.   :185678   Max.   :2024                                        
-                                                                      
- business_type      payment_frequency  bonus_score          driver_age   
- Length:354140      Length:354140      Length:354140      Min.   :18.00  
- Class :character   Class :character   Class :character   1st Qu.:39.00  
- Mode  :character   Mode  :character   Mode  :character   Median :48.00  
-                                                          Mean   :49.01  
-                                                          3rd Qu.:58.00  
-                                                          Max.   :90.00  
-                                                                         
-  vehicle_age    age_driving_licence  fuel_type         vehicle_value      
- Min.   : 0.00   Min.   : 0.00       Length:354140      Min.   :8.694e+03  
- 1st Qu.:17.00   1st Qu.:19.00       Class :character   1st Qu.:2.717e+06  
- Median :25.00   Median :20.00       Mode  :character   Median :2.617e+07  
- Mean   :25.92   Mean   :22.99                          Mean   :3.461e+09  
- 3rd Qu.:35.00   3rd Qu.:25.00                          3rd Qu.:2.608e+08  
- Max.   :68.00   Max.   :80.00                          Max.   :2.716e+11  
- NA's   :2       NA's   :2                              NA's   :513        
-     seats       power_to_weight_ratio vehicle_brand      municipality_type 
- Min.   :2.000   Min.   :   0          Length:354140      Length:354140     
- 1st Qu.:5.000   1st Qu.: 898          Class :character   Class :character  
- Median :5.000   Median :1143          Mode  :character   Mode  :character  
- Mean   :5.084   Mean   :1008                                               
- 3rd Qu.:5.000   3rd Qu.:1333                                               
- Max.   :9.000   Max.   :6481                                               
-                                                                            
- circulation_area   total_premium       liability_premium 
- Length:354140      Min.   :0.000e+00   Length:354140     
- Class :character   1st Qu.:1.708e+14   Class :character  
- Mode  :character   Median :2.791e+14   Mode  :character  
-                    Mean   :3.258e+14                     
-                    3rd Qu.:4.345e+14                     
-                    Max.   :1.000e+15                     
-                                                          
+<pre><code>  insured_id            year           policy_type        policy_status     
+ Length:354140      Length:354140      Length:354140      Length:354140     
+ Class :character   Class :character   Class :character   Class :character  
+ Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+ business_type      payment_frequency  bonus_score         driver_age       
+ Length:354140      Length:354140      Length:354140      Length:354140     
+ Class :character   Class :character   Class :character   Class :character  
+ Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+ vehicle_age        age_driving_licence  fuel_type         vehicle_value     
+ Length:354140      Length:354140       Length:354140      Length:354140     
+ Class :character   Class :character    Class :character   Class :character  
+ Mode  :character   Mode  :character    Mode  :character   Mode  :character  
+    seats           power_to_weight_ratio vehicle_brand      municipality_type 
+ Length:354140      Length:354140         Length:354140      Length:354140     
+ Class :character   Class :character      Class :character   Class :character  
+ Mode  :character   Mode  :character      Mode  :character   Mode  :character  
+ circulation_area   total_premium      liability_premium 
+ Length:354140      Length:354140      Length:354140     
+ Class :character   Class :character   Class :character  
+ Mode  :character   Mode  :character   Mode  :character  
  property_damage_premium theft_premium      fire_premium      
  Length:354140           Length:354140      Length:354140     
  Class :character        Class :character   Class :character  
  Mode  :character        Mode  :character   Mode  :character  
-                                                              
-                                                              
-                                                              
-                                                              
  glass_premium      legal_protection_premium occupants_premium 
  Length:354140      Length:354140            Length:354140     
  Class :character   Class :character         Class :character  
  Mode  :character   Mode  :character         Mode  :character  
-                                                               
-                                                               
-                                                               
-                                                               
-  total_claims     liability_claims liability_property_claims
- Min.   : 0.0000   Min.   :0.0000   Min.   :0.00000          
- 1st Qu.: 0.0000   1st Qu.:0.0000   1st Qu.:0.00000          
- Median : 0.0000   Median :0.0000   Median :0.00000          
- Mean   : 0.2177   Mean   :0.1066   Mean   :0.09281          
- 3rd Qu.: 0.0000   3rd Qu.:0.0000   3rd Qu.:0.00000          
- Max.   :18.0000   Max.   :8.0000   Max.   :8.00000          
-                                                             
- liability_injury_claims property_claims     theft_claims     
- Min.   :0.00000         Min.   : 0.00000   Min.   :0.000000  
- 1st Qu.:0.00000         1st Qu.: 0.00000   1st Qu.:0.000000  
- Median :0.00000         Median : 0.00000   Median :0.000000  
- Mean   :0.01376         Mean   : 0.06295   Mean   :0.005326  
- 3rd Qu.:0.00000         3rd Qu.: 0.00000   3rd Qu.:0.000000  
- Max.   :3.00000         Max.   :15.00000   Max.   :2.000000  
-                                                              
-  fire_claims         glass_claims     legal_protection_claims
- Min.   :0.0000000   Min.   :0.00000   Min.   :0.000000       
- 1st Qu.:0.0000000   1st Qu.:0.00000   1st Qu.:0.000000       
- Median :0.0000000   Median :0.00000   Median :0.000000       
- Mean   :0.0002824   Mean   :0.03271   Mean   :0.009753       
- 3rd Qu.:0.0000000   3rd Qu.:0.00000   3rd Qu.:0.000000       
- Max.   :1.0000000   Max.   :3.00000   Max.   :2.000000       
-                                                              
- occupants_claims    total_incurred      liability_incurred 
- Min.   :0.0000000   Min.   :0.000e+00   Min.   :0.000e+00  
- 1st Qu.:0.0000000   1st Qu.:0.000e+00   1st Qu.:0.000e+00  
- Median :0.0000000   Median :0.000e+00   Median :0.000e+00  
- Mean   :0.0001214   Mean   :2.480e+11   Mean   :1.862e+11  
- 3rd Qu.:0.0000000   3rd Qu.:0.000e+00   3rd Qu.:0.000e+00  
- Max.   :1.0000000   Max.   :9.993e+14   Max.   :9.993e+14  
-                                                            
- liability_property_incurred liability_injury_incurred property_incurred  
- Min.   :0.000e+00           Min.   :0.000e+00         Min.   :0.000e+00  
- 1st Qu.:0.000e+00           1st Qu.:0.000e+00         1st Qu.:0.000e+00  
- Median :0.000e+00           Median :0.000e+00         Median :0.000e+00  
- Mean   :2.280e+11           Mean   :3.251e+08         Mean   :4.087e+10  
- 3rd Qu.:0.000e+00           3rd Qu.:0.000e+00         3rd Qu.:0.000e+00  
- Max.   :9.993e+14           Max.   :1.150e+14         Max.   :9.776e+14  
-                                                                          
- theft_incurred      fire_incurred       glass_incurred     
- Min.   :        0   Min.   :0.000e+00   Min.   :0.000e+00  
- 1st Qu.:        0   1st Qu.:0.000e+00   1st Qu.:0.000e+00  
- Median :        0   Median :0.000e+00   Median :0.000e+00  
- Mean   :    25329   Mean   :1.884e-02   Mean   :3.248e+08  
- 3rd Qu.:        0   3rd Qu.:0.000e+00   3rd Qu.:0.000e+00  
- Max.   :270698845   Max.   :2.829e+03   Max.   :1.150e+14  
-                     NA's   :94                             
+ total_claims       liability_claims   liability_property_claims
+ Length:354140      Length:354140      Length:354140            
+ Class :character   Class :character   Class :character         
+ Mode  :character   Mode  :character   Mode  :character         
+ liability_injury_claims property_claims    theft_claims      
+ Length:354140           Length:354140      Length:354140     
+ Class :character        Class :character   Class :character  
+ Mode  :character        Mode  :character   Mode  :character  
+ fire_claims        glass_claims       legal_protection_claims
+ Length:354140      Length:354140      Length:354140          
+ Class :character   Class :character   Class :character       
+ Mode  :character   Mode  :character   Mode  :character       
+ occupants_claims   total_incurred     liability_incurred
+ Length:354140      Length:354140      Length:354140     
+ Class :character   Class :character   Class :character  
+ Mode  :character   Mode  :character   Mode  :character  
+ liability_property_incurred liability_injury_incurred property_incurred 
+ Length:354140               Length:354140             Length:354140     
+ Class :character            Class :character          Class :character  
+ Mode  :character            Mode  :character          Mode  :character  
+ theft_incurred     fire_incurred      glass_incurred    
+ Length:354140      Length:354140      Length:354140     
+ Class :character   Class :character   Class :character  
+ Mode  :character   Mode  :character   Mode  :character  
  legal_protection_incurred occupants_incurred total_exposure    
- Min.   :0.000e+00         Min.   :0.00e+00   Length:354140     
- 1st Qu.:0.000e+00         1st Qu.:0.00e+00   Class :character  
- Median :0.000e+00         Median :0.00e+00   Mode  :character  
- Mean   :8.582e+10         Mean   :8.37e-01                     
- 3rd Qu.:0.000e+00         3rd Qu.:0.00e+00                     
- Max.   :9.933e+14         Max.   :6.90e+04                     
-                           NA's   :25                           
+ Length:354140             Length:354140      Length:354140     
+ Class :character          Class :character   Class :character  
+ Mode  :character          Mode  :character   Mode  :character  
  liability_exposure
  Length:354140     
  Class :character  
- Mode  :character  
-                   
-                   
-                   
-                   </code></pre>
+ Mode  :character  </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(insurance))[<span class="fu">colSums</span>(<span class="fu">is.na</span>(insurance)) <span class="sc">&gt;</span> <span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        vehicle_age age_driving_licence           fuel_type       vehicle_value 
-                  2                   2                1287                 513 
-      fire_incurred  occupants_incurred 
-                 94                  25 </code></pre>
+                  2                   2                1287                 513 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(insurance))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -472,7 +421,7 @@ $ liability_exposure          &lt;chr&gt; "0.0986301369863014", "1", "1", "1", "
 <col style="width: 1%">
 <col style="width: 2%">
 <col style="width: 2%">
-<col style="width: 1%">
+<col style="width: 2%">
 <col style="width: 2%">
 <col style="width: 3%">
 <col style="width: 2%">
@@ -505,24 +454,24 @@ $ liability_exposure          &lt;chr&gt; "0.0986301369863014", "1", "1", "1", "
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: right;">insured_id</th>
-<th style="text-align: right;">year</th>
+<th style="text-align: left;">insured_id</th>
+<th style="text-align: left;">year</th>
 <th style="text-align: left;">policy_type</th>
 <th style="text-align: left;">policy_status</th>
 <th style="text-align: left;">business_type</th>
 <th style="text-align: left;">payment_frequency</th>
 <th style="text-align: left;">bonus_score</th>
-<th style="text-align: right;">driver_age</th>
-<th style="text-align: right;">vehicle_age</th>
-<th style="text-align: right;">age_driving_licence</th>
+<th style="text-align: left;">driver_age</th>
+<th style="text-align: left;">vehicle_age</th>
+<th style="text-align: left;">age_driving_licence</th>
 <th style="text-align: left;">fuel_type</th>
-<th style="text-align: right;">vehicle_value</th>
-<th style="text-align: right;">seats</th>
-<th style="text-align: right;">power_to_weight_ratio</th>
+<th style="text-align: left;">vehicle_value</th>
+<th style="text-align: left;">seats</th>
+<th style="text-align: left;">power_to_weight_ratio</th>
 <th style="text-align: left;">vehicle_brand</th>
 <th style="text-align: left;">municipality_type</th>
 <th style="text-align: left;">circulation_area</th>
-<th style="text-align: right;">total_premium</th>
+<th style="text-align: left;">total_premium</th>
 <th style="text-align: left;">liability_premium</th>
 <th style="text-align: left;">property_damage_premium</th>
 <th style="text-align: left;">theft_premium</th>
@@ -530,50 +479,50 @@ $ liability_exposure          &lt;chr&gt; "0.0986301369863014", "1", "1", "1", "
 <th style="text-align: left;">glass_premium</th>
 <th style="text-align: left;">legal_protection_premium</th>
 <th style="text-align: left;">occupants_premium</th>
-<th style="text-align: right;">total_claims</th>
-<th style="text-align: right;">liability_claims</th>
-<th style="text-align: right;">liability_property_claims</th>
-<th style="text-align: right;">liability_injury_claims</th>
-<th style="text-align: right;">property_claims</th>
-<th style="text-align: right;">theft_claims</th>
-<th style="text-align: right;">fire_claims</th>
-<th style="text-align: right;">glass_claims</th>
-<th style="text-align: right;">legal_protection_claims</th>
-<th style="text-align: right;">occupants_claims</th>
-<th style="text-align: right;">total_incurred</th>
-<th style="text-align: right;">liability_incurred</th>
-<th style="text-align: right;">liability_property_incurred</th>
-<th style="text-align: right;">liability_injury_incurred</th>
-<th style="text-align: right;">property_incurred</th>
-<th style="text-align: right;">theft_incurred</th>
-<th style="text-align: right;">fire_incurred</th>
-<th style="text-align: right;">glass_incurred</th>
-<th style="text-align: right;">legal_protection_incurred</th>
-<th style="text-align: right;">occupants_incurred</th>
+<th style="text-align: left;">total_claims</th>
+<th style="text-align: left;">liability_claims</th>
+<th style="text-align: left;">liability_property_claims</th>
+<th style="text-align: left;">liability_injury_claims</th>
+<th style="text-align: left;">property_claims</th>
+<th style="text-align: left;">theft_claims</th>
+<th style="text-align: left;">fire_claims</th>
+<th style="text-align: left;">glass_claims</th>
+<th style="text-align: left;">legal_protection_claims</th>
+<th style="text-align: left;">occupants_claims</th>
+<th style="text-align: left;">total_incurred</th>
+<th style="text-align: left;">liability_incurred</th>
+<th style="text-align: left;">liability_property_incurred</th>
+<th style="text-align: left;">liability_injury_incurred</th>
+<th style="text-align: left;">property_incurred</th>
+<th style="text-align: left;">theft_incurred</th>
+<th style="text-align: left;">fire_incurred</th>
+<th style="text-align: left;">glass_incurred</th>
+<th style="text-align: left;">legal_protection_incurred</th>
+<th style="text-align: left;">occupants_incurred</th>
 <th style="text-align: left;">total_exposure</th>
 <th style="text-align: left;">liability_exposure</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2022</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">2022</td>
 <td style="text-align: left;">COMP_E</td>
 <td style="text-align: left;">C</td>
 <td style="text-align: left;">NB</td>
 <td style="text-align: left;">A</td>
 <td style="text-align: left;">G</td>
-<td style="text-align: right;">48</td>
-<td style="text-align: right;">22</td>
-<td style="text-align: right;">26</td>
+<td style="text-align: left;">48</td>
+<td style="text-align: left;">22</td>
+<td style="text-align: left;">26</td>
 <td style="text-align: left;">G</td>
-<td style="text-align: right;">1495114425</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">392</td>
+<td style="text-align: left;">149511.4425</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">3.92</td>
 <td style="text-align: left;">PORSCHE</td>
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">U</td>
-<td style="text-align: right;">2.795576e+14</td>
+<td style="text-align: left;">279.557557563945</td>
 <td style="text-align: left;">30.6023237556165</td>
 <td style="text-align: left;">121.912689768658</td>
 <td style="text-align: left;">112.361488722247</td>
@@ -581,48 +530,48 @@ $ liability_exposure          &lt;chr&gt; "0.0986301369863014", "1", "1", "1", "
 <td style="text-align: left;">8.30578787063014</td>
 <td style="text-align: left;">2.04362162038356</td>
 <td style="text-align: left;">0.499205281315068</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
 <td style="text-align: left;">0.0986301369863014</td>
 <td style="text-align: left;">0.0986301369863014</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2022</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">2022</td>
 <td style="text-align: left;">COMP_E</td>
 <td style="text-align: left;">A</td>
 <td style="text-align: left;">P</td>
 <td style="text-align: left;">A</td>
 <td style="text-align: left;">G</td>
-<td style="text-align: right;">43</td>
-<td style="text-align: right;">24</td>
-<td style="text-align: right;">19</td>
+<td style="text-align: left;">43</td>
+<td style="text-align: left;">24</td>
+<td style="text-align: left;">19</td>
 <td style="text-align: left;">D</td>
-<td style="text-align: right;">650651232</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">1015</td>
+<td style="text-align: left;">65065.1232</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">10.15</td>
 <td style="text-align: left;">MERCEDES</td>
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">U</td>
-<td style="text-align: right;">5.466234e+14</td>
+<td style="text-align: left;">546.623415106849</td>
 <td style="text-align: left;">114.333356153425</td>
 <td style="text-align: left;">303.105967487671</td>
 <td style="text-align: left;">80.784823960274</td>
@@ -630,48 +579,48 @@ $ liability_exposure          &lt;chr&gt; "0.0986301369863014", "1", "1", "1", "
 <td style="text-align: left;">30.091750730137</td>
 <td style="text-align: left;">7.81274746849314</td>
 <td style="text-align: left;">2.66790841643835</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
 <td style="text-align: left;">1</td>
 <td style="text-align: left;">1</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2023</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">2023</td>
 <td style="text-align: left;">COMP_E</td>
 <td style="text-align: left;">A</td>
 <td style="text-align: left;">P</td>
 <td style="text-align: left;">A</td>
 <td style="text-align: left;">G</td>
-<td style="text-align: right;">44</td>
-<td style="text-align: right;">25</td>
-<td style="text-align: right;">19</td>
+<td style="text-align: left;">44</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">19</td>
 <td style="text-align: left;">D</td>
-<td style="text-align: right;">650651232</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">1015</td>
+<td style="text-align: left;">65065.1232</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">10.15</td>
 <td style="text-align: left;">MERCEDES</td>
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">U</td>
-<td style="text-align: right;">5.487526e+14</td>
+<td style="text-align: left;">548.752558109589</td>
 <td style="text-align: left;">110.666890520548</td>
 <td style="text-align: left;">304.955989890411</td>
 <td style="text-align: left;">83.5213843561644</td>
@@ -679,48 +628,48 @@ $ liability_exposure          &lt;chr&gt; "0.0986301369863014", "1", "1", "1", "
 <td style="text-align: left;">32.8616260273972</td>
 <td style="text-align: left;">7.6556365479452</td>
 <td style="text-align: left;">2.9395658630137</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">233013</td>
-<td style="text-align: right;">233013</td>
-<td style="text-align: right;">233013</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">233.013</td>
+<td style="text-align: left;">233.013</td>
+<td style="text-align: left;">233.013</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
 <td style="text-align: left;">1</td>
 <td style="text-align: left;">1</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2024</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">2024</td>
 <td style="text-align: left;">COMP_E</td>
 <td style="text-align: left;">A</td>
 <td style="text-align: left;">P</td>
 <td style="text-align: left;">A</td>
 <td style="text-align: left;">G</td>
-<td style="text-align: right;">45</td>
-<td style="text-align: right;">26</td>
-<td style="text-align: right;">18</td>
+<td style="text-align: left;">45</td>
+<td style="text-align: left;">26</td>
+<td style="text-align: left;">18</td>
 <td style="text-align: left;">D</td>
-<td style="text-align: right;">650651232</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">1015</td>
+<td style="text-align: left;">65065.1232</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">10.15</td>
 <td style="text-align: left;">MERCEDES</td>
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">U</td>
-<td style="text-align: right;">5.846324e+14</td>
+<td style="text-align: left;">584.632429567398</td>
 <td style="text-align: left;">122.092532497808</td>
 <td style="text-align: left;">305.225092603562</td>
 <td style="text-align: left;">107.886871891233</td>
@@ -728,48 +677,48 @@ $ liability_exposure          &lt;chr&gt; "0.0986301369863014", "1", "1", "1", "
 <td style="text-align: left;">31.1015839652054</td>
 <td style="text-align: left;">10.0841734339726</td>
 <td style="text-align: left;">2.39928272958904</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">25863615</td>
-<td style="text-align: right;">1035</td>
-<td style="text-align: right;">1035</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">15513615</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">2586.3615</td>
+<td style="text-align: left;">1035</td>
+<td style="text-align: left;">1035</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">1551.3615</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
 <td style="text-align: left;">1</td>
 <td style="text-align: left;">1</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">2022</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">2022</td>
 <td style="text-align: left;">COMP_E</td>
 <td style="text-align: left;">A</td>
 <td style="text-align: left;">NB</td>
 <td style="text-align: left;">S</td>
 <td style="text-align: left;">G</td>
-<td style="text-align: right;">45</td>
-<td style="text-align: right;">26</td>
-<td style="text-align: right;">19</td>
+<td style="text-align: left;">45</td>
+<td style="text-align: left;">26</td>
+<td style="text-align: left;">19</td>
 <td style="text-align: left;">D</td>
-<td style="text-align: right;">516266625</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">919</td>
+<td style="text-align: left;">51626.6625</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">9.19</td>
 <td style="text-align: left;">KIA</td>
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">R</td>
-<td style="text-align: right;">6.874905e+14</td>
+<td style="text-align: left;">687.490507531134</td>
 <td style="text-align: left;">214.583989098871</td>
 <td style="text-align: left;">354.87413971463</td>
 <td style="text-align: left;">53.077620195781</td>
@@ -777,48 +726,48 @@ $ liability_exposure          &lt;chr&gt; "0.0986301369863014", "1", "1", "1", "
 <td style="text-align: left;">48.5742976882192</td>
 <td style="text-align: left;">6.70070054334247</td>
 <td style="text-align: left;">1.96399548026301</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
 <td style="text-align: left;">1</td>
 <td style="text-align: left;">1</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">2023</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">2023</td>
 <td style="text-align: left;">COMP_E</td>
 <td style="text-align: left;">A</td>
 <td style="text-align: left;">P</td>
 <td style="text-align: left;">S</td>
 <td style="text-align: left;">G</td>
-<td style="text-align: right;">46</td>
-<td style="text-align: right;">27</td>
-<td style="text-align: right;">19</td>
+<td style="text-align: left;">46</td>
+<td style="text-align: left;">27</td>
+<td style="text-align: left;">19</td>
 <td style="text-align: left;">D</td>
-<td style="text-align: right;">516266625</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">919</td>
+<td style="text-align: left;">51626.6625</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">9.19</td>
 <td style="text-align: left;">KIA</td>
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">R</td>
-<td style="text-align: right;">6.936705e+14</td>
+<td style="text-align: left;">693.670467952602</td>
 <td style="text-align: left;">207.141298737699</td>
 <td style="text-align: left;">393.289489861972</td>
 <td style="text-align: left;">35.4689559170959</td>
@@ -826,26 +775,26 @@ $ liability_exposure          &lt;chr&gt; "0.0986301369863014", "1", "1", "1", "
 <td style="text-align: left;">42.7005231749589</td>
 <td style="text-align: left;">6.04677121249316</td>
 <td style="text-align: left;">1.74793864043836</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
 <td style="text-align: left;">1</td>
 <td style="text-align: left;">1</td>
 </tr>
@@ -856,32 +805,52 @@ $ liability_exposure          &lt;chr&gt; "0.0986301369863014", "1", "1", "1", "
 <section id="problems" class="level2">
 <h2 class="anchored" data-anchor-id="problems">Problems</h2>
 <ol type="1">
-<li><p>Some features have incorrect data type: liability_premium, property_damage_premium, theft_premium, fire_premium, glass_premium, legal_protection_premium, occupants_premium, total_exposure and liability_exposure. It should be numeric but registered as characters.</p></li>
+<li><p>All features are now characters so need to change the data type of the numerical values into numeric.</p></li>
 <li><p>Some features have nulls: vehicle_value has 513 NAs, fuel_type has 1287 NAs, fire_incurred has 94 NAs, occupants_incurred has 25 NAs.</p></li>
-<li><p>Categoricals (policy_type, policy_status, business_type, payment_frequency, bonus_score, fuel_type, municipality_type, circulation_area) are stored as characters <chr> instead of factors <fct>. With data type factors, R will understand that it is categoricals and not some string.</fct></chr></p></li>
+<li><p>Categoricals (policy_type, policy_status, business_type, payment_frequency, bonus_score, fuel_type, municipality_type, circulation_area, vehicle_brand) are stored as characters <chr> instead of factors <fct>. With data type factors, R will understand that it is categoricals and not some string.</fct></chr></p></li>
 </ol>
 </section>
 </section>
-<section id="data-wragling" class="level1">
-<h1>Data Wragling</h1>
+<section id="data-wrangling" class="level1">
+<h1>Data Wrangling</h1>
 <section id="cleaning-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="cleaning-the-data">Cleaning the data</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>insurance <span class="ot">&lt;-</span> insurance <span class="sc">%&gt;%</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fix columns with wrong data types</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(liability_premium, property_damage_premium, theft_premium,</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                  fire_premium, glass_premium, legal_protection_premium,</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                  occupants_premium, total_exposure, liability_exposure),</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                <span class="sc">~</span> <span class="fu">as.numeric</span>(<span class="fu">gsub</span>(<span class="st">","</span>, <span class="st">"."</span>, .)))) <span class="sc">%&gt;%</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert categoricals to factors</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(policy_type, policy_status, business_type, payment_frequency,</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                  bonus_score, fuel_type, municipality_type, circulation_area),</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>                as.factor))  <span class="sc">%&gt;%</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(insurance)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fix numerical columns' data type</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(insured_id, year, driver_age, vehicle_age,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                  age_driving_licence, vehicle_value, </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                  seats, power_to_weight_ratio,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                  total_premium, total_claims,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                  liability_claims, </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>                  liability_property_claims,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                  liability_injury_claims, property_claims,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>                  theft_claims, fire_claims, glass_claims,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>                  legal_protection_claims, occupants_claims,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>                  total_incurred, liability_incurred,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>                  liability_property_incurred,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>                  liability_injury_incurred,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>                  property_incurred, theft_incurred,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>                  fire_incurred, glass_incurred,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>                  legal_protection_incurred,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>                  occupants_incurred, liability_premium,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>                  property_damage_premium, theft_premium,</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>                  fire_premium, glass_premium,</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>                  legal_protection_premium,</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>                  occupants_premium, total_exposure,</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>                  liability_exposure),</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>                <span class="sc">~</span> <span class="fu">as.numeric</span>(<span class="fu">gsub</span>(<span class="st">","</span>, <span class="st">"."</span>, .)))) <span class="sc">%&gt;%</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert categoricals to factors</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(policy_type, policy_status, business_type,</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>                  payment_frequency,bonus_score, fuel_type,</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>                  municipality_type, circulation_area,</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>                  vehicle_brand),</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>                as.factor)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(insurance)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 352,219
+<pre><code>Rows: 352,338
 Columns: 47
 $ insured_id                  &lt;dbl&gt; 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, …
 $ year                        &lt;dbl&gt; 2022, 2022, 2023, 2024, 2022, 2023, 2024, …
@@ -894,13 +863,13 @@ $ driver_age                  &lt;dbl&gt; 48, 43, 44, 45, 45, 46, 47, 32, 33, 34
 $ vehicle_age                 &lt;dbl&gt; 22, 24, 25, 26, 26, 27, 28, 12, 13, 14, 20…
 $ age_driving_licence         &lt;dbl&gt; 26, 19, 19, 18, 19, 19, 19, 19, 19, 19, 19…
 $ fuel_type                   &lt;fct&gt; G, D, D, D, D, D, D, D, D, D, D, D, D, D, …
-$ vehicle_value               &lt;dbl&gt; 1495114425, 650651232, 650651232, 65065123…
+$ vehicle_value               &lt;dbl&gt; 149511.44, 65065.12, 65065.12, 65065.12, 5…
 $ seats                       &lt;dbl&gt; 4, 8, 8, 8, 7, 7, 7, 5, 5, 5, 5, 5, 5, 5, …
-$ power_to_weight_ratio       &lt;dbl&gt; 392, 1015, 1015, 1015, 919, 919, 919, 117,…
-$ vehicle_brand               &lt;chr&gt; "PORSCHE", "MERCEDES", "MERCEDES", "MERCED…
+$ power_to_weight_ratio       &lt;dbl&gt; 3.92, 10.15, 10.15, 10.15, 9.19, 9.19, 9.1…
+$ vehicle_brand               &lt;fct&gt; PORSCHE, MERCEDES, MERCEDES, MERCEDES, KIA…
 $ municipality_type           &lt;fct&gt; I, I, I, I, I, I, I, I, I, I, C, I, I, C, …
 $ circulation_area            &lt;fct&gt; U, U, U, U, R, R, R, R, R, R, R, U, U, R, …
-$ total_premium               &lt;dbl&gt; 2.795576e+14, 5.466234e+14, 5.487526e+14, …
+$ total_premium               &lt;dbl&gt; 279.5576, 546.6234, 548.7526, 584.6324, 68…
 $ liability_premium           &lt;dbl&gt; 30.60232, 114.33336, 110.66689, 122.09253,…
 $ property_damage_premium     &lt;dbl&gt; 121.9127, 303.1060, 304.9560, 305.2251, 35…
 $ theft_premium               &lt;dbl&gt; 112.361489, 80.784824, 83.521384, 107.8868…
@@ -918,11 +887,11 @@ $ fire_claims                 &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 $ glass_claims                &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
 $ legal_protection_claims     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
 $ occupants_claims            &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ total_incurred              &lt;dbl&gt; 0, 0, 233013, 25863615, 0, 0, 0, 0, 0, 0, …
-$ liability_incurred          &lt;dbl&gt; 0, 0, 233013, 1035, 0, 0, 0, 0, 0, 0, 0, 0…
-$ liability_property_incurred &lt;dbl&gt; 0, 0, 233013, 1035, 0, 0, 0, 0, 0, 0, 0, 0…
-$ liability_injury_incurred   &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
-$ property_incurred           &lt;dbl&gt; 0, 0, 0, 15513615, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ total_incurred              &lt;dbl&gt; 0.000, 0.000, 233.013, 2586.361, 0.000, 0.…
+$ liability_incurred          &lt;dbl&gt; 0.000, 0.000, 233.013, 1035.000, 0.000, 0.…
+$ liability_property_incurred &lt;dbl&gt; 0.000, 0.000, 233.013, 1035.000, 0.000, 0.…
+$ liability_injury_incurred   &lt;dbl&gt; 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, …
+$ property_incurred           &lt;dbl&gt; 0.000, 0.000, 0.000, 1551.361, 0.000, 0.00…
 $ theft_incurred              &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
 $ fire_incurred               &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
 $ glass_incurred              &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
@@ -939,6 +908,10 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 </section>
 <section id="feature-engineering" class="level2">
 <h2 class="anchored" data-anchor-id="feature-engineering">Feature Engineering</h2>
+<section id="driving_experience" class="level3">
+<h3 class="anchored" data-anchor-id="driving_experience">driving_experience</h3>
+<p>driving_experience is needed to get how long the driver has been driving for, which is more meaningful as compared to the age when the driver receives the driving licence.</p>
+<p>First check if age_driving_licence means the year driving licence is issued or the age the driver got the driving licence.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>insurance <span class="sc">%&gt;%</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(age_driving_licence <span class="sc">==</span> <span class="dv">80</span>) <span class="sc">%&gt;%</span></span>
@@ -950,16 +923,57 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 1         82                  80  2024</code></pre>
 </div>
 </div>
+<p>Combining with the first row value shown in the head summary, it can be concluded that age_driving_licence is the age of the driver when driving licence is issued. Hence to get driving_experience the formula should be driver_age - age_driving_licence.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>insurance <span class="ot">&lt;-</span> insurance <span class="sc">%&gt;%</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">driving_experience =</span> </span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>           driver_age <span class="sc">-</span> age_driving_licence)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
+<section id="loss_ratio" class="level3">
+<h3 class="anchored" data-anchor-id="loss_ratio">loss_ratio</h3>
+<p>This feature will show the ratio of total_incurred to total_premium. This is important as it is the standard insurance profitability metric.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>insurance <span class="ot">&lt;-</span> insurance <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">loss_ratio =</span> total_incurred <span class="sc">/</span> total_premium)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>There is a possibility that the total_premium is 0 which will produce Inf or NaN instead of a value, so check next.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.infinite</span>(insurance<span class="sc">$</span>loss_ratio))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.nan</span>(insurance<span class="sc">$</span>loss_ratio))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 48</code></pre>
+</div>
+</div>
+<p>Since there is only a total of 49 values Inf or NaN, dropping rows with them is negligible.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>insurance <span class="ot">&lt;-</span> insurance <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">loss_ratio =</span> <span class="fu">ifelse</span>(<span class="fu">is.infinite</span>(loss_ratio) <span class="sc">|</span> <span class="fu">is.nan</span>(loss_ratio), </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                             <span class="cn">NA</span>, loss_ratio)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(loss_ratio)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.infinite</span>(insurance<span class="sc">$</span>loss_ratio))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.nan</span>(insurance<span class="sc">$</span>loss_ratio))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(insurance)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 352289</code></pre>
+</div>
+</div>
+</section>
+</section>
 <section id="check-final-data" class="level2">
 <h2 class="anchored" data-anchor-id="check-final-data">Check final data</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(insurance))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(insurance))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -982,16 +996,6 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <col style="width: 2%">
 <col style="width: 1%">
 <col style="width: 2%">
-<col style="width: 3%">
-<col style="width: 1%">
-<col style="width: 1%">
-<col style="width: 1%">
-<col style="width: 3%">
-<col style="width: 2%">
-<col style="width: 1%">
-<col style="width: 2%">
-<col style="width: 3%">
-<col style="width: 3%">
 <col style="width: 2%">
 <col style="width: 1%">
 <col style="width: 1%">
@@ -1001,6 +1005,16 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <col style="width: 1%">
 <col style="width: 2%">
 <col style="width: 3%">
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 3%">
 <col style="width: 3%">
 <col style="width: 2%">
 <col style="width: 1%">
@@ -1011,6 +1025,7 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <col style="width: 1%">
 <col style="width: 2%">
 <col style="width: 2%">
+<col style="width: 1%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -1062,6 +1077,7 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <th style="text-align: right;">total_exposure</th>
 <th style="text-align: right;">liability_exposure</th>
 <th style="text-align: right;">driving_experience</th>
+<th style="text-align: right;">loss_ratio</th>
 </tr>
 </thead>
 <tbody>
@@ -1077,13 +1093,13 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">22</td>
 <td style="text-align: right;">26</td>
 <td style="text-align: left;">G</td>
-<td style="text-align: right;">1495114425</td>
+<td style="text-align: right;">149511.44</td>
 <td style="text-align: right;">4</td>
-<td style="text-align: right;">392</td>
+<td style="text-align: right;">3.92</td>
 <td style="text-align: left;">PORSCHE</td>
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">U</td>
-<td style="text-align: right;">2.795576e+14</td>
+<td style="text-align: right;">279.5576</td>
 <td style="text-align: right;">30.60232</td>
 <td style="text-align: right;">121.9127</td>
 <td style="text-align: right;">112.36149</td>
@@ -1101,11 +1117,11 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.000</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
@@ -1114,6 +1130,7 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">0.0986301</td>
 <td style="text-align: right;">0.0986301</td>
 <td style="text-align: right;">22</td>
+<td style="text-align: right;">0.0000000</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">2</td>
@@ -1127,13 +1144,13 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">24</td>
 <td style="text-align: right;">19</td>
 <td style="text-align: left;">D</td>
-<td style="text-align: right;">650651232</td>
+<td style="text-align: right;">65065.12</td>
 <td style="text-align: right;">8</td>
-<td style="text-align: right;">1015</td>
+<td style="text-align: right;">10.15</td>
 <td style="text-align: left;">MERCEDES</td>
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">U</td>
-<td style="text-align: right;">5.466234e+14</td>
+<td style="text-align: right;">546.6234</td>
 <td style="text-align: right;">114.33336</td>
 <td style="text-align: right;">303.1060</td>
 <td style="text-align: right;">80.78482</td>
@@ -1151,11 +1168,11 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.000</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
@@ -1164,6 +1181,7 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">1.0000000</td>
 <td style="text-align: right;">1.0000000</td>
 <td style="text-align: right;">24</td>
+<td style="text-align: right;">0.0000000</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">2</td>
@@ -1177,13 +1195,13 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">25</td>
 <td style="text-align: right;">19</td>
 <td style="text-align: left;">D</td>
-<td style="text-align: right;">650651232</td>
+<td style="text-align: right;">65065.12</td>
 <td style="text-align: right;">8</td>
-<td style="text-align: right;">1015</td>
+<td style="text-align: right;">10.15</td>
 <td style="text-align: left;">MERCEDES</td>
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">U</td>
-<td style="text-align: right;">5.487526e+14</td>
+<td style="text-align: right;">548.7526</td>
 <td style="text-align: right;">110.66689</td>
 <td style="text-align: right;">304.9560</td>
 <td style="text-align: right;">83.52138</td>
@@ -1201,11 +1219,11 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">233013</td>
-<td style="text-align: right;">233013</td>
-<td style="text-align: right;">233013</td>
+<td style="text-align: right;">233.013</td>
+<td style="text-align: right;">233.013</td>
+<td style="text-align: right;">233.013</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
@@ -1214,6 +1232,7 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">1.0000000</td>
 <td style="text-align: right;">1.0000000</td>
 <td style="text-align: right;">25</td>
+<td style="text-align: right;">0.4246231</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">2</td>
@@ -1227,13 +1246,13 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">26</td>
 <td style="text-align: right;">18</td>
 <td style="text-align: left;">D</td>
-<td style="text-align: right;">650651232</td>
+<td style="text-align: right;">65065.12</td>
 <td style="text-align: right;">8</td>
-<td style="text-align: right;">1015</td>
+<td style="text-align: right;">10.15</td>
 <td style="text-align: left;">MERCEDES</td>
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">U</td>
-<td style="text-align: right;">5.846324e+14</td>
+<td style="text-align: right;">584.6324</td>
 <td style="text-align: right;">122.09253</td>
 <td style="text-align: right;">305.2251</td>
 <td style="text-align: right;">107.88687</td>
@@ -1251,11 +1270,11 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">25863615</td>
-<td style="text-align: right;">1035</td>
-<td style="text-align: right;">1035</td>
+<td style="text-align: right;">2586.361</td>
+<td style="text-align: right;">1035.000</td>
+<td style="text-align: right;">1035.000</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">15513615</td>
+<td style="text-align: right;">1551.361</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
@@ -1264,6 +1283,7 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">1.0000000</td>
 <td style="text-align: right;">1.0000000</td>
 <td style="text-align: right;">27</td>
+<td style="text-align: right;">4.4239104</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">3</td>
@@ -1277,13 +1297,13 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">26</td>
 <td style="text-align: right;">19</td>
 <td style="text-align: left;">D</td>
-<td style="text-align: right;">516266625</td>
+<td style="text-align: right;">51626.66</td>
 <td style="text-align: right;">7</td>
-<td style="text-align: right;">919</td>
+<td style="text-align: right;">9.19</td>
 <td style="text-align: left;">KIA</td>
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">R</td>
-<td style="text-align: right;">6.874905e+14</td>
+<td style="text-align: right;">687.4905</td>
 <td style="text-align: right;">214.58399</td>
 <td style="text-align: right;">354.8741</td>
 <td style="text-align: right;">53.07762</td>
@@ -1301,11 +1321,11 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.000</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
@@ -1314,6 +1334,7 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">1.0000000</td>
 <td style="text-align: right;">1.0000000</td>
 <td style="text-align: right;">26</td>
+<td style="text-align: right;">0.0000000</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">3</td>
@@ -1327,13 +1348,13 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">27</td>
 <td style="text-align: right;">19</td>
 <td style="text-align: left;">D</td>
-<td style="text-align: right;">516266625</td>
+<td style="text-align: right;">51626.66</td>
 <td style="text-align: right;">7</td>
-<td style="text-align: right;">919</td>
+<td style="text-align: right;">9.19</td>
 <td style="text-align: left;">KIA</td>
 <td style="text-align: left;">I</td>
 <td style="text-align: left;">R</td>
-<td style="text-align: right;">6.936705e+14</td>
+<td style="text-align: right;">693.6705</td>
 <td style="text-align: right;">207.14130</td>
 <td style="text-align: right;">393.2895</td>
 <td style="text-align: right;">35.46896</td>
@@ -1351,11 +1372,11 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.000</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.000</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
@@ -1364,9 +1385,43 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <td style="text-align: right;">1.0000000</td>
 <td style="text-align: right;">1.0000000</td>
 <td style="text-align: right;">27</td>
+<td style="text-align: right;">0.0000000</td>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<p>The final dataset now have 352,219 rows remaining, and 48 columns in total with the new column made. The data types are also all correct.</p>
+</section>
+</section>
+<section id="univariate-analysis" class="level1">
+<h1>Univariate Analysis</h1>
+<section id="distribution-of-key-variables" class="level2">
+<h2 class="anchored" data-anchor-id="distribution-of-key-variables">Distribution of key variables</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Profitability</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>Key metrics that can influence profitability are variables that concern how much is the cost and revenue. So the most relevant variables to look at first are:</p>
+<ul>
+<li>total_incurred: the cost side</li>
+<li>total_premium: the revenue</li>
+<li>total_claims: frequency of losses</li>
+<li>loss_ratio: standard insurance profitability metric</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>insurance, <span class="fu">aes</span>(<span class="at">x =</span> total_incurred)) <span class="sc">+</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">100</span>) <span class="sc">+</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Distribution of Total Incurred (Cost)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take_Home_Ex1_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 

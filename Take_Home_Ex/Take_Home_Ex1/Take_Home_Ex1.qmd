@@ -21,10 +21,14 @@ pacman::p_load(corrplot, ggstatsplot, tidyverse, knitr)
 ## Importing data
 
 ```{r}
-insurance <- read_csv2("Motor_insurance.csv")
+insurance <- read_delim("Motor_insurance.csv",
+                        delim = ";",
+                        col_types = cols(.default = "c"))
 ```
 
 # Checking Dataset
+
+Before cleaning, first examine the dataset's structure, summary statistics, and missing values to identify any data quality issues.
 
 ```{r}
 glimpse(insurance)
@@ -35,27 +39,47 @@ kable(head(insurance))
 
 ## Problems
 
-1.  Some features have incorrect data type: liability_premium, property_damage_premium, theft_premium, fire_premium, glass_premium, legal_protection_premium, occupants_premium, total_exposure and liability_exposure. It should be numeric but registered as characters.
+1.  All features are now characters so need to change the data type of the numerical values into numeric. 
 
 2.  Some features have nulls: vehicle_value has 513 NAs, fuel_type has 1287 NAs, fire_incurred has 94 NAs, occupants_incurred has 25 NAs.
 
-3. Categoricals (policy_type, policy_status, business_type, payment_frequency, bonus_score, fuel_type, municipality_type, circulation_area) are stored as characters <chr> instead of factors <fct>. With data type factors, R will understand that it is categoricals and not some string. 
+3. Categoricals (policy_type, policy_status, business_type, payment_frequency, bonus_score, fuel_type, municipality_type, circulation_area, vehicle_brand) are stored as characters <chr> instead of factors <fct>. With data type factors, R will understand that it is categoricals and not some string. 
 
-# Data Wragling
+# Data Wrangling
 
 ## Cleaning the data
 
 ```{r}
 insurance <- insurance %>%
-  # Fix columns with wrong data types
-  mutate(across(c(liability_premium, property_damage_premium, theft_premium,
-                  fire_premium, glass_premium, legal_protection_premium,
-                  occupants_premium, total_exposure, liability_exposure),
+  # Fix numerical columns' data type
+  mutate(across(c(insured_id, year, driver_age, vehicle_age,
+                  age_driving_licence, vehicle_value, 
+                  seats, power_to_weight_ratio,
+                  total_premium, total_claims,
+                  liability_claims, 
+                  liability_property_claims,
+                  liability_injury_claims, property_claims,
+                  theft_claims, fire_claims, glass_claims,
+                  legal_protection_claims, occupants_claims,
+                  total_incurred, liability_incurred,
+                  liability_property_incurred,
+                  liability_injury_incurred,
+                  property_incurred, theft_incurred,
+                  fire_incurred, glass_incurred,
+                  legal_protection_incurred,
+                  occupants_incurred, liability_premium,
+                  property_damage_premium, theft_premium,
+                  fire_premium, glass_premium,
+                  legal_protection_premium,
+                  occupants_premium, total_exposure,
+                  liability_exposure),
                 ~ as.numeric(gsub(",", ".", .)))) %>%
   # Convert categoricals to factors
-  mutate(across(c(policy_type, policy_status, business_type, payment_frequency,
-                  bonus_score, fuel_type, municipality_type, circulation_area),
-                as.factor))  %>%
+  mutate(across(c(policy_type, policy_status, business_type,
+                  payment_frequency,bonus_score, fuel_type,
+                  municipality_type, circulation_area,
+                  vehicle_brand),
+                as.factor)) %>%
   drop_na()
 
 glimpse(insurance)
@@ -64,11 +88,19 @@ colSums(is.na(insurance))[colSums(is.na(insurance)) > 0]
 
 ## Feature Engineering
 
+### driving_experience
+
+driving_experience is needed to get how long the driver has been driving for, which is more meaningful as compared to the age when the driver receives the driving licence.
+
+First check if age_driving_licence means the year driving licence is issued or the age the driver got the driving licence. 
+
 ```{r}
 insurance %>%
   filter(age_driving_licence == 80) %>%
   select(driver_age, age_driving_licence, year)
 ```
+
+Combining with the first row value shown in the head summary, it can be concluded that age_driving_licence is the age of the driver when driving licence is issued. Hence to get driving_experience the formula should be driver_age - age_driving_licence. 
 
 ```{r}
 insurance <- insurance %>%
@@ -76,9 +108,62 @@ insurance <- insurance %>%
            driver_age - age_driving_licence)
 ```
 
+### loss_ratio
+
+This feature will show the ratio of total_incurred to total_premium. This is important as it is the standard insurance profitability metric. 
+
+```{r}
+insurance <- insurance %>%
+  mutate(loss_ratio = total_incurred / total_premium)
+```
+
+There is a possibility that the total_premium is 0 which will produce Inf or NaN instead of a value, so check next.
+
+```{r}
+sum(is.infinite(insurance$loss_ratio))
+sum(is.nan(insurance$loss_ratio))
+```
+
+Since there is only a total of 49 values Inf or NaN, dropping rows with them is negligible.
+
+```{r}
+insurance <- insurance %>%
+  mutate(loss_ratio = ifelse(is.infinite(loss_ratio) | is.nan(loss_ratio), 
+                             NA, loss_ratio)) %>%
+  drop_na(loss_ratio)
+
+sum(is.infinite(insurance$loss_ratio))
+sum(is.nan(insurance$loss_ratio))
+nrow(insurance)
+```
+
 ## Check final data
 
 ```{r}
 kable(head(insurance))
 ```
+
+The final dataset now have 352,219 rows remaining, and 48 columns in total with the new column made. The data types are also all correct. 
+
+# Univariate Analysis
+
+## Distribution of key variables
+
+::: panel-tabset
+## Profitability
+
+Key metrics that can influence profitability are variables that concern how much is the cost and revenue. So the most relevant variables to look at first are:
+
+-   total_incurred: the cost side
+-   total_premium: the revenue
+-   total_claims: frequency of losses
+-   loss_ratio: standard insurance profitability metric
+
+
+```{r}
+ggplot(data=insurance, aes(x = total_incurred)) +
+  geom_histogram(bins=100) +
+  ggtitle("Distribution of Total Incurred (Cost)")
+```
+:::
 
