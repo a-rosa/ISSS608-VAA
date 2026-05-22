@@ -1,0 +1,84 @@
+---
+title: "Take-Home Exercise 1"
+author: "Amelia Rosalind"
+date: "May 22, 2026"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+# Getting Started
+
+## Installing of required packages
+
+```{r}
+pacman::p_load(corrplot, ggstatsplot, tidyverse, knitr)
+```
+
+## Importing data
+
+```{r}
+insurance <- read_csv2("Motor_insurance.csv")
+```
+
+# Checking Dataset
+
+```{r}
+glimpse(insurance)
+summary(insurance)
+colSums(is.na(insurance))[colSums(is.na(insurance)) > 0]
+kable(head(insurance))
+```
+
+## Problems
+
+1.  Some features have incorrect data type: liability_premium, property_damage_premium, theft_premium, fire_premium, glass_premium, legal_protection_premium, occupants_premium, total_exposure and liability_exposure. It should be numeric but registered as characters.
+
+2.  Some features have nulls: vehicle_value has 513 NAs, fuel_type has 1287 NAs, fire_incurred has 94 NAs, occupants_incurred has 25 NAs.
+
+3. Categoricals (policy_type, policy_status, business_type, payment_frequency, bonus_score, fuel_type, municipality_type, circulation_area) are stored as characters <chr> instead of factors <fct>. With data type factors, R will understand that it is categoricals and not some string. 
+
+# Data Wragling
+
+## Cleaning the data
+
+```{r}
+insurance <- insurance %>%
+  # Fix columns with wrong data types
+  mutate(across(c(liability_premium, property_damage_premium, theft_premium,
+                  fire_premium, glass_premium, legal_protection_premium,
+                  occupants_premium, total_exposure, liability_exposure),
+                ~ as.numeric(gsub(",", ".", .)))) %>%
+  # Convert categoricals to factors
+  mutate(across(c(policy_type, policy_status, business_type, payment_frequency,
+                  bonus_score, fuel_type, municipality_type, circulation_area),
+                as.factor))  %>%
+  drop_na()
+
+glimpse(insurance)
+colSums(is.na(insurance))[colSums(is.na(insurance)) > 0]
+```
+
+## Feature Engineering
+
+```{r}
+insurance %>%
+  filter(age_driving_licence == 80) %>%
+  select(driver_age, age_driving_licence, year)
+```
+
+```{r}
+insurance <- insurance %>%
+  mutate(driving_experience = 
+           driver_age - age_driving_licence)
+```
+
+## Check final data
+
+```{r}
+kable(head(insurance))
+```
+
