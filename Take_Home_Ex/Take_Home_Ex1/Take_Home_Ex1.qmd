@@ -10,12 +10,16 @@ execute:
   freeze: true
 ---
 
+# Overview
+
+The data used is a real-world vehicle insurance data from [Spanish insurance company](https://data.mendeley.com/datasets/sw4jmdb2sm/1), comprising 254,140 policy records spanning from 2022 to 2024. The objective is to gain deeper insights into data distributions using univariate analysis and understand key factors influencing profitability and volatility using bivariate analysis. This technical report will cover the technical working of this project, such as data preprocessing and all analyses done.
+
 # Getting Started
 
 ## Installing of required packages
 
 ```{r}
-pacman::p_load(corrplot, ggstatsplot, tidyverse, knitr,
+pacman::p_load(ggstatsplot, tidyverse, knitr,
                patchwork, ggthemes, ggdist)
 ```
 
@@ -40,11 +44,11 @@ kable(head(insurance))
 
 ## Problems
 
-1.  All features are now characters so need to change the data type of the numerical values into numeric. 
+1.  All features are now characters so need to change the data type of the numerical values into numeric.
 
 2.  Some features have nulls: vehicle_value has 513 NAs, fuel_type has 1287 NAs, fire_incurred has 94 NAs, occupants_incurred has 25 NAs.
 
-3. Categoricals (policy_type, policy_status, business_type, payment_frequency, bonus_score, fuel_type, municipality_type, circulation_area, vehicle_brand) are stored as characters <chr> instead of factors <fct>. With data type factors, R will understand that it is categoricals and not some string. 
+3.  Categoricals (policy_type, policy_status, business_type, payment_frequency, bonus_score, fuel_type, municipality_type, circulation_area, vehicle_brand) are stored as characters <chr> instead of factors <fct>. With data type factors, R will understand that it is categoricals and not some string.
 
 # Data Wrangling
 
@@ -93,7 +97,7 @@ colSums(is.na(insurance))[colSums(is.na(insurance)) > 0]
 
 driving_experience is needed to get how long the driver has been driving for, which is more meaningful as compared to the age when the driver receives the driving licence.
 
-First check if age_driving_licence means the year driving licence is issued or the age the driver got the driving licence. 
+First check if age_driving_licence means the year driving licence is issued or the age the driver got the driving licence.
 
 ```{r}
 insurance %>%
@@ -101,7 +105,7 @@ insurance %>%
   select(driver_age, age_driving_licence, year)
 ```
 
-Combining with the first row value shown in the head summary, it can be concluded that age_driving_licence is the age of the driver when driving licence is issued. Hence to get driving_experience the formula should be driver_age - age_driving_licence. 
+Combining with the first row value shown in the head summary, it can be concluded that age_driving_licence is the age of the driver when driving licence is issued. Hence to get driving_experience the formula should be driver_age - age_driving_licence.
 
 ```{r}
 insurance <- insurance %>%
@@ -111,7 +115,7 @@ insurance <- insurance %>%
 
 ### loss_ratio
 
-This feature will show the ratio of total_incurred to total_premium. This is important as it is the standard insurance profitability metric. 
+This feature will show the ratio of total_incurred to total_premium. This is important as it is the standard insurance profitability metric.
 
 ```{r}
 insurance <- insurance %>%
@@ -144,22 +148,33 @@ nrow(insurance)
 kable(head(insurance))
 ```
 
-The final dataset now have 352,219 rows remaining, and 48 columns in total with the new column made. The data types are also all correct. 
+The final dataset now have 352,289 rows remaining, and 48 columns in total with the new column made. The data types are also all correct.
+
+# Variable selection
+
+Profitability is about how much profit the insurance company can make from a policy, which is addressed with `loss_ratio`. Volatility concerns the spread and unpredictability of losses, which can be addressed by `total_incurred`. As such the target variables are `loss_ratio` and `total_incurred`.
+
+Other variables that can help explain profitability and volatility are listed on the table below
+
+| Variable | Description | Purpose |
+|-----------------------|-----------------------------|---------------------|
+| `total_premium` | Revenue collected per policy | Provides context on income side of portfolio |
+| `total_claims` | Number of claims made | Indicates claim frequency which directly drives costs |
+| `driver_age` | Age of driver | Older or younger drivers may present different risk profiles |
+| `vehicle_age` | Age of the insured vehicle | Older vehicles may be more probe to certain types of claims |
+| `driving_experience` | Years of driving experience | More experienced drivers may have lower claim rates |
+| `policy_type` | Types coverage held | Different coverage types carry different risk exposures and premium levels |
+| `bonus_score` | Claims history indicator | Drivers with poor claims history are likely higher risk |
+| `circulation_area` | Urban vs rural driving environment | Urban areas typically have higher accident rates |
+
+: {tbl-colwidths="[20,20, 60]"}
 
 # Univariate Analysis
 
-## Distribution of key variables for probability and volability
+## Distribution of target variables
 
-Key metrics that can influence profitability are variables that concern how much is the cost and revenue. Meanwhile, volability concerns the spread and and unpredictability of losses. So the most relevant variables to look at first are:
-
--   total_incurred: the cost side
--   total_premium: the revenue
--   total_claims: frequency of losses
--   loss_ratio: standard insurance profitability metric
-
-::: panel-tabset
-
-### total_incurred
+::::: panel-tabset
+### Volatibility
 
 ```{r}
 summary(insurance$total_incurred)
@@ -210,6 +225,75 @@ hbox <- (box_cost / hist_cost) +
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
+::: callout-note
+There are a lot of zeros as compared to the others, as majority have no claims made.
+:::
+
+### Profitability
+
+```{r}
+summary(insurance$loss_ratio)
+```
+
+```{r}
+insurance %>%
+  filter(loss_ratio > 100) %>%
+  select(total_premium, total_incurred, loss_ratio) %>%
+  arrange(desc(loss_ratio))
+```
+
+::: callout-note
+There are extreme outliers that are more than 100, about 243 policies. But most are around 0, so the distribution graph can be centered near it, in the range to 10.
+:::
+
+```{r}
+box_ratio <- ggplot(insurance, aes(y = loss_ratio, x = "")) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_point(aes(x = "", 
+                 y = mean(insurance$loss_ratio)),
+             colour = "red", 
+             size = 2, 
+             shape = 18) +
+  coord_flip() +
+  scale_y_continuous(limits = c(-1, 10)) +
+  labs(title = "Distribution of Loss Ratio") +
+  theme_minimal() +
+  theme(
+    axis.text = element_blank(), 
+    axis.ticks = element_blank(),
+    axis.title = element_blank(),
+    panel.grid.major = element_blank(),
+     plot.background = element_rect(fill="white",
+                                    colour="white")
+  )
+
+hist_ratio <- ggplot(insurance, aes(x = loss_ratio)) +
+  geom_histogram(colour = "grey25",
+                 fill = "grey90") +
+  geom_vline(aes(xintercept = mean(loss_ratio)), 
+             color = "red", linetype = "dashed") +
+  geom_vline(aes(xintercept = median(loss_ratio)), 
+             color = "blue", linetype = "dashed") +
+  scale_x_continuous(limits = c(-1, 10)) +
+  labs(x = "loss_ratio") +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    plot.background = element_rect(fill="white",
+                                   colour="white")
+  )
+
+hbox <- (box_ratio / hist_ratio) +
+  plot_layout(heights = c(1.5, 3.5))
+
+hbox & theme(plot.background = element_rect(fill="white",colour="white"))
+```
+:::::
+
+## Distribution of other risk factors
+
+:::: panel-tabset
 ### total_premium
 
 ```{r}
@@ -311,64 +395,10 @@ hbox <- (box_claims / hist_claims) +
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
-### loss_ratio
-
-```{r}
-summary(insurance$loss_ratio)
-```
-
-```{r}
-insurance %>%
-  filter(loss_ratio > 100) %>%
-  select(total_premium, total_incurred, loss_ratio) %>%
-  arrange(desc(loss_ratio))
-```
-
-```{r}
-box_ratio <- ggplot(insurance, aes(y = loss_ratio, x = "")) +
-  geom_boxplot(outlier.shape = NA) +
-  geom_point(aes(x = "", 
-                 y = mean(insurance$loss_ratio)),
-             colour = "red", 
-             size = 2, 
-             shape = 18) +
-  coord_flip() +
-  scale_y_continuous(limits = c(-1, 10)) +
-  labs(title = "Distribution of Loss Ratio") +
-  theme_minimal() +
-  theme(
-    axis.title = element_blank(),
-     plot.background = element_rect(fill="white",
-                                    colour="white")
-  )
-
-hist_ratio <- ggplot(insurance, aes(x = loss_ratio)) +
-  geom_histogram(colour = "grey25",
-                 fill = "grey90") +
-  geom_vline(aes(xintercept = mean(loss_ratio)), 
-             color = "red", linetype = "dashed") +
-  geom_vline(aes(xintercept = median(loss_ratio)), 
-             color = "blue", linetype = "dashed") +
-  scale_x_continuous(limits = c(-1, 10)) +
-  labs(x = "loss_ratio") +
-  theme_minimal() +
-  theme(
-    axis.text.y = element_blank(),
-    axis.title.y = element_blank(),
-    plot.background = element_rect(fill="white",
-                                   colour="white")
-  )
-
-hbox <- (box_ratio / hist_ratio) +
-  plot_layout(heights = c(1.5, 3.5))
-
-hbox & theme(plot.background = element_rect(fill="white",colour="white"))
-```
+::: callout-note
+Same as total_incurred, as majority have no claim so the graph and summary shows an inflation on value zero.
 :::
 
-## Distribution of other risk factors
-
-::: panel-tabset
 ### driver_age
 
 ```{r}
@@ -581,5 +611,8 @@ ggplot(data=insurance, aes(x = circulation_area)) +
                                    colour="white")
   )
 ```
+::::
 
-:::
+# Bivariate Analysis
+
+
