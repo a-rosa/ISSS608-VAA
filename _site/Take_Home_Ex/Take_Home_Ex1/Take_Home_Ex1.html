@@ -219,7 +219,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#distribution-of-target-variables" id="toc-distribution-of-target-variables" class="nav-link" data-scroll-target="#distribution-of-target-variables">Distribution of target variables</a></li>
   <li><a href="#distribution-of-other-risk-factors" id="toc-distribution-of-other-risk-factors" class="nav-link" data-scroll-target="#distribution-of-other-risk-factors">Distribution of other risk factors</a></li>
   </ul></li>
-  <li><a href="#bivariate-analysis" id="toc-bivariate-analysis" class="nav-link" data-scroll-target="#bivariate-analysis">Bivariate Analysis</a></li>
+  <li><a href="#bivariate-analysis" id="toc-bivariate-analysis" class="nav-link" data-scroll-target="#bivariate-analysis">Bivariate Analysis</a>
+  <ul class="collapse">
+  <li><a href="#relationship-between-bonus-score-and-profitability" id="toc-relationship-between-bonus-score-and-profitability" class="nav-link" data-scroll-target="#relationship-between-bonus-score-and-profitability">Relationship between bonus score and profitability</a></li>
+  <li><a href="#relationship-between-policy-type-and-profitability" id="toc-relationship-between-policy-type-and-profitability" class="nav-link" data-scroll-target="#relationship-between-policy-type-and-profitability">Relationship between policy type and profitability</a></li>
+  <li><a href="#relationship-between-circulation-area-and-profitability" id="toc-relationship-between-circulation-area-and-profitability" class="nav-link" data-scroll-target="#relationship-between-circulation-area-and-profitability">Relationship between circulation area and profitability</a></li>
+  <li><a href="#relationship-between-years-of-driving-experience-and-profitability" id="toc-relationship-between-years-of-driving-experience-and-profitability" class="nav-link" data-scroll-target="#relationship-between-years-of-driving-experience-and-profitability">Relationship between years of driving experience and profitability</a></li>
+  <li><a href="#relationship-between-bonus-score-and-volatility" id="toc-relationship-between-bonus-score-and-volatility" class="nav-link" data-scroll-target="#relationship-between-bonus-score-and-volatility">Relationship between bonus score and volatility</a></li>
+  <li><a href="#relationship-between-policy-type-and-volatility" id="toc-relationship-between-policy-type-and-volatility" class="nav-link" data-scroll-target="#relationship-between-policy-type-and-volatility">Relationship between policy type and volatility</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -265,7 +273,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level1">
 <h1>Overview</h1>
-<p>The data used is a real-world vehicle insurance data from <a href="https://data.mendeley.com/datasets/sw4jmdb2sm/1">Spanish insurance company</a>, comprising 254,140 policy records spanning from 2022 to 2024. The objective is to gain deeper insights into data distributions using univariate analysis and understand key factors influencing profitability and volatility using bivariate analysis. This technical report will cover the technical working of this project, such as data preprocessing and all analyses done.</p>
+<p>The data used is a real-world vehicle insurance data from <a href="https://data.mendeley.com/datasets/sw4jmdb2sm/1">Spanish insurance company</a>, comprising 354,140 policy records spanning from 2022 to 2024. The objective is to gain deeper insights into data distributions using univariate analysis and understand key factors influencing profitability and volatility using bivariate analysis. This technical report will cover the technical working of this project, such as data preprocessing and all analyses done.</p>
 </section>
 <section id="getting-started" class="level1">
 <h1>Getting Started</h1>
@@ -273,7 +281,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="installing-of-required-packages">Installing of required packages</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(ggstatsplot, tidyverse, knitr,</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               patchwork, ggthemes, ggdist)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               patchwork, ggthemes, ggdist,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>               car)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="importing-data" class="level2">
@@ -1466,10 +1475,80 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 </section>
 <section id="univariate-analysis" class="level1">
 <h1>Univariate Analysis</h1>
+<p>For univariate analysis, there are 2 types of models to be done based on if the values are numeric or categorical.</p>
+<p>The numeric ones will use histogram and boxplot together. Histogram will be used to show the shape of the distribution. Boxplot will complement it by highlighting median, IQR and outliers. Both are combined using patchwork for a more complete view.</p>
+<p>The categorical values will use bar chart. This type of graph is able to show frequency distribution of each level.</p>
+<p>The table below will show the which features are numerical and categorical and the type of univariate analysis done.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 31%">
+<col style="width: 39%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Type of value</th>
+<th>Univariate analysis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>total_incurred</code></td>
+<td>Numerical</td>
+<td>histogram + boxplot</td>
+</tr>
+<tr class="even">
+<td><code>loss_ratio</code></td>
+<td>Numerical</td>
+<td>histogram + boxplot</td>
+</tr>
+<tr class="odd">
+<td><code>total_premium</code></td>
+<td>Numerical</td>
+<td>histogram + boxplot</td>
+</tr>
+<tr class="even">
+<td><code>total_claims</code></td>
+<td>Numerical</td>
+<td>histogram + boxplot</td>
+</tr>
+<tr class="odd">
+<td><code>driver_age</code></td>
+<td>Numerical</td>
+<td>histogram + boxplot</td>
+</tr>
+<tr class="even">
+<td><code>vehicle_age</code></td>
+<td>Numerical</td>
+<td>histogram + boxplot</td>
+</tr>
+<tr class="odd">
+<td><code>driving_experience</code></td>
+<td>Numerical</td>
+<td>histogram + boxplot</td>
+</tr>
+<tr class="even">
+<td><code>policy_type</code></td>
+<td>Categorical</td>
+<td>bar chart</td>
+</tr>
+<tr class="odd">
+<td><code>bonus_score</code></td>
+<td>Categorical</td>
+<td>bar chart</td>
+</tr>
+<tr class="even">
+<td><code>circulation_area</code></td>
+<td>Categorical</td>
+<td>bar chart</td>
+</tr>
+</tbody>
+</table>
 <section id="distribution-of-target-variables" class="level2">
 <h2 class="anchored" data-anchor-id="distribution-of-target-variables">Distribution of target variables</h2>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Volatibility</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Profitability</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Volatility</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Profitability</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
@@ -2042,8 +2121,154 @@ Note
 </section>
 <section id="bivariate-analysis" class="level1">
 <h1>Bivariate Analysis</h1>
+<p><code>ggbetweenstats</code> and <code>ggscatterstats</code> are used to do statistical bivariate analysis.</p>
+<section id="relationship-between-bonus-score-and-profitability" class="level2">
+<h2 class="anchored" data-anchor-id="relationship-between-bonus-score-and-profitability">Relationship between bonus score and profitability</h2>
+<p>One-way ANOVA is used to find the relationship between bonus score and profitability since <code>bonus_score</code> has more than 2 groups.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for reproducibility</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(<span class="fu">sample</span>(insurance<span class="sc">$</span>loss_ratio, <span class="dv">5000</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  sample(insurance$loss_ratio, 5000)
+W = 0.12385, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Since both shows that it is significant, then Kursal-Wallis test is used.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> bonus_score,</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> loss_ratio,</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"np"</span>,</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Relationship between bonus score and profitability"</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take_Home_Ex1_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="relationship-between-policy-type-and-profitability" class="level2">
+<h2 class="anchored" data-anchor-id="relationship-between-policy-type-and-profitability">Relationship between policy type and profitability</h2>
+<p>One-way ANOVA is also used to find the relationship between policy type and profitability since <code>policy_type</code> has 5 groups. Since the Shapiro test of <code>loss_ratio</code> is significant, then the test done should be non-parametric Kurskal-Wallis test.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> policy_type,</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> loss_ratio,</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"np"</span>,</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Relationship between policy type and profitability"</span></span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take_Home_Ex1_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="relationship-between-circulation-area-and-profitability" class="level2">
+<h2 class="anchored" data-anchor-id="relationship-between-circulation-area-and-profitability">Relationship between circulation area and profitability</h2>
+<p>Since circulation area only has 2 groups, the test done should be a two-sample test. In addition, since the Shapiro test for <code>loss_ratio</code> is significant, use the non-parametric version which is the Mann-Whitney U test.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> circulation_area,</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> loss_ratio,</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"np"</span>,</span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Relationship between circulation area and profitability"</span></span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take_Home_Ex1_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="relationship-between-years-of-driving-experience-and-profitability" class="level2">
+<h2 class="anchored" data-anchor-id="relationship-between-years-of-driving-experience-and-profitability">Relationship between years of driving experience and profitability</h2>
+<p>Since driving experience is a numeric value, the test done should be a Significant Test of Correlation. This is done using <code>ggscatterplot</code>. Looking at the univariate analysis, even though <code>driving_experience</code> is normally distributed, <code>loss_ratio</code> is very skewed. So the non-parametric version is used instead, which is the Spearman’s rank correlation coefficient.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggscatterstats</span>(</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> driving_experience,</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> loss_ratio,</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"nonparametric"</span>,</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Relationship between years of driving experience and profitability"</span></span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take_Home_Ex1_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="relationship-between-bonus-score-and-volatility" class="level2">
+<h2 class="anchored" data-anchor-id="relationship-between-bonus-score-and-volatility">Relationship between bonus score and volatility</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for reproducibility</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(<span class="fu">sample</span>(insurance<span class="sc">$</span>total_incurred, <span class="dv">5000</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  sample(insurance$total_incurred, 5000)
+W = 0.17964, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Like against <code>loss_ratio</code>, One-Way ANOVA is used. Since, the Shapiro test shows <code>total_incurred</code> is significant which means <code>total_incurred</code> is not normally distributed. Therefore, non-parametric test, Kruskal-Wallis, is used.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> bonus_score,</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> loss_ratio,</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"np"</span>,</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Relationship between bonus score and profitability"</span></span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take_Home_Ex1_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="relationship-between-policy-type-and-volatility" class="level2">
+<h2 class="anchored" data-anchor-id="relationship-between-policy-type-and-volatility">Relationship between policy type and volatility</h2>
+<p>Non-parametric version of One-Way ANOVA is also used for this.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> bonus_score,</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> loss_ratio,</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"np"</span>,</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Relationship between bonus score and profitability"</span></span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take_Home_Ex1_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

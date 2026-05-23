@@ -12,7 +12,7 @@ execute:
 
 # Overview
 
-The data used is a real-world vehicle insurance data from [Spanish insurance company](https://data.mendeley.com/datasets/sw4jmdb2sm/1), comprising 254,140 policy records spanning from 2022 to 2024. The objective is to gain deeper insights into data distributions using univariate analysis and understand key factors influencing profitability and volatility using bivariate analysis. This technical report will cover the technical working of this project, such as data preprocessing and all analyses done.
+The data used is a real-world vehicle insurance data from [Spanish insurance company](https://data.mendeley.com/datasets/sw4jmdb2sm/1), comprising 354,140 policy records spanning from 2022 to 2024. The objective is to gain deeper insights into data distributions using univariate analysis and understand key factors influencing profitability and volatility using bivariate analysis. This technical report will cover the technical working of this project, such as data preprocessing and all analyses done.
 
 # Getting Started
 
@@ -20,7 +20,8 @@ The data used is a real-world vehicle insurance data from [Spanish insurance com
 
 ```{r}
 pacman::p_load(ggstatsplot, tidyverse, knitr,
-               patchwork, ggthemes, ggdist)
+               patchwork, ggthemes, ggdist,
+               car)
 ```
 
 ## Importing data
@@ -171,10 +172,31 @@ Other variables that can help explain profitability and volatility are listed on
 
 # Univariate Analysis
 
+For univariate analysis, there are 2 types of models to be done based on if the values are numeric or categorical. 
+
+The numeric ones will use histogram and boxplot together. Histogram will be used to show the shape of the distribution. Boxplot will complement it by highlighting median, IQR and outliers. Both are combined using patchwork for a more complete view.
+
+The categorical values will use bar chart. This type of graph is able to show frequency distribution of each level. 
+
+The table below will show the which features are numerical and categorical and the type of univariate analysis done.
+
+| Variable | Type of value | Univariate analysis |
+|-----------------------|-----------------------------|---------------------|
+| `total_incurred` | Numerical | histogram + boxplot |
+| `loss_ratio` | Numerical | histogram + boxplot |
+| `total_premium` | Numerical | histogram + boxplot |
+| `total_claims` | Numerical | histogram + boxplot |
+| `driver_age` | Numerical | histogram + boxplot |
+| `vehicle_age` | Numerical | histogram + boxplot |
+| `driving_experience` | Numerical | histogram + boxplot |
+| `policy_type` | Categorical | bar chart |
+| `bonus_score` | Categorical | bar chart |
+| `circulation_area` | Categorical | bar chart |
+
 ## Distribution of target variables
 
 ::::: panel-tabset
-### Volatibility
+### Volatility
 
 ```{r}
 summary(insurance$total_incurred)
@@ -615,4 +637,102 @@ ggplot(data=insurance, aes(x = circulation_area)) +
 
 # Bivariate Analysis
 
+`ggbetweenstats` and `ggscatterstats` are used to do statistical bivariate analysis. 
 
+## Relationship between bonus score and profitability
+
+One-way ANOVA is used to find the relationship between bonus score and profitability since `bonus_score` has more than 2 groups.
+
+```{r}
+# for reproducibility
+set.seed(123)
+shapiro.test(sample(insurance$loss_ratio, 5000))
+```
+
+Since both shows that it is significant, then Kursal-Wallis test is used.
+
+```{r}
+ggbetweenstats(
+  data = insurance,
+  x = bonus_score,
+  y = loss_ratio,
+  type = "np",
+  title = "Relationship between bonus score and profitability"
+)
+```
+
+## Relationship between policy type and profitability
+
+One-way ANOVA is also used to find the relationship between policy type and profitability since `policy_type` has 5 groups. Since the Shapiro test of `loss_ratio` is significant, then the test done should be non-parametric Kurskal-Wallis test. 
+
+```{r}
+ggbetweenstats(
+  data = insurance,
+  x = policy_type,
+  y = loss_ratio,
+  type = "np",
+  title = "Relationship between policy type and profitability"
+)
+```
+
+## Relationship between circulation area and profitability
+
+Since circulation area only has 2 groups, the test done should be a two-sample test. In addition, since the Shapiro test for `loss_ratio` is significant, use the non-parametric version which is the Mann-Whitney U test. 
+
+```{r}
+ggbetweenstats(
+  data = insurance,
+  x = circulation_area,
+  y = loss_ratio,
+  type = "np",
+  title = "Relationship between circulation area and profitability"
+)
+```
+
+## Relationship between years of driving experience and profitability
+
+Since driving experience is a numeric value, the test done should be a Significant Test of Correlation. This is done using `ggscatterplot`. Looking at the univariate analysis, even though `driving_experience` is normally distributed, `loss_ratio` is very skewed. So the non-parametric version is used instead, which is the Spearman's rank correlation coefficient.
+
+```{r}
+ggscatterstats(
+  data = insurance,
+  x = driving_experience,
+  y = loss_ratio,
+  type = "nonparametric",
+  title = "Relationship between years of driving experience and profitability"
+)
+```
+
+## Relationship between bonus score and volatility
+
+```{r}
+# for reproducibility
+set.seed(123)
+shapiro.test(sample(insurance$total_incurred, 5000))
+```
+
+Like against `loss_ratio`, One-Way ANOVA is used. Since, the Shapiro test shows `total_incurred` is significant which means `total_incurred` is not normally distributed. Therefore, non-parametric test, Kruskal-Wallis, is used. 
+
+```{r}
+ggbetweenstats(
+  data = insurance,
+  x = bonus_score,
+  y = loss_ratio,
+  type = "np",
+  title = "Relationship between bonus score and profitability"
+)
+```
+
+## Relationship between policy type and volatility
+
+Non-parametric version of One-Way ANOVA is also used for this. 
+
+```{r}
+ggbetweenstats(
+  data = insurance,
+  x = bonus_score,
+  y = loss_ratio,
+  type = "np",
+  title = "Relationship between bonus score and profitability"
+)
+```
