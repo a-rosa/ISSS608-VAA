@@ -1705,14 +1705,14 @@
     "href": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-bonus-score-and-profitability",
     "title": "Take-Home Exercise 1",
     "section": "Relationship between bonus score and profitability",
-    "text": "Relationship between bonus score and profitability\nOne-way ANOVA is used to find the relationship between bonus score and profitability since bonus_score has more than 2 groups.\n\n# for reproducibility\nset.seed(123)\nshapiro.test(sample(insurance$loss_ratio, 5000))\n\n\n    Shapiro-Wilk normality test\n\ndata:  sample(insurance$loss_ratio, 5000)\nW = 0.12385, p-value &lt; 2.2e-16\n\n\nSince both shows that it is significant, then Kursal-Wallis test is used.\n\nggbetweenstats(\n  data = insurance,\n  x = bonus_score,\n  y = loss_ratio,\n  type = \"np\",\n  title = \"Relationship between bonus score and profitability\"\n)"
+    "text": "Relationship between bonus score and profitability\nOne-way ANOVA test is suitable to find the relationship between bonus score and profitability since bonus_score has more than 2 groups. But first check first if parametric or non-parametric using Shapiro test on loss_ratio.\n\n# for reproducibility\nset.seed(123)\nshapiro.test(sample(insurance$loss_ratio, 5000))\n\n\n    Shapiro-Wilk normality test\n\ndata:  sample(insurance$loss_ratio, 5000)\nW = 0.12385, p-value &lt; 2.2e-16\n\n\nSince result shows that it is significant, then Kruskal-Wallis test is used.\n\nggbetweenstats(\n  data = insurance,\n  x = bonus_score,\n  y = loss_ratio,\n  type = \"np\",\n  title = \"Relationship between bonus score and profitability\"\n)"
   },
   {
     "objectID": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-policy-type-and-profitability",
     "href": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-policy-type-and-profitability",
     "title": "Take-Home Exercise 1",
     "section": "Relationship between policy type and profitability",
-    "text": "Relationship between policy type and profitability\nOne-way ANOVA is also used to find the relationship between policy type and profitability since policy_type has 5 groups. Since the Shapiro test of loss_ratio is significant, then the test done should be non-parametric Kurskal-Wallis test.\n\nggbetweenstats(\n  data = insurance,\n  x = policy_type,\n  y = loss_ratio,\n  type = \"np\",\n  title = \"Relationship between policy type and profitability\"\n)"
+    "text": "Relationship between policy type and profitability\nOne-way ANOVA is also used to find the relationship between policy type and profitability since policy_type has 5 groups. Since the Shapiro test of loss_ratio is significant, then the test done should be non-parametric Kruskal-Wallis test.\n\nggbetweenstats(\n  data = insurance,\n  x = policy_type,\n  y = loss_ratio,\n  type = \"np\",\n  title = \"Relationship between policy type and profitability\"\n)"
   },
   {
     "objectID": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-circulation-area-and-profitability",
@@ -1726,20 +1726,20 @@
     "href": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-years-of-driving-experience-and-profitability",
     "title": "Take-Home Exercise 1",
     "section": "Relationship between years of driving experience and profitability",
-    "text": "Relationship between years of driving experience and profitability\nSince driving experience is a numeric value, the test done should be a Significant Test of Correlation. This is done using ggscatterplot. Looking at the univariate analysis, even though driving_experience is normally distributed, loss_ratio is very skewed. So the non-parametric version is used instead, which is the Spearman’s rank correlation coefficient.\n\nggscatterstats(\n  data = insurance,\n  x = driving_experience,\n  y = loss_ratio,\n  type = \"nonparametric\",\n  title = \"Relationship between years of driving experience and profitability\"\n)"
+    "text": "Relationship between years of driving experience and profitability\nSince driving experience is a numeric value, the test done should be a Significant Test of Correlation. This is done using ggscatterstats. Looking at the univariate analysis, even though driving_experience is normally distributed, loss_ratio is very skewed. So the non-parametric version is used instead, which is the Spearman’s rank correlation coefficient.\n\nggscatterstats(\n  data = insurance,\n  x = driving_experience,\n  y = loss_ratio,\n  type = \"nonparametric\",\n  title = \"Relationship between years of driving experience and profitability\"\n)"
   },
   {
     "objectID": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-bonus-score-and-volatility",
     "href": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-bonus-score-and-volatility",
     "title": "Take-Home Exercise 1",
     "section": "Relationship between bonus score and volatility",
-    "text": "Relationship between bonus score and volatility\n\n# for reproducibility\nset.seed(123)\nshapiro.test(sample(insurance$total_incurred, 5000))\n\n\n    Shapiro-Wilk normality test\n\ndata:  sample(insurance$total_incurred, 5000)\nW = 0.17964, p-value &lt; 2.2e-16\n\n\nLike against loss_ratio, One-Way ANOVA is used. Since, the Shapiro test shows total_incurred is significant which means total_incurred is not normally distributed. Therefore, non-parametric test, Kruskal-Wallis, is used.\n\nggbetweenstats(\n  data = insurance,\n  x = bonus_score,\n  y = loss_ratio,\n  type = \"np\",\n  title = \"Relationship between bonus score and profitability\"\n)"
+    "text": "Relationship between bonus score and volatility\n\n# for reproducibility\nset.seed(123)\nshapiro.test(sample(insurance$total_incurred, 5000))\n\n\n    Shapiro-Wilk normality test\n\ndata:  sample(insurance$total_incurred, 5000)\nW = 0.17964, p-value &lt; 2.2e-16\n\n\nLike against loss_ratio, One-Way ANOVA is used. Since, the Shapiro test shows total_incurred is significant which means total_incurred is not normally distributed. Therefore, non-parametric test, Kruskal-Wallis, is used.\n\nggbetweenstats(\n  data = insurance,\n  x = bonus_score,\n  y = total_incurred,\n  type = \"np\",\n  title = \"Relationship between bonus score and volatility\"\n)"
   },
   {
     "objectID": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-policy-type-and-volatility",
     "href": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-policy-type-and-volatility",
     "title": "Take-Home Exercise 1",
     "section": "Relationship between policy type and volatility",
-    "text": "Relationship between policy type and volatility\nNon-parametric version of One-Way ANOVA is also used for this.\n\nggbetweenstats(\n  data = insurance,\n  x = bonus_score,\n  y = loss_ratio,\n  type = \"np\",\n  title = \"Relationship between bonus score and profitability\"\n)"
+    "text": "Relationship between policy type and volatility\nPolicy type as mentioned before has 5 groups and it is confirmed that total_incurred is not normally distributed from Shapiro test, therefore Kruskal-Wallis is used.\n\nggbetweenstats(\n  data = insurance,\n  x = policy_type,\n  y = total_incurred,\n  type = \"np\",\n  title = \"Relationship between policy type and volatility\"\n)"
   }
 ]

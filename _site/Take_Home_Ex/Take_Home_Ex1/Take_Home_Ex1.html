@@ -2124,7 +2124,7 @@ Note
 <p><code>ggbetweenstats</code> and <code>ggscatterstats</code> are used to do statistical bivariate analysis.</p>
 <section id="relationship-between-bonus-score-and-profitability" class="level2">
 <h2 class="anchored" data-anchor-id="relationship-between-bonus-score-and-profitability">Relationship between bonus score and profitability</h2>
-<p>One-way ANOVA is used to find the relationship between bonus score and profitability since <code>bonus_score</code> has more than 2 groups.</p>
+<p>One-way ANOVA test is suitable to find the relationship between bonus score and profitability since <code>bonus_score</code> has more than 2 groups. But first check first if parametric or non-parametric using Shapiro test on <code>loss_ratio</code>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for reproducibility</span></span>
 <span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
@@ -2137,7 +2137,7 @@ data:  sample(insurance$loss_ratio, 5000)
 W = 0.12385, p-value &lt; 2.2e-16</code></pre>
 </div>
 </div>
-<p>Since both shows that it is significant, then Kursal-Wallis test is used.</p>
+<p>Since result shows that it is significant, then Kruskal-Wallis test is used.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
@@ -2157,7 +2157,7 @@ W = 0.12385, p-value &lt; 2.2e-16</code></pre>
 </section>
 <section id="relationship-between-policy-type-and-profitability" class="level2">
 <h2 class="anchored" data-anchor-id="relationship-between-policy-type-and-profitability">Relationship between policy type and profitability</h2>
-<p>One-way ANOVA is also used to find the relationship between policy type and profitability since <code>policy_type</code> has 5 groups. Since the Shapiro test of <code>loss_ratio</code> is significant, then the test done should be non-parametric Kurskal-Wallis test.</p>
+<p>One-way ANOVA is also used to find the relationship between policy type and profitability since <code>policy_type</code> has 5 groups. Since the Shapiro test of <code>loss_ratio</code> is significant, then the test done should be non-parametric Kruskal-Wallis test.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
@@ -2197,7 +2197,7 @@ W = 0.12385, p-value &lt; 2.2e-16</code></pre>
 </section>
 <section id="relationship-between-years-of-driving-experience-and-profitability" class="level2">
 <h2 class="anchored" data-anchor-id="relationship-between-years-of-driving-experience-and-profitability">Relationship between years of driving experience and profitability</h2>
-<p>Since driving experience is a numeric value, the test done should be a Significant Test of Correlation. This is done using <code>ggscatterplot</code>. Looking at the univariate analysis, even though <code>driving_experience</code> is normally distributed, <code>loss_ratio</code> is very skewed. So the non-parametric version is used instead, which is the Spearman’s rank correlation coefficient.</p>
+<p>Since driving experience is a numeric value, the test done should be a Significant Test of Correlation. This is done using <code>ggscatterstats</code>. Looking at the univariate analysis, even though <code>driving_experience</code> is normally distributed, <code>loss_ratio</code> is very skewed. So the non-parametric version is used instead, which is the Spearman’s rank correlation coefficient.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggscatterstats</span>(</span>
 <span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
@@ -2234,9 +2234,9 @@ W = 0.17964, p-value &lt; 2.2e-16</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
 <span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
 <span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> bonus_score,</span>
-<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> loss_ratio,</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> total_incurred,</span>
 <span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"np"</span>,</span>
-<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Relationship between bonus score and profitability"</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Relationship between bonus score and volatility"</span></span>
 <span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
@@ -2249,14 +2249,14 @@ W = 0.17964, p-value &lt; 2.2e-16</code></pre>
 </section>
 <section id="relationship-between-policy-type-and-volatility" class="level2">
 <h2 class="anchored" data-anchor-id="relationship-between-policy-type-and-volatility">Relationship between policy type and volatility</h2>
-<p>Non-parametric version of One-Way ANOVA is also used for this.</p>
+<p>Policy type as mentioned before has 5 groups and it is confirmed that total_incurred is not normally distributed from Shapiro test, therefore Kruskal-Wallis is used.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
 <span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
-<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> bonus_score,</span>
-<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> loss_ratio,</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> policy_type,</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> total_incurred,</span>
 <span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"np"</span>,</span>
-<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Relationship between bonus score and profitability"</span></span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Relationship between policy type and volatility"</span></span>
 <span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>

@@ -641,7 +641,7 @@ ggplot(data=insurance, aes(x = circulation_area)) +
 
 ## Relationship between bonus score and profitability
 
-One-way ANOVA is used to find the relationship between bonus score and profitability since `bonus_score` has more than 2 groups.
+One-way ANOVA test is suitable to find the relationship between bonus score and profitability since `bonus_score` has more than 2 groups. But first check first if parametric or non-parametric using Shapiro test on `loss_ratio`.
 
 ```{r}
 # for reproducibility
@@ -649,7 +649,7 @@ set.seed(123)
 shapiro.test(sample(insurance$loss_ratio, 5000))
 ```
 
-Since both shows that it is significant, then Kursal-Wallis test is used.
+Since result shows that it is significant, then Kruskal-Wallis test is used.
 
 ```{r}
 ggbetweenstats(
@@ -663,7 +663,7 @@ ggbetweenstats(
 
 ## Relationship between policy type and profitability
 
-One-way ANOVA is also used to find the relationship between policy type and profitability since `policy_type` has 5 groups. Since the Shapiro test of `loss_ratio` is significant, then the test done should be non-parametric Kurskal-Wallis test. 
+One-way ANOVA is also used to find the relationship between policy type and profitability since `policy_type` has 5 groups. Since the Shapiro test of `loss_ratio` is significant, then the test done should be non-parametric Kruskal-Wallis test. 
 
 ```{r}
 ggbetweenstats(
@@ -691,7 +691,7 @@ ggbetweenstats(
 
 ## Relationship between years of driving experience and profitability
 
-Since driving experience is a numeric value, the test done should be a Significant Test of Correlation. This is done using `ggscatterplot`. Looking at the univariate analysis, even though `driving_experience` is normally distributed, `loss_ratio` is very skewed. So the non-parametric version is used instead, which is the Spearman's rank correlation coefficient.
+Since driving experience is a numeric value, the test done should be a Significant Test of Correlation. This is done using `ggscatterstats`. Looking at the univariate analysis, even though `driving_experience` is normally distributed, `loss_ratio` is very skewed. So the non-parametric version is used instead, which is the Spearman's rank correlation coefficient.
 
 ```{r}
 ggscatterstats(
@@ -717,22 +717,22 @@ Like against `loss_ratio`, One-Way ANOVA is used. Since, the Shapiro test shows 
 ggbetweenstats(
   data = insurance,
   x = bonus_score,
-  y = loss_ratio,
+  y = total_incurred,
   type = "np",
-  title = "Relationship between bonus score and profitability"
+  title = "Relationship between bonus score and volatility"
 )
 ```
 
 ## Relationship between policy type and volatility
 
-Non-parametric version of One-Way ANOVA is also used for this. 
+Policy type as mentioned before has 5 groups and it is confirmed that total_incurred is not normally distributed from Shapiro test, therefore Kruskal-Wallis is used. 
 
 ```{r}
 ggbetweenstats(
   data = insurance,
-  x = bonus_score,
-  y = loss_ratio,
+  x = policy_type,
+  y = total_incurred,
   type = "np",
-  title = "Relationship between bonus score and profitability"
+  title = "Relationship between policy type and volatility"
 )
 ```
