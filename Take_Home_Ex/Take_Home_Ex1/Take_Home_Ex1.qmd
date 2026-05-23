@@ -226,7 +226,7 @@ hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
 ::: callout-note
-There are a lot of zeros as compared to the others, as majority have no claims made.
+There are a lot of zeros as compared to the others, as majority have no claims made. This is known as zero-inflation. 
 :::
 
 ### Profitability
@@ -243,7 +243,7 @@ insurance %>%
 ```
 
 ::: callout-note
-There are extreme outliers that are more than 100, about 243 policies. But most are around 0, so the distribution graph can be centered near it, in the range to 10.
+There are 243 policies with extreme loss ratios exceeding 100, indicating cases where claim cost far outweigh the premium collected. As these are outliers, the distribution is plotted within the range of 0 and 100 to better visualise the majority of policies. 
 :::
 
 ```{r}
@@ -396,7 +396,7 @@ hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
 ::: callout-note
-Same as total_incurred, as majority have no claim so the graph and summary shows an inflation on value zero.
+Similar to total_incurred, the majority have no claim, resulting in zero-inflation at value zero.
 :::
 
 ### driver_age
