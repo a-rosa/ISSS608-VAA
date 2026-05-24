@@ -48,7 +48,7 @@ kable(head(insurance))
 
 1.  All features are now characters so need to change the data type of the numerical values into numeric.
 
-2.  Some features have nulls: vehicle_value has 513 NAs, fuel_type has 1287 NAs, fire_incurred has 94 NAs, occupants_incurred has 25 NAs.
+2.  Some features have nulls: vehicle_value has 513 NAs, fuel_type has 1287 NAs, and both vehicle_age and age_driving_licence has 2 NAs each.
 
 3.  Categoricals (policy_type, policy_status, business_type, payment_frequency, bonus_score, fuel_type, municipality_type, circulation_area, vehicle_brand, year) are stored as characters <chr> instead of factors <fct>. With data type factors, R will understand that it is categoricals and not some string.
 
@@ -150,7 +150,7 @@ nrow(insurance)
 kable(head(insurance))
 ```
 
-The final dataset now have 352,289 rows remaining, and 48 columns in total with the new column made. The data types are also all correct.
+The final dataset now have 352,289 rows remaining, and 49 columns in total with the new column made. The data types are also all correct.
 
 # Variable selection
 
@@ -248,7 +248,23 @@ hist_cost <- ggplot(insurance, aes(x = total_incurred)) +
 hbox <- (box_cost / hist_cost) +
   plot_layout(heights = c(1.5, 3.5))
 
-hbox & theme(plot.background = element_rect(fill="white",colour="white"))
+hbox_final <- hbox & theme(
+  plot.background =element_rect(
+    fill="white",colour="white"
+    )
+  )
+
+hbox_final
+```
+
+```{r}
+#| echo: false
+if (!dir.exists("plots")) dir.create("plots")
+ggsave("plots/hist_box_total_incurred.png", 
+       plot = hbox_final,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 The distribution is heavily right-skewed with severe zero-inflation, as the median is 0 and the mean is 208.4. This indicates the majority of policies incurred no claims, with a small proportion of policies driving disproportinately high losses - a pattern typical in insurance portofolios.
@@ -314,6 +330,15 @@ hbox <- (box_ratio / hist_ratio) +
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
+```{r}
+#| echo: false
+ggsave("plots/hist_box_loss_ratio.png", 
+       plot = last_plot(),
+       width = 8, 
+       height = 5,
+       dpi = 150)
+```
+
 Similar to `total_incurred`, `loss_ratio` extreme right skew with a median of 0 and 243 policies exceeding a ratio of 100. The wide gap between mean (0.788) and median (0) suggest the average is heavily pulled by catastrophic outlier policies.
 ::::
 
@@ -371,6 +396,15 @@ hbox <- (box_rev / hist_rev) +
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
+```{r}
+#| echo: false
+ggsave("plots/hist_box_total_premium.png", 
+       plot = last_plot(),
+       width = 8, 
+       height = 5,
+       dpi = 150)
+```
+
 Premiums are right-skewed with a median of 257.75 and mean of 296.29, indicating most policies are moderately prices with a tail of hig-value policies. The distribution suggests a fairly broad but concentrated mid-range portfolio.
 
 ### total_claims
@@ -421,6 +455,15 @@ hbox <- (box_claims / hist_claims) +
   plot_layout(heights = c(1.5, 3.5))
 
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
+```
+
+```{r}
+#| echo: false
+ggsave("plots/hist_box_total_claims.png", 
+       plot = last_plot(),
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 Like `total_incurred`, claim frequency is zero-inflated with a median of 0 and mean of 0.22, confirming that most policyholders make no claims within a given year.
@@ -475,7 +518,16 @@ hbox <- (box_da / hist_da) +
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
-Driver age is approximately normally distributed with a median of 48 adn mean of 49, ranging from 18 to 90. The portfolio skews towards middle-aged and older driver, which may reflect lower-risk segments self-selecting into this insurer.
+```{r}
+#| echo: false
+ggsave("plots/hist_box_driver_age.png", 
+       plot = last_plot(),
+       width = 8, 
+       height = 5,
+       dpi = 150)
+```
+
+Driver age is approximately normally distributed with a median of 48 and mean of 49, ranging from 18 to 90. The portfolio skews towards middle-aged and older driver, which may reflect lower-risk segments self-selecting into this insurer.
 
 ### vehicle_age
 
@@ -525,6 +577,15 @@ hbox <- (box_va / hist_va) +
   plot_layout(heights = c(1.5, 3.5))
 
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
+```
+
+```{r}
+#| echo: false
+ggsave("plots/hist_box_vehicle_age.png", 
+       plot = last_plot(),
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 Vehicle age is broadly distributed with a median of 25 years and mean of 25.9, suggesting the portfolio is dominated by older vehicles. This i notable as older vehicles may have different risk profiles for certain claim types.
@@ -579,12 +640,24 @@ hbox <- (box_de / hist_de) +
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
+```{r}
+#| echo: false
+ggsave("plots/hist_box_driving_experience.png", 
+       plot = last_plot(),
+       width = 8, 
+       height = 5,
+       dpi = 150)
+```
+
 Driving experience closely mirrors vehicle age in distribution (median 25, mean 26), which is expected given it si derived from driver age. Most insured drivers are experienced, with the distribution peaking around 20-30 years of experience.
 
 ### policy_type
 
 ```{r}
-ggplot(data=insurance, aes(x = policy_type)) +
+p_policy_type <- ggplot(
+  data=insurance, 
+  aes(x = policy_type)
+  ) +
   geom_bar(fill = "grey90") +
   geom_text(stat="count",
             aes(label=paste0(after_stat(count))),
@@ -600,6 +673,17 @@ ggplot(data=insurance, aes(x = policy_type)) +
     plot.background = element_rect(fill="white",
                                    colour="white")
   )
+
+p_policy_type
+```
+
+```{r}
+#| echo: false
+ggsave("plots/bar_policy_type.png", 
+       plot = p_policy_type,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 The portfolio is concentrated in a small number of policy types, with type CC being the most dominant. This shows limited product diversification.
@@ -607,7 +691,10 @@ The portfolio is concentrated in a small number of policy types, with type CC be
 ### bonus_score
 
 ```{r}
-ggplot(data=insurance, aes(x = bonus_score)) +
+p_bonus_score <- ggplot(
+  data=insurance, 
+  aes(x = bonus_score)
+  ) +
   geom_bar(fill = "grey90") +
   geom_text(stat="count",
             aes(label=paste0(after_stat(count))),
@@ -623,6 +710,17 @@ ggplot(data=insurance, aes(x = bonus_score)) +
     plot.background = element_rect(fill="white",
                                    colour="white")
   )
+
+p_bonus_score
+```
+
+```{r}
+#| echo: false
+ggsave("plots/bar_bonus_score.png", 
+       plot = p_bonus_score,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 The majority of policyholders hold a "G" (good) bonus score, indicating a portfolio with predominantly low-risk claims history. Bad and neutral scores are a small minority.
@@ -630,7 +728,10 @@ The majority of policyholders hold a "G" (good) bonus score, indicating a portfo
 ### circulation_area
 
 ```{r}
-ggplot(data=insurance, aes(x = circulation_area)) +
+p_circulation_area <- ggplot(
+  data=insurance, 
+  aes(x = circulation_area)
+  ) +
   geom_bar(fill = "grey90") +
   geom_text(stat="count",
             aes(label=paste0(after_stat(count))),
@@ -646,6 +747,17 @@ ggplot(data=insurance, aes(x = circulation_area)) +
     plot.background = element_rect(fill="white",
                                    colour="white")
   )
+
+p_circulation_area
+```
+
+```{r}
+#| echo: false
+ggsave("plots/bar_circulation_area.png", 
+       plot = p_circulation_area,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 Urban and rural circulation environment are quite distributed, with urban being more dominant. This implies that the expected claim frequency for vehicles predominantely in the urban areas typically carry higher accident exposure.
@@ -653,7 +765,10 @@ Urban and rural circulation environment are quite distributed, with urban being 
 ### year
 
 ```{r}
-ggplot(data=insurance, aes(x = year)) +
+p_year <- ggplot(
+  data=insurance, 
+  aes(x = year)
+  ) +
   geom_bar(fill = "grey90") +
   geom_text(stat="count",
             aes(label=paste0(after_stat(count))),
@@ -669,6 +784,26 @@ ggplot(data=insurance, aes(x = year)) +
     plot.background = element_rect(fill="white",
                                    colour="white")
   )
+
+p_year
+```
+
+```{r}
+#| echo: false
+ggsave("plots/bar_year.png", 
+       plot = p_year,
+       width = 8, 
+       height = 5,
+       dpi = 150)
+
+p_combined_categorical <- (p_policy_type | p_bonus_score) / 
+                          (p_circulation_area | p_year)
+
+ggsave("plots/categorical_2x2.png",
+       plot = p_combined_categorical,
+       width = 10,
+       height = 8,
+       dpi = 150)
 ```
 
 The dataset contains records across three years (2022–2024), with broadly similar policy counts per year. This suggests a stable portfolio size over the observation period, making year-on-year comparisons meaningful.
@@ -691,13 +826,24 @@ shapiro.test(sample(insurance$loss_ratio, 5000))
 Since result shows that it is significant, then Kruskal-Wallis test is used.
 
 ```{r}
-ggbetweenstats(
+p <- ggbetweenstats(
   data = insurance,
   x = bonus_score,
   y = loss_ratio,
   type = "np",
   title = "Relationship between bonus score and profitability"
 )
+
+p
+```
+
+```{r}
+#| echo: false
+ggsave("plots/biv_bonus_profitability.png", 
+       plot = p,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 The Kruskal-Wallis test reveals a statically significant difference in loss ratios across bonus score groups. Policyholders with poor claims history (bad bonus score) tend to exhibit higher loss ratios, consistent with expectation that past claims behavior is a strong predictor of future profitability.
@@ -707,13 +853,24 @@ The Kruskal-Wallis test reveals a statically significant difference in loss rati
 One-way ANOVA is also used to find the relationship between policy type and profitability since `policy_type` has 5 groups. Since the Shapiro test of `loss_ratio` is significant, then the test done should be non-parametric Kruskal-Wallis test.
 
 ```{r}
-ggbetweenstats(
+p <- ggbetweenstats(
   data = insurance,
   x = policy_type,
   y = loss_ratio,
   type = "np",
   title = "Relationship between policy type and profitability"
 )
+
+p
+```
+
+```{r}
+#| echo: false
+ggsave("plots/biv_policytype_profitability.png", 
+       plot = p,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 A statistically significant difference in loss ratios exists across policy types. Certain coverage types carry notably higher median loss ratios, suggesting that product mix is a meaningful driver of portfolio profitability.
@@ -723,13 +880,24 @@ A statistically significant difference in loss ratios exists across policy types
 Since circulation area only has 2 groups, the test done should be a two-sample test. In addition, since the Shapiro test for `loss_ratio` is significant, use the non-parametric version which is the Mann-Whitney U test.
 
 ```{r}
-ggbetweenstats(
+p <- ggbetweenstats(
   data = insurance,
   x = circulation_area,
   y = loss_ratio,
   type = "np",
   title = "Relationship between circulation area and profitability"
 )
+
+p
+```
+
+```{r}
+#| echo: false
+ggsave("plots/biv_circulation_profitability.png", 
+       plot = p,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 The Mann-Whitney U test indicates a statistically significant difference in loss ratios between urban and rural policyholders. Urban policies tend toward higher loss ratios, consistent with the higher accident exposure in density populated areas.
@@ -739,13 +907,24 @@ The Mann-Whitney U test indicates a statistically significant difference in loss
 Since driving experience is a numeric value, the test done should be a Significant Test of Correlation. This is done using `ggscatterstats`. Looking at the univariate analysis, even though `driving_experience` is normally distributed, `loss_ratio` is very skewed. So the non-parametric version is used instead, which is the Spearman's rank correlation coefficient.
 
 ```{r}
-ggscatterstats(
+p <- ggscatterstats(
   data = insurance,
   x = driving_experience,
   y = loss_ratio,
   type = "nonparametric",
   title = "Relationship between years of driving experience and profitability"
 )
+
+p
+```
+
+```{r}
+#| echo: false
+ggsave("plots/biv_drivingexp_profitability.png", 
+       plot = p,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 Spearman's rank correlation reveals a weak but statistically significant negative relationship between driving experience and loss ratio. More experienecd drivers tend to have marginally lower loss ratios, though the effect size suggests experience alone is not a strong stabalone predictor.
@@ -755,13 +934,24 @@ Spearman's rank correlation reveals a weak but statistically significant negativ
 Driver age is also numeric value that is normally distributed based on the univariate analysis. However, `loss_ratio` is very skewed, so the test to be done should be Spearman's rank correlation coefficient.
 
 ```{r}
-ggscatterstats(
+p <- ggscatterstats(
   data = insurance,
   x = driver_age,
   y = loss_ratio,
   type = "nonparametric",
   title = "Relationship between driver's age and profitability"
 )
+
+p
+```
+
+```{r}
+#| echo: false
+ggsave("plots/biv_driverage_profitability.png", 
+       plot = p,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 Spearman's rank correlation reveals a statistically significant but weak relationship between driver age and loss ratio. The direction and effect size suggest age alone has limited standalone predictive power for profitability, though it may interact with other factors such as driving experience.
@@ -771,13 +961,24 @@ Spearman's rank correlation reveals a statistically significant but weak relatio
 Vehicle age is also numeric value that is normally distributed based on the univariate analysis. However, `loss_ratio` is very skewed, so the test to be done should be Spearman's rank correlation coefficient.
 
 ```{r}
-ggscatterstats(
+p <- ggscatterstats(
   data = insurance,
   x = vehicle_age,
   y = loss_ratio,
   type = "nonparametric",
   title = "Relationship between vehicle age and profitability"
 )
+
+p
+```
+
+```{r}
+#| echo: false
+ggsave("plots/biv_vehicleage_profitability.png", 
+       plot = p,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 Spearman's rank correlation shows a statistically significant relationship between vehicle age and loss ratio. Older vehicles tend to be associated with differing loss patterns, potentially reflecting differences in repair costs or the types of claims made on ageing vehicles.
@@ -793,13 +994,24 @@ shapiro.test(sample(insurance$total_incurred, 5000))
 Like against `loss_ratio`, One-Way ANOVA is used. Since, the Shapiro test shows `total_incurred` is significant which means `total_incurred` is not normally distributed. Therefore, non-parametric test, Kruskal-Wallis, is used.
 
 ```{r}
-ggbetweenstats(
+p <- ggbetweenstats(
   data = insurance,
   x = bonus_score,
   y = total_incurred,
   type = "np",
   title = "Relationship between bonus score and volatility"
 )
+
+p
+```
+
+```{r}
+#| echo: false
+ggsave("plots/biv_bonus_volatility.png", 
+       plot = p,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 Similar to the profitability analysis, the Kruskal-Wallis test shows a significant difference in incurred costs across bonus score groups. Policyholders with poor claims history are associated with higher and more volatile incurred losses.
@@ -809,13 +1021,24 @@ Similar to the profitability analysis, the Kruskal-Wallis test shows a significa
 Policy type as mentioned before has 5 groups and it is confirmed that `total_incurred` is not normally distributed from Shapiro test, therefore Kruskal-Wallis is used.
 
 ```{r}
-ggbetweenstats(
+p <- ggbetweenstats(
   data = insurance,
   x = policy_type,
   y = total_incurred,
   type = "np",
   title = "Relationship between policy type and volatility"
 )
+
+p
+```
+
+```{r}
+#| echo: false
+ggsave("plots/biv_policytype_volatility.png", 
+       plot = p,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 Significant difference in total incurred costs exist across policy types, mirroring the profitability findings. Certain policy types no only affect lsos ratios but also drive higher absolute claim costs, contributing to portfolio volatility.
@@ -825,13 +1048,24 @@ Significant difference in total incurred costs exist across policy types, mirror
 Since circulation area only has 2 groups, the test done should be a two-sample test. In addition, since the `total_incurred` is not normally distributed, use the non-parametric version which is the Mann-Whitney U test.
 
 ```{r}
-ggbetweenstats(
+p <- ggbetweenstats(
   data = insurance,
   x = circulation_area,
   y = total_incurred,
   type = "np",
   title = "Relationship between circulation area and volatility"
 )
+
+p
+```
+
+```{r}
+#| echo: false
+ggsave("plots/biv_circulation_volatility.png", 
+       plot = p,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 The Mann-Whitney U test indicates a statistically significant difference in total incurred costs between urban and rural policyholders. Urban policies are associated with higher incurred losses, consistent with greater accident exposure in densely populated areas, reinforcing the profitability finding.
@@ -841,13 +1075,24 @@ The Mann-Whitney U test indicates a statistically significant difference in tota
 Since driving experience is a numeric value and is normally distributed, but `total_incurred` is very skewed, Spearman's rank correlation coefficient is done.
 
 ```{r}
-ggscatterstats(
+p <- ggscatterstats(
   data = insurance,
   x = driving_experience,
   y = total_incurred,
   type = "nonparametric",
   title = "Relationship between years of driving experience and volatility"
 )
+
+p
+```
+
+```{r}
+#| echo: false
+ggsave("plots/biv_drivingexp_volatility.png", 
+       plot = p,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 The Spearman correlation between driving experience and total incurred costs mirrors the profitability finding — a weak but statistically significant negative relationship. More experienced drivers tend to incur lower claim costs, though the effect size suggests it is not a dominant driver of volatility on its own.
@@ -857,13 +1102,24 @@ The Spearman correlation between driving experience and total incurred costs mir
 Driver age is also numeric value that is normally distributed based on the univariate analysis. However, `total_incurred` is very skewed, so Spearman's rank correlation coefficient is done.
 
 ```{r}
-ggscatterstats(
+p <- ggscatterstats(
   data = insurance,
   x = driver_age,
   y = total_incurred,
   type = "nonparametric",
   title = "Relationship between driver's age and volatility"
 )
+
+p
+```
+
+```{r}
+#| echo: false
+ggsave("plots/biv_driverage_volatility.png", 
+       plot = p,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 Consistent with the profitability analysis, driver age shows a statistically significant but weak correlation with total incurred costs. The result suggests age has a modest influence on claim severity, likely working in conjunction with other risk factors.
@@ -873,13 +1129,24 @@ Consistent with the profitability analysis, driver age shows a statistically sig
 Vehicle age is also numeric value that is normally distributed. However, `total_incurred` is very skewed, so the test to be done should be Spearman's rank correlation coefficient.
 
 ```{r}
-ggscatterstats(
+p <- ggscatterstats(
   data = insurance,
   x = vehicle_age,
   y = total_incurred,
   type = "nonparametric",
   title = "Relationship between vehicle age and volatility"
 )
+
+p
+```
+
+```{r}
+#| echo: false
+ggsave("plots/biv_vehicleage_volatility.png", 
+       plot = p,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 Vehicle age shows a statistically significant relationship with total incurred costs. Older vehicles appear associated with higher incurred losses, suggesting vehicle age contributes to claims volatility, possibly due to higher repair costs or increased mechanical vulnerability.
@@ -908,13 +1175,33 @@ insurance %>%
 ```
 
 ```{r}
-ggbetweenstats(
+#| echo: false
+ggsave("plots/line_lossratio_year.png", 
+       plot = last_plot(),
+       width = 8, 
+       height = 5,
+       dpi = 150)
+```
+
+```{r}
+p <- ggbetweenstats(
   data = insurance,
   x = year,
   y = loss_ratio,
   type = "np",
   title = "Profitability across Years (2022–2024)"
 )
+
+p
+```
+
+```{r}
+#| echo: false
+ggsave("plots/biv_year_profitability.png", 
+       plot = p,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 The mean loss ratio shows a consistent upward trend from 2022 to 2024 while the median remains at 0 across all years, indicating that rising averages are driven by outlier policies rather than broad portfolio deterioration. The Kruskal-Wallis test confirms this year-on-year difference is statistically significant (χ² = 196.05, p = 2.69e-43), with pairwise comparisons showing all three years differ significantly from each other.
@@ -938,6 +1225,15 @@ insurance %>%
 ```
 
 ```{r}
+#| echo: false
+ggsave("plots/line_totalincurred_year.png", 
+       plot = last_plot(),
+       width = 8, 
+       height = 5,
+       dpi = 150)
+```
+
+```{r}
 ggbetweenstats(
   data = insurance,
   x = year,
@@ -945,6 +1241,15 @@ ggbetweenstats(
   type = "np",
   title = "Volatility across Years (2022–2024)"
 )
+```
+
+```{r}
+#| echo: false
+ggsave("plots/biv_year_volatility.png", 
+       plot = p,
+       width = 8, 
+       height = 5,
+       dpi = 150)
 ```
 
 Mean total incurred costs similarly increase steadily from 2022 to 2024 while the median stays at 0, mirroring the loss ratio trend. The Kruskal-Wallis test confirms statistically significant differences across years (χ² = 215.90, p = 1.31e-47), with 2024 exhibiting the widest spread of extreme incurred values — suggesting claim severity has been worsening year on year.
