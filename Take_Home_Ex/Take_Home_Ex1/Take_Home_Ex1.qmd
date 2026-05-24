@@ -50,7 +50,7 @@ kable(head(insurance))
 
 2.  Some features have nulls: vehicle_value has 513 NAs, fuel_type has 1287 NAs, fire_incurred has 94 NAs, occupants_incurred has 25 NAs.
 
-3.  Categoricals (policy_type, policy_status, business_type, payment_frequency, bonus_score, fuel_type, municipality_type, circulation_area, vehicle_brand) are stored as characters <chr> instead of factors <fct>. With data type factors, R will understand that it is categoricals and not some string.
+3.  Categoricals (policy_type, policy_status, business_type, payment_frequency, bonus_score, fuel_type, municipality_type, circulation_area, vehicle_brand, year) are stored as characters <chr> instead of factors <fct>. With data type factors, R will understand that it is categoricals and not some string.
 
 # Data Wrangling
 

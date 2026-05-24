@@ -1551,7 +1551,7 @@
     "href": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#problems",
     "title": "Take-Home Exercise 1",
     "section": "Problems",
-    "text": "Problems\n\nAll features are now characters so need to change the data type of the numerical values into numeric.\nSome features have nulls: vehicle_value has 513 NAs, fuel_type has 1287 NAs, fire_incurred has 94 NAs, occupants_incurred has 25 NAs.\nCategoricals (policy_type, policy_status, business_type, payment_frequency, bonus_score, fuel_type, municipality_type, circulation_area, vehicle_brand) are stored as characters  instead of factors . With data type factors, R will understand that it is categoricals and not some string."
+    "text": "Problems\n\nAll features are now characters so need to change the data type of the numerical values into numeric.\nSome features have nulls: vehicle_value has 513 NAs, fuel_type has 1287 NAs, fire_incurred has 94 NAs, occupants_incurred has 25 NAs.\nCategoricals (policy_type, policy_status, business_type, payment_frequency, bonus_score, fuel_type, municipality_type, circulation_area, vehicle_brand, year) are stored as characters  instead of factors . With data type factors, R will understand that it is categoricals and not some string."
   },
   {
     "objectID": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#fixing-the-problems",
@@ -1797,5 +1797,19 @@
     "title": "Take-Home Exercise 1",
     "section": "Relationship between year and profitability along with volatility",
     "text": "Relationship between year and profitability along with volatility\n\n# Profitability\nggbetweenstats(\n  data = insurance,\n  x = year,\n  y = loss_ratio,\n  type = \"np\",\n  title = \"Profitability across Years (2022–2024)\"\n)\n\n\n\n\n\n\n\n# Volatility\nggbetweenstats(\n  data = insurance,\n  x = year,\n  y = total_incurred,\n  type = \"np\",\n  title = \"Volatility across Years (2022–2024)\"\n)"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1_presentation.html#contents",
+    "href": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1_presentation.html#contents",
+    "title": "Visual Analytics for Motor Vehicle Insurance",
+    "section": "Contents",
+    "text": "Contents\n\nOverview & Data\nTarget Variable Distributions\nRisk Factor Distributions\nClaims History\nProduct Mix\nDriving Environment & Experience\nDriver & Vehicle Characteristics\nTemporal Trends\n\n\nWe will go through 8 things in this slide which includes the overview, data, variables, and insights from univariate, bivariate and temporal analysis."
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1_presentation.html#overview-data",
+    "href": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1_presentation.html#overview-data",
+    "title": "Visual Analytics for Motor Vehicle Insurance",
+    "section": "Overview & Data",
+    "text": "Overview & Data\n\nDataset: 354,140 motor vehicle insurance policy records from a Spanish insurer (2022-2024)\nAfter cleaning: 352,289 records across 47 variables\nTarget Variables:\n\nloss_ratio - profitability metric (total incurred / total premium)\ntotal_incurred - volatility metric (absolute claim costs)\n\nKey Risk Factor Analyzed:\n\nClaims history, product mix, driving environment\nDriver & vehicle characteristics, temporal trends\n\nStatistical Approach: Non-parametric tests (Kruskal-Wallis, Mann-Whitney U, Spearman) used throughout due to non-normal distributions confirmed by Shapiro-Wilk test.\n\n\nThis presentation explores a real-world motor vehicle insurance dataset from a Spanish insurer, comprising 352,289 policy records spanning 2022 to 2024. The analysis is structured into univariate exploration of key variables, followed by bivariate analysis examining how various risk factors influence portfolio profitrability, measured by loss ratio, and volatility, measured by total incurred costs. Statistical tests including Krukal-Wallis and Spearman rank correlation are used throughout to validate findings."
   }
 ]
