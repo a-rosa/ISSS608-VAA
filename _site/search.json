@@ -1747,42 +1747,42 @@
     "href": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-driver-age-and-profitability",
     "title": "Take-Home Exercise 1",
     "section": "Relationship between driver age and profitability",
-    "text": "Relationship between driver age and profitability\nDriver age is also numeric value that is normally distributed based on the univariate analysis. However, loss_ratio is very skewed, so the test to be done should be Spearman’s rank correlation coefficient.\n\nggscatterstats(\n  data = insurance,\n  x = driver_age,\n  y = loss_ratio,\n  type = \"nonparametric\",\n  title = \"Relationship between driver's age and profitability\"\n)"
+    "text": "Relationship between driver age and profitability\nDriver age is also numeric value that is normally distributed based on the univariate analysis. However, loss_ratio is very skewed, so the test to be done should be Spearman’s rank correlation coefficient.\n\nggscatterstats(\n  data = insurance,\n  x = driver_age,\n  y = loss_ratio,\n  type = \"nonparametric\",\n  title = \"Relationship between driver's age and profitability\"\n)\n\n\n\n\n\n\n\n\nSpearman’s rank correlation reveals a statistically significant but weak relationship between driver age and loss ratio. The direction and effect size suggest age alone has limited standalone predictive power for profitability, though it may interact with other factors such as driving experience."
   },
   {
     "objectID": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-vehicle-age-and-profitability",
     "href": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-vehicle-age-and-profitability",
     "title": "Take-Home Exercise 1",
     "section": "Relationship between vehicle age and profitability",
-    "text": "Relationship between vehicle age and profitability\nVehicle age is also numeric value that is normally distributed based on the univariate analysis. However, loss_ratio is very skewed, so the test to be done should be Spearman’s rank correlation coefficient.\n\nggscatterstats(\n  data = insurance,\n  x = vehicle_age,\n  y = loss_ratio,\n  type = \"nonparametric\",\n  title = \"Relationship between vehicle age and profitability\"\n)"
+    "text": "Relationship between vehicle age and profitability\nVehicle age is also numeric value that is normally distributed based on the univariate analysis. However, loss_ratio is very skewed, so the test to be done should be Spearman’s rank correlation coefficient.\n\nggscatterstats(\n  data = insurance,\n  x = vehicle_age,\n  y = loss_ratio,\n  type = \"nonparametric\",\n  title = \"Relationship between vehicle age and profitability\"\n)\n\n\n\n\n\n\n\n\nSpearman’s rank correlation shows a statistically significant relationship between vehicle age and loss ratio. Older vehicles tend to be associated with differing loss patterns, potentially reflecting differences in repair costs or the types of claims made on ageing vehicles."
   },
   {
     "objectID": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-circulation-area-and-volatility",
     "href": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-circulation-area-and-volatility",
     "title": "Take-Home Exercise 1",
     "section": "Relationship between circulation area and volatility",
-    "text": "Relationship between circulation area and volatility\nSince circulation area only has 2 groups, the test done should be a two-sample test. In addition, since the total_incurred is not normally distributed, use the non-parametric version which is the Mann-Whitney U test.\n\nggbetweenstats(\n  data = insurance,\n  x = circulation_area,\n  y = total_incurred,\n  type = \"np\",\n  title = \"Relationship between circulation area and volatility\"\n)"
+    "text": "Relationship between circulation area and volatility\nSince circulation area only has 2 groups, the test done should be a two-sample test. In addition, since the total_incurred is not normally distributed, use the non-parametric version which is the Mann-Whitney U test.\n\nggbetweenstats(\n  data = insurance,\n  x = circulation_area,\n  y = total_incurred,\n  type = \"np\",\n  title = \"Relationship between circulation area and volatility\"\n)\n\n\n\n\n\n\n\n\nThe Mann-Whitney U test indicates a statistically significant difference in total incurred costs between urban and rural policyholders. Urban policies are associated with higher incurred losses, consistent with greater accident exposure in densely populated areas, reinforcing the profitability finding."
   },
   {
     "objectID": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-years-of-driving-experience-and-volatility",
     "href": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-years-of-driving-experience-and-volatility",
     "title": "Take-Home Exercise 1",
     "section": "Relationship between years of driving experience and volatility",
-    "text": "Relationship between years of driving experience and volatility\nSince driving experience is a numeric value and is normally distributed, but loss_ratio is very skewed, Spearman’s rank correlation coefficient is done.\n\nggscatterstats(\n  data = insurance,\n  x = driving_experience,\n  y = total_incurred,\n  type = \"nonparametric\",\n  title = \"Relationship between years of driving experience and volatility\"\n)"
+    "text": "Relationship between years of driving experience and volatility\nSince driving experience is a numeric value and is normally distributed, but total_incurred is very skewed, Spearman’s rank correlation coefficient is done.\n\nggscatterstats(\n  data = insurance,\n  x = driving_experience,\n  y = total_incurred,\n  type = \"nonparametric\",\n  title = \"Relationship between years of driving experience and volatility\"\n)\n\n\n\n\n\n\n\n\nThe Spearman correlation between driving experience and total incurred costs mirrors the profitability finding — a weak but statistically significant negative relationship. More experienced drivers tend to incur lower claim costs, though the effect size suggests it is not a dominant driver of volatility on its own."
   },
   {
     "objectID": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-driver-age-and-volatility",
     "href": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-driver-age-and-volatility",
     "title": "Take-Home Exercise 1",
     "section": "Relationship between driver age and volatility",
-    "text": "Relationship between driver age and volatility\nDriver age is also numeric value that is normally distributed based on the univariate analysis. However, total_incurred is very skewed, so Spearman’s rank correlation coefficient is done.\n\nggscatterstats(\n  data = insurance,\n  x = driver_age,\n  y = total_incurred,\n  type = \"nonparametric\",\n  title = \"Relationship between driver's age and volatility\"\n)"
+    "text": "Relationship between driver age and volatility\nDriver age is also numeric value that is normally distributed based on the univariate analysis. However, total_incurred is very skewed, so Spearman’s rank correlation coefficient is done.\n\nggscatterstats(\n  data = insurance,\n  x = driver_age,\n  y = total_incurred,\n  type = \"nonparametric\",\n  title = \"Relationship between driver's age and volatility\"\n)\n\n\n\n\n\n\n\n\nConsistent with the profitability analysis, driver age shows a statistically significant but weak correlation with total incurred costs. The result suggests age has a modest influence on claim severity, likely working in conjunction with other risk factors."
   },
   {
     "objectID": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-vehicle-age-and-volatility",
     "href": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-vehicle-age-and-volatility",
     "title": "Take-Home Exercise 1",
     "section": "Relationship between vehicle age and volatility",
-    "text": "Relationship between vehicle age and volatility\nVehicle age is also numeric value that is normally distributed. However, total_incurred is very skewed, so the test to be done should be Spearman’s rank correlation coefficient.\n\nggscatterstats(\n  data = insurance,\n  x = vehicle_age,\n  y = total_incurred,\n  type = \"nonparametric\",\n  title = \"Relationship between vehicle age and volatility\"\n)"
+    "text": "Relationship between vehicle age and volatility\nVehicle age is also numeric value that is normally distributed. However, total_incurred is very skewed, so the test to be done should be Spearman’s rank correlation coefficient.\n\nggscatterstats(\n  data = insurance,\n  x = vehicle_age,\n  y = total_incurred,\n  type = \"nonparametric\",\n  title = \"Relationship between vehicle age and volatility\"\n)\n\n\n\n\n\n\n\n\nVehicle age shows a statistically significant relationship with total incurred costs. Older vehicles appear associated with higher incurred losses, suggesting vehicle age contributes to claims volatility, possibly due to higher repair costs or increased mechanical vulnerability."
   },
   {
     "objectID": "Take_Home_Ex/Take_Home_Ex1/Take_Home_Ex1.html#relationship-between-volatility-and-profitability-based-on-year",

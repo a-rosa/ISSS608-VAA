@@ -8,6 +8,7 @@ execute:
   echo: true
   warning: false
   freeze: true
+  cache: true
 ---
 
 # Overview
@@ -158,7 +159,7 @@ Profitability is about how much profit the insurance company can make from a pol
 Other variables that can help explain profitability and volatility are listed on the table below
 
 | Variable | Description | Purpose |
-|-----------------------|-----------------------------|---------------------|
+|-----------------------|----------------------------|---------------------|
 | `total_premium` | Revenue collected per policy | Provides context on income side of portfolio |
 | `total_claims` | Number of claims made | Indicates claim frequency which directly drives costs |
 | `driver_age` | Age of driver | Older or younger drivers may present different risk profiles |
@@ -168,37 +169,37 @@ Other variables that can help explain profitability and volatility are listed on
 | `bonus_score` | Claims history indicator | Drivers with poor claims history are likely higher risk |
 | `circulation_area` | Urban vs rural driving environment | Urban areas typically have higher accident rates |
 
-: {tbl-colwidths="[20,20, 60]"}
+: {tbl-colwidths="\[20,20, 60\]"}
 
-Year will also be taken as the temporal variable to be observed. 
+Year will also be taken as the temporal variable to be observed.
 
 # Univariate Analysis
 
-For univariate analysis, there are 2 types of models to be done based on if the values are numeric or categorical. 
+For univariate analysis, there are 2 types of models to be done based on if the values are numeric or categorical.
 
 The numeric ones will use histogram and boxplot together. Histogram will be used to show the shape of the distribution. Boxplot will complement it by highlighting median, IQR and outliers. Both are combined using patchwork for a more complete view.
 
-The categorical values will use bar chart. This type of graph is able to show frequency distribution of each level. 
+The categorical values will use bar chart. This type of graph is able to show frequency distribution of each level.
 
 The table below will show the which features are numerical and categorical and the type of univariate analysis done.
 
-| Variable | Type of value | Univariate analysis |
-|-----------------------|-----------------------------|---------------------|
-| `total_incurred` | Numerical | histogram + boxplot |
-| `loss_ratio` | Numerical | histogram + boxplot |
-| `total_premium` | Numerical | histogram + boxplot |
-| `total_claims` | Numerical | histogram + boxplot |
-| `driver_age` | Numerical | histogram + boxplot |
-| `vehicle_age` | Numerical | histogram + boxplot |
-| `driving_experience` | Numerical | histogram + boxplot |
-| `policy_type` | Categorical | bar chart |
-| `bonus_score` | Categorical | bar chart |
-| `circulation_area` | Categorical | bar chart |
-| `year` | Categorical | bar chart |
+| Variable             | Type of value | Univariate analysis |
+|----------------------|---------------|---------------------|
+| `total_incurred`     | Numerical     | histogram + boxplot |
+| `loss_ratio`         | Numerical     | histogram + boxplot |
+| `total_premium`      | Numerical     | histogram + boxplot |
+| `total_claims`       | Numerical     | histogram + boxplot |
+| `driver_age`         | Numerical     | histogram + boxplot |
+| `vehicle_age`        | Numerical     | histogram + boxplot |
+| `driving_experience` | Numerical     | histogram + boxplot |
+| `policy_type`        | Categorical   | bar chart           |
+| `bonus_score`        | Categorical   | bar chart           |
+| `circulation_area`   | Categorical   | bar chart           |
+| `year`               | Categorical   | bar chart           |
 
 ## Distribution of target variables
 
-::::: panel-tabset
+:::: panel-tabset
 ### Volatility
 
 ```{r}
@@ -266,7 +267,7 @@ insurance %>%
 ```
 
 ::: callout-note
-There are 243 policies with extreme loss ratios exceeding 100, indicating cases where claim cost far outweigh the premium collected. As these are outliers, the distribution is plotted within the range of 0 and 100 to better visualise the majority of policies. 
+There are 243 policies with extreme loss ratios exceeding 100, indicating cases where claim cost far outweigh the premium collected. As these are outliers, the distribution is plotted within the range of 0 and 100 to better visualise the majority of policies.
 :::
 
 ```{r}
@@ -314,12 +315,11 @@ hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
 Similar to `total_incurred`, `loss_ratio` extreme right skew with a median of 0 and 243 policies exceeding a ratio of 100. The wide gap between mean (0.788) and median (0) suggest the average is heavily pulled by catastrophic outlier policies.
-
-:::::
+::::
 
 ## Distribution of other risk factors
 
-:::: panel-tabset
+::: panel-tabset
 ### total_premium
 
 ```{r}
@@ -527,7 +527,7 @@ hbox <- (box_va / hist_va) +
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
-Vehicle age is broadly distributed with a median of 25 years and mean of 25.9, suggesting the portfolio is dominated by older vehicles. This i notable as older vehicles may have different risk profiles for certain claim types. 
+Vehicle age is broadly distributed with a median of 25 years and mean of 25.9, suggesting the portfolio is dominated by older vehicles. This i notable as older vehicles may have different risk profiles for certain claim types.
 
 ### driving_experience
 
@@ -579,7 +579,7 @@ hbox <- (box_de / hist_de) +
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
-Driving experience closely mirrors vehicle age in distribution (median 25, mean 26), which is expected given it si derived from driver age. Most insured drivers are experienced, with the distribution peaking around 20-30 years of experience. 
+Driving experience closely mirrors vehicle age in distribution (median 25, mean 26), which is expected given it si derived from driver age. Most insured drivers are experienced, with the distribution peaking around 20-30 years of experience.
 
 ### policy_type
 
@@ -602,7 +602,7 @@ ggplot(data=insurance, aes(x = policy_type)) +
   )
 ```
 
-The portfolio is concentrated in a small number of policy types, with type CC being the most dominant. This shows limited product diversification. 
+The portfolio is concentrated in a small number of policy types, with type CC being the most dominant. This shows limited product diversification.
 
 ### bonus_score
 
@@ -625,7 +625,7 @@ ggplot(data=insurance, aes(x = bonus_score)) +
   )
 ```
 
-The majority of policyholders hold a "G" (good) bonus score, indicating a portfolio with predominantly low-risk claims history. Bad and neutral scores are a small minority. 
+The majority of policyholders hold a "G" (good) bonus score, indicating a portfolio with predominantly low-risk claims history. Bad and neutral scores are a small minority.
 
 ### circulation_area
 
@@ -648,7 +648,7 @@ ggplot(data=insurance, aes(x = circulation_area)) +
   )
 ```
 
-Urban and rural circulation environment are quite distributed, with urban being more dominant. This implies that the expected claim frequency for vehicles predominantely in the urban areas typically carry higher accident exposure.   
+Urban and rural circulation environment are quite distributed, with urban being more dominant. This implies that the expected claim frequency for vehicles predominantely in the urban areas typically carry higher accident exposure.
 
 ### year
 
@@ -672,12 +672,11 @@ ggplot(data=insurance, aes(x = year)) +
 ```
 
 The dataset contains records across three years (2022–2024), with broadly similar policy counts per year. This suggests a stable portfolio size over the observation period, making year-on-year comparisons meaningful.
-
-::::
+:::
 
 # Bivariate Analysis
 
-`ggbetweenstats` and `ggscatterstats` are used to do statistical bivariate analysis. 
+`ggbetweenstats` and `ggscatterstats` are used to do statistical bivariate analysis.
 
 ## Relationship between bonus score and profitability
 
@@ -701,11 +700,11 @@ ggbetweenstats(
 )
 ```
 
-The Kruskal-Wallis test reveals a statically significant difference in loss ratios across bonus score groups. Policyholders with poor claims history (bad bonus score) tend to exhibit higher loss ratios, consistent with expectation that past claims behavior is a strong predictor of future profitability. 
+The Kruskal-Wallis test reveals a statically significant difference in loss ratios across bonus score groups. Policyholders with poor claims history (bad bonus score) tend to exhibit higher loss ratios, consistent with expectation that past claims behavior is a strong predictor of future profitability.
 
 ## Relationship between policy type and profitability
 
-One-way ANOVA is also used to find the relationship between policy type and profitability since `policy_type` has 5 groups. Since the Shapiro test of `loss_ratio` is significant, then the test done should be non-parametric Kruskal-Wallis test. 
+One-way ANOVA is also used to find the relationship between policy type and profitability since `policy_type` has 5 groups. Since the Shapiro test of `loss_ratio` is significant, then the test done should be non-parametric Kruskal-Wallis test.
 
 ```{r}
 ggbetweenstats(
@@ -717,11 +716,11 @@ ggbetweenstats(
 )
 ```
 
-A statistically significant difference in loss ratios exists across policy types. Certain coverage types carry notably higher median loss ratios, suggesting that product mix is a meaningful driver of portfolio profitability. 
+A statistically significant difference in loss ratios exists across policy types. Certain coverage types carry notably higher median loss ratios, suggesting that product mix is a meaningful driver of portfolio profitability.
 
 ## Relationship between circulation area and profitability
 
-Since circulation area only has 2 groups, the test done should be a two-sample test. In addition, since the Shapiro test for `loss_ratio` is significant, use the non-parametric version which is the Mann-Whitney U test. 
+Since circulation area only has 2 groups, the test done should be a two-sample test. In addition, since the Shapiro test for `loss_ratio` is significant, use the non-parametric version which is the Mann-Whitney U test.
 
 ```{r}
 ggbetweenstats(
@@ -749,7 +748,7 @@ ggscatterstats(
 )
 ```
 
-Spearman's rank correlation reveals a weak but statistically significant negative relationship between driving experience and loss ratio. More experienecd drivers tend to have marginally lower loss ratios, though the effect size suggests experience alone is not a strong stabalone predictor. 
+Spearman's rank correlation reveals a weak but statistically significant negative relationship between driving experience and loss ratio. More experienecd drivers tend to have marginally lower loss ratios, though the effect size suggests experience alone is not a strong stabalone predictor.
 
 ## Relationship between driver age and profitability
 
@@ -765,6 +764,8 @@ ggscatterstats(
 )
 ```
 
+Spearman's rank correlation reveals a statistically significant but weak relationship between driver age and loss ratio. The direction and effect size suggest age alone has limited standalone predictive power for profitability, though it may interact with other factors such as driving experience.
+
 ## Relationship between vehicle age and profitability
 
 Vehicle age is also numeric value that is normally distributed based on the univariate analysis. However, `loss_ratio` is very skewed, so the test to be done should be Spearman's rank correlation coefficient.
@@ -779,6 +780,8 @@ ggscatterstats(
 )
 ```
 
+Spearman's rank correlation shows a statistically significant relationship between vehicle age and loss ratio. Older vehicles tend to be associated with differing loss patterns, potentially reflecting differences in repair costs or the types of claims made on ageing vehicles.
+
 ## Relationship between bonus score and volatility
 
 ```{r}
@@ -787,7 +790,7 @@ set.seed(123)
 shapiro.test(sample(insurance$total_incurred, 5000))
 ```
 
-Like against `loss_ratio`, One-Way ANOVA is used. Since, the Shapiro test shows `total_incurred` is significant which means `total_incurred` is not normally distributed. Therefore, non-parametric test, Kruskal-Wallis, is used. 
+Like against `loss_ratio`, One-Way ANOVA is used. Since, the Shapiro test shows `total_incurred` is significant which means `total_incurred` is not normally distributed. Therefore, non-parametric test, Kruskal-Wallis, is used.
 
 ```{r}
 ggbetweenstats(
@@ -799,11 +802,11 @@ ggbetweenstats(
 )
 ```
 
-Similar to the profitability analysis, the Kruskal-Wallis test shows a significant difference in incurred costs across bonus score groups. Policyholders with poor claims history are associated with higher and more volatile incurred losses. 
+Similar to the profitability analysis, the Kruskal-Wallis test shows a significant difference in incurred costs across bonus score groups. Policyholders with poor claims history are associated with higher and more volatile incurred losses.
 
 ## Relationship between policy type and volatility
 
-Policy type as mentioned before has 5 groups and it is confirmed that `total_incurred` is not normally distributed from Shapiro test, therefore Kruskal-Wallis is used. 
+Policy type as mentioned before has 5 groups and it is confirmed that `total_incurred` is not normally distributed from Shapiro test, therefore Kruskal-Wallis is used.
 
 ```{r}
 ggbetweenstats(
@@ -815,11 +818,11 @@ ggbetweenstats(
 )
 ```
 
-Significant difference in total incurred costs exist across policy types, mirroring the profitability findings. Certain policy types no only affect lsos ratios but also drive higher absolute claim costs, contributing to portfolio volatility. 
+Significant difference in total incurred costs exist across policy types, mirroring the profitability findings. Certain policy types no only affect lsos ratios but also drive higher absolute claim costs, contributing to portfolio volatility.
 
 ## Relationship between circulation area and volatility
 
-Since circulation area only has 2 groups, the test done should be a two-sample test. In addition, since the `total_incurred` is not normally distributed, use the non-parametric version which is the Mann-Whitney U test. 
+Since circulation area only has 2 groups, the test done should be a two-sample test. In addition, since the `total_incurred` is not normally distributed, use the non-parametric version which is the Mann-Whitney U test.
 
 ```{r}
 ggbetweenstats(
@@ -831,9 +834,11 @@ ggbetweenstats(
 )
 ```
 
+The Mann-Whitney U test indicates a statistically significant difference in total incurred costs between urban and rural policyholders. Urban policies are associated with higher incurred losses, consistent with greater accident exposure in densely populated areas, reinforcing the profitability finding.
+
 ## Relationship between years of driving experience and volatility
 
-Since driving experience is a numeric value and is normally distributed, but `loss_ratio` is very skewed, Spearman's rank correlation coefficient is done.
+Since driving experience is a numeric value and is normally distributed, but `total_incurred` is very skewed, Spearman's rank correlation coefficient is done.
 
 ```{r}
 ggscatterstats(
@@ -844,6 +849,8 @@ ggscatterstats(
   title = "Relationship between years of driving experience and volatility"
 )
 ```
+
+The Spearman correlation between driving experience and total incurred costs mirrors the profitability finding — a weak but statistically significant negative relationship. More experienced drivers tend to incur lower claim costs, though the effect size suggests it is not a dominant driver of volatility on its own.
 
 ## Relationship between driver age and volatility
 
@@ -859,6 +866,8 @@ ggscatterstats(
 )
 ```
 
+Consistent with the profitability analysis, driver age shows a statistically significant but weak correlation with total incurred costs. The result suggests age has a modest influence on claim severity, likely working in conjunction with other risk factors.
+
 ## Relationship between vehicle age and volatility
 
 Vehicle age is also numeric value that is normally distributed. However, `total_incurred` is very skewed, so the test to be done should be Spearman's rank correlation coefficient.
@@ -873,15 +882,20 @@ ggscatterstats(
 )
 ```
 
-## Relationship between volatility and profitability based on year
+Vehicle age shows a statistically significant relationship with total incurred costs. Older vehicles appear associated with higher incurred losses, suggesting vehicle age contributes to claims volatility, possibly due to higher repair costs or increased mechanical vulnerability.
+
+# Temporal Analysis: Profitability and Volatility Across Years
+
+To examine temporal trends, year is treated as a categorical grouping variable given only three time points are available (2022–2024). A line chart of mean and median values is first used to visualise the direction of change, followed by Kruskal-Wallis tests via ggbetweenstats to statistically validate whether differences across years are significant.
+
+::: panel-tabset
+## Profitability across years
 
 ```{r}
 insurance %>%
   group_by(year) %>%
   summarise(mean_lr = mean(loss_ratio),
-            median_lr = median(loss_ratio),
-            mean_ti = mean(total_incurred),
-            median_ti = median(total_incurred)) %>%
+            median_lr = median(loss_ratio)) %>%
   pivot_longer(cols = c(mean_lr, median_lr),
                names_to = "metric",
                values_to = "value") %>%
@@ -893,10 +907,7 @@ insurance %>%
   theme_minimal()
 ```
 
-## Relationship between year and profitability along with volatility
-
 ```{r}
-# Profitability
 ggbetweenstats(
   data = insurance,
   x = year,
@@ -904,8 +915,29 @@ ggbetweenstats(
   type = "np",
   title = "Profitability across Years (2022–2024)"
 )
+```
 
-# Volatility
+The mean loss ratio shows a consistent upward trend from 2022 to 2024 while the median remains at 0 across all years, indicating that rising averages are driven by outlier policies rather than broad portfolio deterioration. The Kruskal-Wallis test confirms this year-on-year difference is statistically significant (χ² = 196.05, p = 2.69e-43), with pairwise comparisons showing all three years differ significantly from each other.
+
+## Volatility across years
+
+```{r}
+insurance %>%
+  group_by(year) %>%
+  summarise(mean_ti = mean(total_incurred),
+            median_ti = median(total_incurred)) %>%
+  pivot_longer(cols = c(mean_ti, median_ti),
+               names_to = "metric",
+               values_to = "value") %>%
+  ggplot(aes(x = year, y = value,
+             colour = metric, group = metric)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Mean and Median Total Incurred by Year") +
+  theme_minimal()
+```
+
+```{r}
 ggbetweenstats(
   data = insurance,
   x = year,
@@ -915,3 +947,9 @@ ggbetweenstats(
 )
 ```
 
+Mean total incurred costs similarly increase steadily from 2022 to 2024 while the median stays at 0, mirroring the loss ratio trend. The Kruskal-Wallis test confirms statistically significant differences across years (χ² = 215.90, p = 1.31e-47), with 2024 exhibiting the widest spread of extreme incurred values — suggesting claim severity has been worsening year on year.
+:::
+
+::: callout-note
+The significant difference in sample size across years — 2022 (n = 66,889), 2023 (n = 118,264), and 2024 (n = 167,136) — should be interpreted with caution, as the smaller 2022 sample may underrepresent the true distribution for that year.
+:::

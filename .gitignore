@@ -7,5 +7,5 @@
 
 /.quarto/
 **/*.quarto_ipynb
-Take_Home_Ex/Take_Home_Ex1/Motor_Insurance.csv
 Take_Home_Ex/Take_Home_Ex1/Motor_insurance.csv
+*_cache/

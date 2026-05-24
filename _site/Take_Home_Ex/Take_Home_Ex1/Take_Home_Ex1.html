@@ -233,9 +233,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#relationship-between-years-of-driving-experience-and-volatility" id="toc-relationship-between-years-of-driving-experience-and-volatility" class="nav-link" data-scroll-target="#relationship-between-years-of-driving-experience-and-volatility">Relationship between years of driving experience and volatility</a></li>
   <li><a href="#relationship-between-driver-age-and-volatility" id="toc-relationship-between-driver-age-and-volatility" class="nav-link" data-scroll-target="#relationship-between-driver-age-and-volatility">Relationship between driver age and volatility</a></li>
   <li><a href="#relationship-between-vehicle-age-and-volatility" id="toc-relationship-between-vehicle-age-and-volatility" class="nav-link" data-scroll-target="#relationship-between-vehicle-age-and-volatility">Relationship between vehicle age and volatility</a></li>
-  <li><a href="#relationship-between-volatility-and-profitability-based-on-year" id="toc-relationship-between-volatility-and-profitability-based-on-year" class="nav-link" data-scroll-target="#relationship-between-volatility-and-profitability-based-on-year">Relationship between volatility and profitability based on year</a></li>
-  <li><a href="#relationship-between-year-and-profitability-along-with-volatility" id="toc-relationship-between-year-and-profitability-along-with-volatility" class="nav-link" data-scroll-target="#relationship-between-year-and-profitability-along-with-volatility">Relationship between year and profitability along with volatility</a></li>
   </ul></li>
+  <li><a href="#temporal-analysis-profitability-and-volatility-across-years" id="toc-temporal-analysis-profitability-and-volatility-across-years" class="nav-link" data-scroll-target="#temporal-analysis-profitability-and-volatility-across-years">Temporal Analysis: Profitability and Volatility Across Years</a></li>
   </ul>
 </nav>
     </div>
@@ -1489,11 +1488,6 @@ $ liability_exposure          &lt;dbl&gt; 0.09863014, 1.00000000, 1.00000000, 1.
 <p>The categorical values will use bar chart. This type of graph is able to show frequency distribution of each level.</p>
 <p>The table below will show the which features are numerical and categorical and the type of univariate analysis done.</p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 31%">
-<col style="width: 39%">
-<col style="width: 28%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>Variable</th>
@@ -2264,6 +2258,7 @@ W = 0.12385, p-value &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
+<p>Spearman’s rank correlation reveals a statistically significant but weak relationship between driver age and loss ratio. The direction and effect size suggest age alone has limited standalone predictive power for profitability, though it may interact with other factors such as driving experience.</p>
 </section>
 <section id="relationship-between-vehicle-age-and-profitability" class="level2">
 <h2 class="anchored" data-anchor-id="relationship-between-vehicle-age-and-profitability">Relationship between vehicle age and profitability</h2>
@@ -2284,6 +2279,7 @@ W = 0.12385, p-value &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
+<p>Spearman’s rank correlation shows a statistically significant relationship between vehicle age and loss ratio. Older vehicles tend to be associated with differing loss patterns, potentially reflecting differences in repair costs or the types of claims made on ageing vehicles.</p>
 </section>
 <section id="relationship-between-bonus-score-and-volatility" class="level2">
 <h2 class="anchored" data-anchor-id="relationship-between-bonus-score-and-volatility">Relationship between bonus score and volatility</h2>
@@ -2358,10 +2354,11 @@ W = 0.17964, p-value &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
+<p>The Mann-Whitney U test indicates a statistically significant difference in total incurred costs between urban and rural policyholders. Urban policies are associated with higher incurred losses, consistent with greater accident exposure in densely populated areas, reinforcing the profitability finding.</p>
 </section>
 <section id="relationship-between-years-of-driving-experience-and-volatility" class="level2">
 <h2 class="anchored" data-anchor-id="relationship-between-years-of-driving-experience-and-volatility">Relationship between years of driving experience and volatility</h2>
-<p>Since driving experience is a numeric value and is normally distributed, but <code>loss_ratio</code> is very skewed, Spearman’s rank correlation coefficient is done.</p>
+<p>Since driving experience is a numeric value and is normally distributed, but <code>total_incurred</code> is very skewed, Spearman’s rank correlation coefficient is done.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggscatterstats</span>(</span>
 <span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
@@ -2378,6 +2375,7 @@ W = 0.17964, p-value &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
+<p>The Spearman correlation between driving experience and total incurred costs mirrors the profitability finding — a weak but statistically significant negative relationship. More experienced drivers tend to incur lower claim costs, though the effect size suggests it is not a dominant driver of volatility on its own.</p>
 </section>
 <section id="relationship-between-driver-age-and-volatility" class="level2">
 <h2 class="anchored" data-anchor-id="relationship-between-driver-age-and-volatility">Relationship between driver age and volatility</h2>
@@ -2398,6 +2396,7 @@ W = 0.17964, p-value &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
+<p>Consistent with the profitability analysis, driver age shows a statistically significant but weak correlation with total incurred costs. The result suggests age has a modest influence on claim severity, likely working in conjunction with other risk factors.</p>
 </section>
 <section id="relationship-between-vehicle-age-and-volatility" class="level2">
 <h2 class="anchored" data-anchor-id="relationship-between-vehicle-age-and-volatility">Relationship between vehicle age and volatility</h2>
@@ -2418,25 +2417,30 @@ W = 0.17964, p-value &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
+<p>Vehicle age shows a statistically significant relationship with total incurred costs. Older vehicles appear associated with higher incurred losses, suggesting vehicle age contributes to claims volatility, possibly due to higher repair costs or increased mechanical vulnerability.</p>
 </section>
-<section id="relationship-between-volatility-and-profitability-based-on-year" class="level2">
-<h2 class="anchored" data-anchor-id="relationship-between-volatility-and-profitability-based-on-year">Relationship between volatility and profitability based on year</h2>
+</section>
+<section id="temporal-analysis-profitability-and-volatility-across-years" class="level1">
+<h1>Temporal Analysis: Profitability and Volatility Across Years</h1>
+<p>To examine temporal trends, year is treated as a categorical grouping variable given only three time points are available (2022–2024). A line chart of mean and median values is first used to visualise the direction of change, followed by Kruskal-Wallis tests via ggbetweenstats to statistically validate whether differences across years are significant.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Profitability across years</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Volatility across years</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>insurance <span class="sc">%&gt;%</span></span>
 <span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span></span>
 <span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_lr =</span> <span class="fu">mean</span>(loss_ratio),</span>
-<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">median_lr =</span> <span class="fu">median</span>(loss_ratio),</span>
-<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mean_ti =</span> <span class="fu">mean</span>(total_incurred),</span>
-<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">median_ti =</span> <span class="fu">median</span>(total_incurred)) <span class="sc">%&gt;%</span></span>
-<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(mean_lr, median_lr),</span>
-<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"metric"</span>,</span>
-<span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb72-10"><a href="#cb72-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> value,</span>
-<span id="cb72-11"><a href="#cb72-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> metric, <span class="at">group =</span> metric)) <span class="sc">+</span></span>
-<span id="cb72-12"><a href="#cb72-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb72-13"><a href="#cb72-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb72-14"><a href="#cb72-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mean and Median Loss Ratio by Year"</span>) <span class="sc">+</span></span>
-<span id="cb72-15"><a href="#cb72-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">median_lr =</span> <span class="fu">median</span>(loss_ratio)) <span class="sc">%&gt;%</span></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(mean_lr, median_lr),</span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"metric"</span>,</span>
+<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> value,</span>
+<span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> metric, <span class="at">group =</span> metric)) <span class="sc">+</span></span>
+<span id="cb72-10"><a href="#cb72-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb72-11"><a href="#cb72-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb72-12"><a href="#cb72-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mean and Median Loss Ratio by Year"</span>) <span class="sc">+</span></span>
+<span id="cb72-13"><a href="#cb72-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -2445,18 +2449,14 @@ W = 0.17964, p-value &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
-</section>
-<section id="relationship-between-year-and-profitability-along-with-volatility" class="level2">
-<h2 class="anchored" data-anchor-id="relationship-between-year-and-profitability-along-with-volatility">Relationship between year and profitability along with volatility</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Profitability</span></span>
-<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
-<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
-<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> year,</span>
-<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> loss_ratio,</span>
-<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"np"</span>,</span>
-<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Profitability across Years (2022–2024)"</span></span>
-<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> year,</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> loss_ratio,</span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"np"</span>,</span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Profitability across Years (2022–2024)"</span></span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -2464,25 +2464,67 @@ W = 0.17964, p-value &lt; 2.2e-16</code></pre>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Volatility</span></span>
-<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
-<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
-<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> year,</span>
-<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> total_incurred,</span>
-<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"np"</span>,</span>
-<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Volatility across Years (2022–2024)"</span></span>
-<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The mean loss ratio shows a consistent upward trend from 2022 to 2024 while the median remains at 0 across all years, indicating that rising averages are driven by outlier policies rather than broad portfolio deterioration. The Kruskal-Wallis test confirms this year-on-year difference is statistically significant (χ² = 196.05, p = 2.69e-43), with pairwise comparisons showing all three years differ significantly from each other.</p>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>insurance <span class="sc">%&gt;%</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span></span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_ti =</span> <span class="fu">mean</span>(total_incurred),</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">median_ti =</span> <span class="fu">median</span>(total_incurred)) <span class="sc">%&gt;%</span></span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(mean_ti, median_ti),</span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"metric"</span>,</span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> value,</span>
+<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> metric, <span class="at">group =</span> metric)) <span class="sc">+</span></span>
+<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb74-11"><a href="#cb74-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb74-12"><a href="#cb74-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mean and Median Total Incurred by Year"</span>) <span class="sc">+</span></span>
+<span id="cb74-13"><a href="#cb74-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take_Home_Ex1_files/figure-html/unnamed-chunk-45-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Take_Home_Ex1_files/figure-html/unnamed-chunk-46-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> insurance,</span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> year,</span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> total_incurred,</span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"np"</span>,</span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Volatility across Years (2022–2024)"</span></span>
+<span id="cb75-7"><a href="#cb75-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take_Home_Ex1_files/figure-html/unnamed-chunk-47-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Mean total incurred costs similarly increase steadily from 2022 to 2024 while the median stays at 0, mirroring the loss ratio trend. The Kruskal-Wallis test confirms statistically significant differences across years (χ² = 215.90, p = 1.31e-47), with 2024 exhibiting the widest spread of extreme incurred values — suggesting claim severity has been worsening year on year.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The significant difference in sample size across years — 2022 (n = 66,889), 2023 (n = 118,264), and 2024 (n = 167,136) — should be interpreted with caution, as the smaller 2022 sample may underrepresent the true distribution for that year.</p>
+</div>
+</div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
