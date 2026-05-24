@@ -58,7 +58,7 @@ kable(head(insurance))
 ```{r}
 insurance <- insurance %>%
   # Fix numerical columns' data type
-  mutate(across(c(insured_id, year, driver_age, vehicle_age,
+  mutate(across(c(insured_id, driver_age, vehicle_age,
                   age_driving_licence, vehicle_value, 
                   seats, power_to_weight_ratio,
                   total_premium, total_claims,
@@ -84,7 +84,7 @@ insurance <- insurance %>%
   mutate(across(c(policy_type, policy_status, business_type,
                   payment_frequency,bonus_score, fuel_type,
                   municipality_type, circulation_area,
-                  vehicle_brand),
+                  vehicle_brand, year),
                 as.factor)) %>%
   drop_na()
 
@@ -170,6 +170,8 @@ Other variables that can help explain profitability and volatility are listed on
 
 : {tbl-colwidths="[20,20, 60]"}
 
+Year will also be taken as the temporal variable to be observed. 
+
 # Univariate Analysis
 
 For univariate analysis, there are 2 types of models to be done based on if the values are numeric or categorical. 
@@ -192,6 +194,7 @@ The table below will show the which features are numerical and categorical and t
 | `policy_type` | Categorical | bar chart |
 | `bonus_score` | Categorical | bar chart |
 | `circulation_area` | Categorical | bar chart |
+| `year` | Categorical | bar chart |
 
 ## Distribution of target variables
 
@@ -247,9 +250,7 @@ hbox <- (box_cost / hist_cost) +
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
-::: callout-note
-There are a lot of zeros as compared to the others, as majority have no claims made. This is known as zero-inflation. 
-:::
+The distribution is heavily right-skewed with severe zero-inflation, as the median is 0 and the mean is 208.4. This indicates the majority of policies incurred no claims, with a small proportion of policies driving disproportinately high losses - a pattern typical in insurance portofolios.
 
 ### Profitability
 
@@ -311,6 +312,9 @@ hbox <- (box_ratio / hist_ratio) +
 
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
+
+Similar to `total_incurred`, `loss_ratio` extreme right skew with a median of 0 and 243 policies exceeding a ratio of 100. The wide gap between mean (0.788) and median (0) suggest the average is heavily pulled by catastrophic outlier policies.
+
 :::::
 
 ## Distribution of other risk factors
@@ -367,6 +371,8 @@ hbox <- (box_rev / hist_rev) +
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
+Premiums are right-skewed with a median of 257.75 and mean of 296.29, indicating most policies are moderately prices with a tail of hig-value policies. The distribution suggests a fairly broad but concentrated mid-range portfolio.
+
 ### total_claims
 
 ```{r}
@@ -417,9 +423,7 @@ hbox <- (box_claims / hist_claims) +
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
-::: callout-note
-Similar to total_incurred, the majority have no claim, resulting in zero-inflation at value zero.
-:::
+Like `total_incurred`, claim frequency is zero-inflated with a median of 0 and mean of 0.22, confirming that most policyholders make no claims within a given year.
 
 ### driver_age
 
@@ -471,6 +475,8 @@ hbox <- (box_da / hist_da) +
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
+Driver age is approximately normally distributed with a median of 48 adn mean of 49, ranging from 18 to 90. The portfolio skews towards middle-aged and older driver, which may reflect lower-risk segments self-selecting into this insurer.
+
 ### vehicle_age
 
 ```{r}
@@ -520,6 +526,8 @@ hbox <- (box_va / hist_va) +
 
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
+
+Vehicle age is broadly distributed with a median of 25 years and mean of 25.9, suggesting the portfolio is dominated by older vehicles. This i notable as older vehicles may have different risk profiles for certain claim types. 
 
 ### driving_experience
 
@@ -571,6 +579,8 @@ hbox <- (box_de / hist_de) +
 hbox & theme(plot.background = element_rect(fill="white",colour="white"))
 ```
 
+Driving experience closely mirrors vehicle age in distribution (median 25, mean 26), which is expected given it si derived from driver age. Most insured drivers are experienced, with the distribution peaking around 20-30 years of experience. 
+
 ### policy_type
 
 ```{r}
@@ -591,6 +601,8 @@ ggplot(data=insurance, aes(x = policy_type)) +
                                    colour="white")
   )
 ```
+
+The portfolio is concentrated in a small number of policy types, with type CC being the most dominant. This shows limited product diversification. 
 
 ### bonus_score
 
@@ -613,6 +625,8 @@ ggplot(data=insurance, aes(x = bonus_score)) +
   )
 ```
 
+The majority of policyholders hold a "G" (good) bonus score, indicating a portfolio with predominantly low-risk claims history. Bad and neutral scores are a small minority. 
+
 ### circulation_area
 
 ```{r}
@@ -633,6 +647,32 @@ ggplot(data=insurance, aes(x = circulation_area)) +
                                    colour="white")
   )
 ```
+
+Urban and rural circulation environment are quite distributed, with urban being more dominant. This implies that the expected claim frequency for vehicles predominantely in the urban areas typically carry higher accident exposure.   
+
+### year
+
+```{r}
+ggplot(data=insurance, aes(x = year)) +
+  geom_bar(fill = "grey90") +
+  geom_text(stat="count",
+            aes(label=paste0(after_stat(count))),
+            vjust = -0.2,
+            size = 3) +
+  labs(title = "Distribution of Policy Record by Year") +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid.major = element_blank(),
+    plot.background = element_rect(fill="white",
+                                   colour="white")
+  )
+```
+
+The dataset contains records across three years (2022–2024), with broadly similar policy counts per year. This suggests a stable portfolio size over the observation period, making year-on-year comparisons meaningful.
+
 ::::
 
 # Bivariate Analysis
@@ -661,6 +701,8 @@ ggbetweenstats(
 )
 ```
 
+The Kruskal-Wallis test reveals a statically significant difference in loss ratios across bonus score groups. Policyholders with poor claims history (bad bonus score) tend to exhibit higher loss ratios, consistent with expectation that past claims behavior is a strong predictor of future profitability. 
+
 ## Relationship between policy type and profitability
 
 One-way ANOVA is also used to find the relationship between policy type and profitability since `policy_type` has 5 groups. Since the Shapiro test of `loss_ratio` is significant, then the test done should be non-parametric Kruskal-Wallis test. 
@@ -674,6 +716,8 @@ ggbetweenstats(
   title = "Relationship between policy type and profitability"
 )
 ```
+
+A statistically significant difference in loss ratios exists across policy types. Certain coverage types carry notably higher median loss ratios, suggesting that product mix is a meaningful driver of portfolio profitability. 
 
 ## Relationship between circulation area and profitability
 
@@ -689,6 +733,8 @@ ggbetweenstats(
 )
 ```
 
+The Mann-Whitney U test indicates a statistically significant difference in loss ratios between urban and rural policyholders. Urban policies tend toward higher loss ratios, consistent with the higher accident exposure in density populated areas.
+
 ## Relationship between years of driving experience and profitability
 
 Since driving experience is a numeric value, the test done should be a Significant Test of Correlation. This is done using `ggscatterstats`. Looking at the univariate analysis, even though `driving_experience` is normally distributed, `loss_ratio` is very skewed. So the non-parametric version is used instead, which is the Spearman's rank correlation coefficient.
@@ -700,6 +746,36 @@ ggscatterstats(
   y = loss_ratio,
   type = "nonparametric",
   title = "Relationship between years of driving experience and profitability"
+)
+```
+
+Spearman's rank correlation reveals a weak but statistically significant negative relationship between driving experience and loss ratio. More experienecd drivers tend to have marginally lower loss ratios, though the effect size suggests experience alone is not a strong stabalone predictor. 
+
+## Relationship between driver age and profitability
+
+Driver age is also numeric value that is normally distributed based on the univariate analysis. However, `loss_ratio` is very skewed, so the test to be done should be Spearman's rank correlation coefficient.
+
+```{r}
+ggscatterstats(
+  data = insurance,
+  x = driver_age,
+  y = loss_ratio,
+  type = "nonparametric",
+  title = "Relationship between driver's age and profitability"
+)
+```
+
+## Relationship between vehicle age and profitability
+
+Vehicle age is also numeric value that is normally distributed based on the univariate analysis. However, `loss_ratio` is very skewed, so the test to be done should be Spearman's rank correlation coefficient.
+
+```{r}
+ggscatterstats(
+  data = insurance,
+  x = vehicle_age,
+  y = loss_ratio,
+  type = "nonparametric",
+  title = "Relationship between vehicle age and profitability"
 )
 ```
 
@@ -723,9 +799,11 @@ ggbetweenstats(
 )
 ```
 
+Similar to the profitability analysis, the Kruskal-Wallis test shows a significant difference in incurred costs across bonus score groups. Policyholders with poor claims history are associated with higher and more volatile incurred losses. 
+
 ## Relationship between policy type and volatility
 
-Policy type as mentioned before has 5 groups and it is confirmed that total_incurred is not normally distributed from Shapiro test, therefore Kruskal-Wallis is used. 
+Policy type as mentioned before has 5 groups and it is confirmed that `total_incurred` is not normally distributed from Shapiro test, therefore Kruskal-Wallis is used. 
 
 ```{r}
 ggbetweenstats(
@@ -736,3 +814,104 @@ ggbetweenstats(
   title = "Relationship between policy type and volatility"
 )
 ```
+
+Significant difference in total incurred costs exist across policy types, mirroring the profitability findings. Certain policy types no only affect lsos ratios but also drive higher absolute claim costs, contributing to portfolio volatility. 
+
+## Relationship between circulation area and volatility
+
+Since circulation area only has 2 groups, the test done should be a two-sample test. In addition, since the `total_incurred` is not normally distributed, use the non-parametric version which is the Mann-Whitney U test. 
+
+```{r}
+ggbetweenstats(
+  data = insurance,
+  x = circulation_area,
+  y = total_incurred,
+  type = "np",
+  title = "Relationship between circulation area and volatility"
+)
+```
+
+## Relationship between years of driving experience and volatility
+
+Since driving experience is a numeric value and is normally distributed, but `loss_ratio` is very skewed, Spearman's rank correlation coefficient is done.
+
+```{r}
+ggscatterstats(
+  data = insurance,
+  x = driving_experience,
+  y = total_incurred,
+  type = "nonparametric",
+  title = "Relationship between years of driving experience and volatility"
+)
+```
+
+## Relationship between driver age and volatility
+
+Driver age is also numeric value that is normally distributed based on the univariate analysis. However, `total_incurred` is very skewed, so Spearman's rank correlation coefficient is done.
+
+```{r}
+ggscatterstats(
+  data = insurance,
+  x = driver_age,
+  y = total_incurred,
+  type = "nonparametric",
+  title = "Relationship between driver's age and volatility"
+)
+```
+
+## Relationship between vehicle age and volatility
+
+Vehicle age is also numeric value that is normally distributed. However, `total_incurred` is very skewed, so the test to be done should be Spearman's rank correlation coefficient.
+
+```{r}
+ggscatterstats(
+  data = insurance,
+  x = vehicle_age,
+  y = total_incurred,
+  type = "nonparametric",
+  title = "Relationship between vehicle age and volatility"
+)
+```
+
+## Relationship between volatility and profitability based on year
+
+```{r}
+insurance %>%
+  group_by(year) %>%
+  summarise(mean_lr = mean(loss_ratio),
+            median_lr = median(loss_ratio),
+            mean_ti = mean(total_incurred),
+            median_ti = median(total_incurred)) %>%
+  pivot_longer(cols = c(mean_lr, median_lr),
+               names_to = "metric",
+               values_to = "value") %>%
+  ggplot(aes(x = year, y = value,
+             colour = metric, group = metric)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Mean and Median Loss Ratio by Year") +
+  theme_minimal()
+```
+
+## Relationship between year and profitability along with volatility
+
+```{r}
+# Profitability
+ggbetweenstats(
+  data = insurance,
+  x = year,
+  y = loss_ratio,
+  type = "np",
+  title = "Profitability across Years (2022–2024)"
+)
+
+# Volatility
+ggbetweenstats(
+  data = insurance,
+  x = year,
+  y = total_incurred,
+  type = "np",
+  title = "Volatility across Years (2022–2024)"
+)
+```
+
