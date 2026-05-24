@@ -1,5 +1,5 @@
 ---
-title: "Take-Home Exercise 1"
+title: "Take-Home Exercise 1 - Technical Summary"
 author: "Amelia Rosalind"
 date: "May 22, 2026"
 date-modified: "last-modified"
