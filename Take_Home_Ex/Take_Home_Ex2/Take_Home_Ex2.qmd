@@ -19,7 +19,7 @@ execute:
 ```{r}
 pacman::p_load(tidyverse, jsonlite, igraph, tidygraph, 
                ggraph, visNetwork, plotly, DT,
-               gganimate, tidytext, stringdist, knitr)
+               gganimate, tidytext, stringdist)
 ```
 
 ## Importing data
@@ -64,15 +64,15 @@ mc2_events %>% count(short_name, sort = TRUE) %>% print (n = 24)
 ## Find the anomalous SaidIT post
 
 ```{r}
-saidit_post <- mc2_events %>%
+forum_post <- mc2_events %>%
   filter(!is.na(details.forum)) %>%
   select(id, datetime, short_name, parties, details.forum,
          details.poster_id, details.content, details.timestamp)
 
-print(saidit_post)
+print(forum_post)
 ```
 
-## Confirm John Windwar's event on May 17
+## Confirm John Windward's event on May 17
 
 ```{r}
 john_may17 <- mc2_events %>%
@@ -93,7 +93,7 @@ datatable(john_may17,
 ```{r}
 anomalous_post <- mc2_events %>%
   filter(short_name %in% c("saidit_post", "post_saidit")) %>%
-  filter(as.Date(datetime) == as.Date("2046-5-17")) %>%
+  filter(as.Date(datetime) == as.Date("2046-05-17")) %>%
   arrange(datetime) %>%
   select(id, datetime, short_name, parties, details.forum,
          details.poster_id, details.content, 
@@ -181,6 +181,24 @@ org_edges %>%
            str_detect(target, "john_windward"))
 ```
 
+## Check all people in Tenant Thread with their titles and teams
+
+```{r}
+org_nodes %>%
+  filter(type == "person") %>%
+  select(id, label, title) %>%
+  left_join(
+    org_edges %>% select(source, target, relation),
+    by = c("id" = "target")
+  ) %>%
+  mutate(department_or_team = source) %>%
+  select(person_id = id, name = label, title,
+         department_or_team) %>%
+  arrange(department_or_team) %>%
+  datatable(options = list(scrollX = TRUE, pageLength = 15),
+            caption = "All People in Tenant Thread")
+```
+
 ## What teams/people does John's department contain
 ```{r}
 org_edges %>%
@@ -192,5 +210,279 @@ org_edges %>%
 ## Context of John's World
 
 John leads Customer Support which contains 4 teams: Phone Center, Billing, Concierge and Public Relations. The Customer Support sits directly under `company:tenant_thread`.
+
+# Trace the Event Chain
+
+## Full details of anchor event (anomalous event)
+```{r}
+anchor <- mc2_events %>% filter(id == 373902)
+anchor_time <- anchor$datetime
+
+anchor %>%
+  select(where(~!all(is.na(.)))) %>%
+  glimpse()
+```
+
+## Check any activities with John in parties within 2 hours before post
+
+```{r}
+pre_post <- mc2_events %>%
+  filter(datetime >= anchor_time - hours(2),
+         datetime <= anchor_time) %>%
+  filter(map_lgl(parties, 
+                 ~ any(str_detect(.x, "john_windward")))) %>%
+  arrange(datetime) %>%
+  select(id, datetime, short_name, parties, details.from,
+         details.task, details.a2a.from, details.a2a.to,
+         details.a2a.action, details.forum, details.target_agent)
+
+datatable(pre_post, 
+          options = list(scrollX = TRUE, pageLength = 20),
+          caption = "2 hours before anomalous post - John Windward events")
+```
+
+::: callout-note
+## Key Findings At This Point
+
+The anchor event content source is from SwiftWren.txt which should be the file that contained the gibberish content. In addition, from the 2-hour window, there are only 3 events related to John shows and they all happen within 3 seconds. Agent/person:chloe_ballast queued a task that triggered John's agent, which means that Chloe Ballast's agent iniitated this not John's.   
+:::
+
+## Who is Chloe Ballast?
+
+```{r}
+org_nodes %>% filter(str_detect(id, "chloe_ballast"))
+```
+
+## What was Chloe's agent doing just before
+```{r}
+chloe_pre <- mc2_events %>%
+  filter(datetime >= anchor_time - hours(2),
+         datetime <= anchor_time) %>%
+  filter(map_lgl(parties, 
+                 ~ any(str_detect(.x, "chloe_ballast")))) %>%
+  arrange(datetime) %>%
+  select(id, datetime, short_name, parties, details.from,
+         details.to, details.task, details.file, details.content,
+         details.a2a.from, details.a2a.to, details.a2a.action,
+         details.target_agent, details.content_source)
+
+datatable(chloe_pre,
+          options = list(scrollX = TRUE, pageLength = 20),
+          caption = "Chloe Ballast agent events in 2 hours before anomalous post")
+```
+
+::: callout-note
+## Key Findings At This Point
+
+Daniel Gangway's agent triggered Chloe's agent, which triggered John's agent.
+:::
+
+## Who is Daniel Gangway?
+
+```{r}
+org_nodes %>% filter(str_detect(id, "daniel_gangway"))
+
+org_edges %>%
+  filter(str_detect(target, "daniel_gangway"))
+```
+
+## What was Daniel's agent doing before triggering Chloe's agent
+```{r}
+daniel_pre <- mc2_events %>%
+  filter(datetime >= anchor_time - hours(3),
+         datetime <= as.POSIXct("2046-05-17 11:12:24", 
+                                tz = "UTC")) %>%
+  filter(map_lgl(parties, 
+                 ~ any(str_detect(.x, "daniel_gangway")))) %>%
+  arrange(datetime) %>%
+  select(id, datetime, short_name, parties, details.from, 
+         details.to, details.task, details.file, details.content,
+         details.a2a.from, details.a2a.to, details.a2a.action,
+         details.target_agent, details.content_source)
+
+datatable(daniel_pre,
+          options = list(scrollX = TRUE, pageLength = 10),
+          caption = "Daniel Gangway events before triggering Chloe's agent")
+```
+
+## Who is Lily Anchorline?
+```{r}
+org_nodes %>% filter(str_detect(id, "lily_anchorline"))
+
+org_edges %>% filter(str_detect(target, "lily_anchorline"))
+```
+
+## What was Lily's agent doing before triggering Daniel's?
+```{r}
+lily_pre <- mc2_events %>%
+  filter(datetime >= anchor_time - hours(6),
+         datetime <= as.POSIXct("2046-05-17 10:11:31", 
+                                tz = "UTC")) %>%
+  filter(map_lgl(parties, 
+                 ~ any(str_detect(.x, "lily_anchorline")))) %>%
+  arrange(datetime) %>%
+  select(id, datetime, short_name, parties, details.from,
+         details.to, details.task, details.file, details.content,
+         details.a2a.from, details.a2a.to, details.a2a.action,
+         details.target_agent, details.content_source)
+
+datatable(lily_pre,
+          options = list(scrollX = TRUE, pageLength = 10),
+          caption = "Lily Anchorline events before triggering Daniel's agent")
+```
+
+## Who is Zoey Drydock?
+```{r}
+org_nodes %>% filter(str_detect(id, "zoey_drydock"))
+
+org_edges %>% filter(str_detect(target, "zoey_drydock"))
+```
+
+## What was Zoey's agent doing before triggering Daniel's?
+```{r}
+zoey_pre <- mc2_events %>%
+  filter(datetime >= anchor_time - hours(6),
+         datetime <= as.POSIXct("2046-05-17 08:16:07", 
+                                tz = "UTC")) %>%
+  filter(map_lgl(parties, 
+                 ~ any(str_detect(.x, "zoey_drydock")))) %>%
+  arrange(datetime) %>%
+  select(id, datetime, short_name, parties, details.from,
+         details.to, details.task, details.file, details.content,
+         details.a2a.from, details.a2a.to, details.a2a.action,
+         details.target_agent, details.content_source)
+
+datatable(zoey_pre,
+          options = list(scrollX = TRUE, pageLength = 10),
+          caption = "Zoey Drydock events before triggering Daniel's agent")
+```
+
+## Get ALL queue_subordinate_task events with read_file task on May 16-17
+
+```{r}
+propagation_chain <- mc2_events %>%
+  filter(short_name == "queue_subordinate_task",
+         details.task == "read_file",
+         as.Date(datetime) %in% as.Date(c("2046-05-16", "2046-05-17"))) %>%
+  arrange(datetime) %>%
+  select(id, datetime, parties, details.target_agent) %>%
+  mutate(
+    sender = map_chr(parties, ~ .x[!str_detect(.x, as.character(details.target_agent[1]))][1]),
+    receiver = details.target_agent
+  )
+
+datatable(propagation_chain,
+          options = list(scrollX = TRUE, pageLength = 10),
+          caption = "Full read_file propagation chain")
+```
+
+```{r}
+# Check ALL queue_subordinate_task with read_file task in entire dataset
+full_propagation <- mc2_events %>%
+  filter(short_name == "queue_subordinate_task",
+         details.task == "read_file") %>%
+  arrange(datetime) %>%
+  select(id, datetime, parties, details.target_agent) %>%
+  mutate(
+    sender = map_chr(parties, ~ {
+      target <- details.target_agent[1]
+      others <- .x[!str_detect(.x, fixed(str_remove(target, "Agent/")))]
+      if(length(others) > 0) others[1] else NA_character_
+    }),
+    receiver = details.target_agent
+  )
+
+# How many total? And what's the date range?
+nrow(full_propagation)
+range(full_propagation$datetime)
+
+# Who appears before May 16?
+full_propagation %>%
+  filter(datetime < as.POSIXct("2046-05-16 01:01:55", tz = "UTC")) %>%
+  datatable(options = list(scrollX = TRUE, pageLength = 10),
+            caption = "read_file propagation events BEFORE Liam Anchor's first event")
+```
+
+```{r}
+# Check: did john_windward's agent appear in the loop before May 17
+# and NOT trigger a post?
+john_in_loop <- full_propagation %>%
+  filter(str_detect(coalesce(sender, ""), "john_windward") |
+         str_detect(coalesce(receiver, ""), "john_windward")) %>%
+  arrange(datetime) %>%
+  select(id, datetime, sender, receiver)
+
+datatable(john_in_loop,
+          caption = "All times John Windward appeared in the read_file loop")
+
+# Check: on those prior dates, did john's agent also do saidit_post_check?
+john_saidit_checks <- mc2_events %>%
+  filter(short_name == "saidit_post_check",
+         map_lgl(parties, ~ any(str_detect(.x, "john_windward")))) %>%
+  arrange(datetime) %>%
+  select(id, datetime, short_name, parties)
+
+datatable(john_saidit_checks,
+          caption = "All saidit_post_check events for John's agent")
+
+# Check: what file did john's agent read on May 17 vs other dates
+john_reads <- mc2_events %>%
+  filter(short_name == "read_file",
+         map_lgl(parties, ~ any(str_detect(.x, "john_windward")))) %>%
+  arrange(datetime) %>%
+  select(id, datetime, parties, details.file, 
+         details.content, details.content_source)
+
+datatable(john_reads,
+          options = list(scrollX = TRUE, pageLength = 20),
+          caption = "All read_file events for John Windward's agent")
+```
+
+#  Understanding SwiftWren.txt
+
+## What is SwiftWren.txt?
+```{r}
+swiftwren <- mc2_events %>%
+  filter(
+    str_detect(coalesce(details.file, ""), "SwitfWren") |
+      str_detect(coalesce(details.content_source, ""), "SwiftWren") |
+      str_detect(coalesce(details.file_saved, ""), "SwitfWren")
+  ) %>%
+  arrange(datetime) %>%
+  select(id, datetime, short_name, parties, details.file,
+         details.file_saved, details.content_source,
+         details.content)
+
+datatable(swiftwren,
+          options = list(scrollX = TRUE, pageLength = 20),
+          caption = "All events referencing SwiftWren.txt")
+```
+
+::: callout-note
+## Key Finding
+
+Since it can only be found once during the anchor event, it means it was created and used without leaving a broader trail. Next course of action should be to search more broadly for it. 
+:::
+
+## Search more broadly for SwiftWren
+```{r}
+mc2_events %>%
+  filter(
+    str_detect(coalesce(details.file, ""), 
+               regex("swift|wren", ignore_case = TRUE)) |
+      str_detect(coalesce(details.content_source, ""),
+                 regex("swift|wren", ignore_case = TRUE)) |
+      str_detect(coalesce(details.file_saved, ""),
+                 regex("swift|wren", ignore_case = TRUE)) |
+      str_detect(coalesce(details.content, ""), 
+                 regex("swift|wren", ignore_case = TRUE))
+  ) %>%
+  arrange(datetime) %>%
+  select(id, datetime, short_name, parties, details.file, 
+         details.file_saved, details.content_source, 
+         details.content) %>%
+  datatable(options = list(scrollX = TRUE, pageLength = 20),
+            caption = "Broader search for SwiftWren references")
+```
 
 

@@ -1887,7 +1887,7 @@
     "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#installing-of-required-packages",
     "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
     "section": "Installing of required packages",
-    "text": "Installing of required packages\n\npacman::p_load(tidyverse, jsonlite, igraph, tidygraph, \n               ggraph, visNetwork, plotly, DT,\n               gganimate, tidytext, stringdist, knitr)"
+    "text": "Installing of required packages\n\npacman::p_load(tidyverse, jsonlite, igraph, tidygraph, \n               ggraph, visNetwork, plotly, DT,\n               gganimate, tidytext, stringdist)"
   },
   {
     "objectID": "Take_Home_Ex/Take_Home_Ex2/mc2_data/MC2 data description.html",
@@ -1964,7 +1964,7 @@
     "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#find-the-anomalous-saidit-post",
     "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
     "section": "Find the anomalous SaidIT post",
-    "text": "Find the anomalous SaidIT post\n\nsaidit_post &lt;- mc2_events %&gt;%\n  filter(!is.na(details.forum)) %&gt;%\n  select(id, datetime, short_name, parties, details.forum,\n         details.poster_id, details.content, details.timestamp)\n\nprint(saidit_post)\n\n# A tibble: 213 × 8\n      id datetime            short_name  parties details.forum details.poster_id\n   &lt;int&gt; &lt;dttm&gt;              &lt;chr&gt;       &lt;list&gt;  &lt;chr&gt;         &lt;chr&gt;            \n 1 17073 2046-05-09 01:31:46 post_saidit &lt;chr&gt;   general       &lt;NA&gt;             \n 2 17093 2046-05-09 01:35:10 saidit_post &lt;chr&gt;   general       person:ava_tiller\n 3 17095 2046-05-09 01:35:29 post_saidit &lt;chr&gt;   general       &lt;NA&gt;             \n 4 17128 2046-05-09 01:41:22 saidit_post &lt;chr&gt;   general       person:ava_tiller\n 5 18796 2046-05-09 07:59:26 saidit_post &lt;chr&gt;   general       person:ava_tiller\n 6 18860 2046-05-09 08:07:20 post_saidit &lt;chr&gt;   general       &lt;NA&gt;             \n 7 21570 2046-05-09 15:54:49 post_saidit &lt;chr&gt;   general       &lt;NA&gt;             \n 8 21580 2046-05-09 15:56:14 saidit_post &lt;chr&gt;   general       person:aria_towl…\n 9 21597 2046-05-09 16:00:00 post_saidit &lt;chr&gt;   general       &lt;NA&gt;             \n10 21604 2046-05-09 16:00:09 saidit_post &lt;chr&gt;   general       person:aria_towl…\n# ℹ 203 more rows\n# ℹ 2 more variables: details.content &lt;chr&gt;, details.timestamp &lt;chr&gt;"
+    "text": "Find the anomalous SaidIT post\n\nforum_post &lt;- mc2_events %&gt;%\n  filter(!is.na(details.forum)) %&gt;%\n  select(id, datetime, short_name, parties, details.forum,\n         details.poster_id, details.content, details.timestamp)\n\nprint(forum_post)\n\n# A tibble: 213 × 8\n      id datetime            short_name  parties details.forum details.poster_id\n   &lt;int&gt; &lt;dttm&gt;              &lt;chr&gt;       &lt;list&gt;  &lt;chr&gt;         &lt;chr&gt;            \n 1 17073 2046-05-09 01:31:46 post_saidit &lt;chr&gt;   general       &lt;NA&gt;             \n 2 17093 2046-05-09 01:35:10 saidit_post &lt;chr&gt;   general       person:ava_tiller\n 3 17095 2046-05-09 01:35:29 post_saidit &lt;chr&gt;   general       &lt;NA&gt;             \n 4 17128 2046-05-09 01:41:22 saidit_post &lt;chr&gt;   general       person:ava_tiller\n 5 18796 2046-05-09 07:59:26 saidit_post &lt;chr&gt;   general       person:ava_tiller\n 6 18860 2046-05-09 08:07:20 post_saidit &lt;chr&gt;   general       &lt;NA&gt;             \n 7 21570 2046-05-09 15:54:49 post_saidit &lt;chr&gt;   general       &lt;NA&gt;             \n 8 21580 2046-05-09 15:56:14 saidit_post &lt;chr&gt;   general       person:aria_towl…\n 9 21597 2046-05-09 16:00:00 post_saidit &lt;chr&gt;   general       &lt;NA&gt;             \n10 21604 2046-05-09 16:00:09 saidit_post &lt;chr&gt;   general       person:aria_towl…\n# ℹ 203 more rows\n# ℹ 2 more variables: details.content &lt;chr&gt;, details.timestamp &lt;chr&gt;"
   },
   {
     "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#confirm-john-windwars-event-on-may-17",
@@ -1978,7 +1978,7 @@
     "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#narrow-down-to-specific-anomalous-post",
     "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
     "section": "Narrow down to specific anomalous post",
-    "text": "Narrow down to specific anomalous post\n\nanomalous_post &lt;- mc2_events %&gt;%\n  filter(short_name %in% c(\"saidit_post\", \"post_saidit\")) %&gt;%\n  filter(as.Date(datetime) == as.Date(\"2046-5-17\")) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, short_name, parties, details.forum,\n         details.poster_id, details.content, \n         details.content_source)\n\ndatatable(anomalous_post, \n          options = list(scrollX = TRUE, pageLength = 10),\n          caption = \"SaidIT Posts on May 17, 2046\")\n\n\n\n\n\n\n\n\n\n\n\nNoteKey Finding\n\n\n\nThe anomalous post is event ID 373902, posted at 2046-05-17T11:21:15Z but this is in UTC which in US Eastern time is on 4.21am, which matches the challenge description. In addition details.forum:general coincide with the challenge description that its posted in a random forum."
+    "text": "Narrow down to specific anomalous post\n\nanomalous_post &lt;- mc2_events %&gt;%\n  filter(short_name %in% c(\"saidit_post\", \"post_saidit\")) %&gt;%\n  filter(as.Date(datetime) == as.Date(\"2046-05-17\")) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, short_name, parties, details.forum,\n         details.poster_id, details.content, \n         details.content_source)\n\ndatatable(anomalous_post, \n          options = list(scrollX = TRUE, pageLength = 10),\n          caption = \"SaidIT Posts on May 17, 2046\")\n\n\n\n\n\n\n\n\n\n\n\nNoteKey Finding\n\n\n\nThe anomalous post is event ID 373902, posted at 2046-05-17T11:21:15Z but this is in UTC which in US Eastern time is on 4.21am, which matches the challenge description. In addition details.forum:general coincide with the challenge description that its posted in a random forum."
   },
   {
     "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#find-difference-between-saidit_post-and-post_saidit",
@@ -2077,5 +2077,131 @@
     "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
     "section": "Context of John’s World",
     "text": "Context of John’s World\nJohn leads Customer Support which contains 4 teams: Phone Center, Billing, Concierge and Public Relations. The Customer Support sits directly under company:tenant_thread."
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#confirm-john-windwards-event-on-may-17",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#confirm-john-windwards-event-on-may-17",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Confirm John Windward’s event on May 17",
+    "text": "Confirm John Windward’s event on May 17\n\njohn_may17 &lt;- mc2_events %&gt;%\n  filter(map_lgl(parties, ~ \"person:john_windward\" %in% .x)) %&gt;%\n  filter(as.Date(datetime) == as.Date(\"2046-05-17\")) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, short_name, details.from, details.to,\n         details.content, details.forum, details.poster_id,\n         details.a2a.from, details.a2a.to, details.a2a.action)\n\ndatatable(john_may17,\n          options = list(scrollX = TRUE, pageLength = 10),\n          caption = \"John Windward's Events on May 17, 2046\")"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#check-all-people-in-tenant-thread-with-their-titles-and-teams",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#check-all-people-in-tenant-thread-with-their-titles-and-teams",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Check all people in Tenant Thread with their titles and teams",
+    "text": "Check all people in Tenant Thread with their titles and teams\n\norg_nodes %&gt;%\n  filter(type == \"person\") %&gt;%\n  select(id, label, title) %&gt;%\n  left_join(\n    org_edges %&gt;% select(source, target, relation),\n    by = c(\"id\" = \"target\")\n  ) %&gt;%\n  mutate(department_or_team = source) %&gt;%\n  select(person_id = id, name = label, title,\n         department_or_team) %&gt;%\n  arrange(department_or_team) %&gt;%\n  datatable(options = list(scrollX = TRUE, pageLength = 15),\n            caption = \"All People in Tenant Thread\")"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#full-details-of-anchor-event-anomalous-event",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#full-details-of-anchor-event-anomalous-event",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Full details of anchor event (anomalous event)",
+    "text": "Full details of anchor event (anomalous event)\n\nanchor &lt;- mc2_events %&gt;% filter(id == 373902)\nanchor_time &lt;- anchor$datetime\n\nanchor %&gt;%\n  select(where(~!all(is.na(.)))) %&gt;%\n  glimpse()\n\nRows: 1\nColumns: 15\n$ short_name                       &lt;chr&gt; \"saidit_post\"\n$ parties                          &lt;list&gt; &lt;\"Agent/person:john_windward\", \"syste…\n$ when                             &lt;dbl&gt; 2410168875\n$ id                               &lt;int&gt; 373902\n$ details.calendar_emails_sent     &lt;list&gt; &lt;NULL&gt;\n$ details.contacts                 &lt;list&gt; &lt;NULL&gt;\n$ details.forum                    &lt;chr&gt; \"general\"\n$ details.content_source           &lt;chr&gt; \"SwiftWren.txt\"\n$ details.combo                    &lt;list&gt; &lt;NULL&gt;\n$ details.meeting.participants     &lt;list&gt; &lt;NULL&gt;\n$ details.a2a.payload.participants &lt;list&gt; &lt;NULL&gt;\n$ details.details.participants     &lt;list&gt; &lt;NULL&gt;\n$ details.details.contacts         &lt;list&gt; &lt;NULL&gt;\n$ details.details.combo            &lt;list&gt; &lt;NULL&gt;\n$ datetime                         &lt;dttm&gt; 2046-05-17 11:21:15"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#check-any-activities-with-john-in-parties-within-2-hours-before-post",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#check-any-activities-with-john-in-parties-within-2-hours-before-post",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Check any activities with John in parties within 2 hours before post",
+    "text": "Check any activities with John in parties within 2 hours before post\n\npre_post &lt;- mc2_events %&gt;%\n  filter(datetime &gt;= anchor_time - hours(2),\n         datetime &lt;= anchor_time) %&gt;%\n  filter(map_lgl(parties, \n                 ~ any(str_detect(.x, \"john_windward\")))) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, short_name, parties, details.from,\n         details.task, details.a2a.from, details.a2a.to,\n         details.a2a.action, details.forum, details.target_agent)\n\ndatatable(pre_post, \n          options = list(scrollX = TRUE, pageLength = 20),\n          caption = \"2 hours before anomalous post - John Windward events\")\n\n\n\n\n\n\n\n\n\n\n\nNoteKey Findings At This Point\n\n\n\nThe anchor event content source is from SwiftWren.txt which should be the file that contained the gibberish content. In addition, from the 2-hour window, there are only 3 events related to John shows and they all happen within 3 seconds. Agent/person:chloe_ballast queued a task that triggered John’s agent, which means that Chloe Ballast’s agent iniitated this not John’s."
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#reconfirm-what-parties-were-in-anchor-event",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#reconfirm-what-parties-were-in-anchor-event",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Reconfirm what parties were in anchor event",
+    "text": "Reconfirm what parties were in anchor event\n\nanchor$parties[[1]]\n\n[1] \"Agent/person:john_windward\" \"system:saidit\""
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#who-is-chloe-ballast",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#who-is-chloe-ballast",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Who is Chloe Ballast?",
+    "text": "Who is Chloe Ballast?\n\norg_nodes %&gt;% filter(str_detect(id, \"chloe_ballast\"))\n\n# A tibble: 1 × 4\n  id                   label         type   title          \n  &lt;chr&gt;                &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt;          \n1 person:chloe_ballast Chloe Ballast person Department Lead"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#what-was-chloes-agent-doing-just-before",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#what-was-chloes-agent-doing-just-before",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "What was Chloe’s agent doing just before",
+    "text": "What was Chloe’s agent doing just before\n\nchloe_pre &lt;- mc2_events %&gt;%\n  filter(datetime &gt;= anchor_time - hours(2),\n         datetime &lt;= anchor_time) %&gt;%\n  filter(map_lgl(parties, \n                 ~ any(str_detect(.x, \"chloe_ballast\")))) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, short_name, parties, details.from,\n         details.to, details.task, details.file, details.content,\n         details.a2a.from, details.a2a.to, details.a2a.action,\n         details.target_agent, details.content_source)\n\ndatatable(chloe_pre,\n          options = list(scrollX = TRUE, pageLength = 20),\n          caption = \"Chloe Ballast agent events in 2 hours before anomalous post\")\n\n\n\n\n\n\n\n\n\n\n\nNoteKey Findings At This Point\n\n\n\nDaniel Gangway’s agent triggered Chloe’s agent, which triggered John’s agent."
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#what-is-swiftwren.txt",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#what-is-swiftwren.txt",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "What is SwiftWren.txt?",
+    "text": "What is SwiftWren.txt?\n\nswiftwren &lt;- mc2_events %&gt;%\n  filter(\n    str_detect(coalesce(details.file, \"\"), \"SwitfWren\") |\n      str_detect(coalesce(details.content_source, \"\"), \"SwiftWren\") |\n      str_detect(coalesce(details.file_saved, \"\"), \"SwitfWren\")\n  ) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, short_name, parties, details.file,\n         details.file_saved, details.content_source,\n         details.content)\n\ndatatable(swiftwren,\n          options = list(scrollX = TRUE, pageLength = 20),\n          caption = \"All events referencing SwiftWren.txt\")\n\n\n\n\n\n\n\n\n\n\n\nNoteKey Finding\n\n\n\nSince it can only be found once during the anchor event, it means it was created and used without leaving a broader trail. Next course of action should be to search more broadly for it."
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#who-is-daniel-gangway",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#who-is-daniel-gangway",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Who is Daniel Gangway?",
+    "text": "Who is Daniel Gangway?\n\norg_nodes %&gt;% filter(str_detect(id, \"daniel_gangway\"))\n\n# A tibble: 1 × 4\n  id                    label          type   title\n  &lt;chr&gt;                 &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;\n1 person:daniel_gangway Daniel Gangway person &lt;NA&gt; \n\norg_edges %&gt;%\n  filter(str_detect(target, \"daniel_gangway\"))\n\n# A tibble: 1 × 3\n  source      target                relation\n  &lt;chr&gt;       &lt;chr&gt;                 &lt;chr&gt;   \n1 team:hiring person:daniel_gangway contains"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#what-was-daniels-agent-doing-before-triggering-chloes-agent",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#what-was-daniels-agent-doing-before-triggering-chloes-agent",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "What was Daniel’s agent doing before triggering Chloe’s agent",
+    "text": "What was Daniel’s agent doing before triggering Chloe’s agent\n\ndaniel_pre &lt;- mc2_events %&gt;%\n  filter(datetime &gt;= anchor_time - hours(3),\n         datetime &lt;= as.POSIXct(\"2046-05-17 11:12:24\", \n                                tz = \"UTC\")) %&gt;%\n  filter(map_lgl(parties, \n                 ~ any(str_detect(.x, \"daniel_gangway\")))) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, short_name, parties, details.from, \n         details.to, details.task, details.file, details.content,\n         details.a2a.from, details.a2a.to, details.a2a.action,\n         details.target_agent, details.content_source)\n\ndatatable(daniel_pre,\n          options = list(scrollX = TRUE, pageLength = 10),\n          caption = \"Daniel Gangway events before triggering Chloe's agent\")"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#search-more-broadly-for-swiftwren",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#search-more-broadly-for-swiftwren",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Search more broadly for SwiftWren",
+    "text": "Search more broadly for SwiftWren\n\nmc2_events %&gt;%\n  filter(\n    str_detect(coalesce(details.file, \"\"), \n               regex(\"swift|wren\", ignore_case = TRUE)) |\n      str_detect(coalesce(details.content_source, \"\"),\n                 regex(\"swift|wren\", ignore_case = TRUE)) |\n      str_detect(coalesce(details.file_saved, \"\"),\n                 regex(\"swift|wren\", ignore_case = TRUE)) |\n      str_detect(coalesce(details.content, \"\"), \n                 regex(\"swift|wren\", ignore_case = TRUE))\n  ) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, short_name, parties, details.file, \n         details.file_saved, details.content_source, \n         details.content) %&gt;%\n  datatable(options = list(scrollX = TRUE, pageLength = 20),\n            caption = \"Broader search for SwiftWren references\")"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#who-is-lily-anchorline",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#who-is-lily-anchorline",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Who is Lily Anchorline?",
+    "text": "Who is Lily Anchorline?\n\norg_nodes %&gt;% filter(str_detect(id, \"lily_anchorline\"))\n\n# A tibble: 1 × 4\n  id                     label           type   title\n  &lt;chr&gt;                  &lt;chr&gt;           &lt;chr&gt;  &lt;chr&gt;\n1 person:lily_anchorline Lily Anchorline person &lt;NA&gt; \n\norg_edges %&gt;% filter(str_detect(target, \"lily_anchorline\"))\n\n# A tibble: 1 × 3\n  source              target                 relation\n  &lt;chr&gt;               &lt;chr&gt;                  &lt;chr&gt;   \n1 team:infrastructure person:lily_anchorline contains"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#what-was-lilys-agent-doing-before-triggering-daniels",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#what-was-lilys-agent-doing-before-triggering-daniels",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "What was Lily’s agent doing before triggering Daniel’s?",
+    "text": "What was Lily’s agent doing before triggering Daniel’s?\n\nlily_pre &lt;- mc2_events %&gt;%\n  filter(datetime &gt;= anchor_time - hours(6),\n         datetime &lt;= as.POSIXct(\"2046-05-17 10:11:31\", \n                                tz = \"UTC\")) %&gt;%\n  filter(map_lgl(parties, \n                 ~ any(str_detect(.x, \"lily_anchorline\")))) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, short_name, parties, details.from,\n         details.to, details.task, details.file, details.content,\n         details.a2a.from, details.a2a.to, details.a2a.action,\n         details.target_agent, details.content_source)\n\ndatatable(lily_pre,\n          options = list(scrollX = TRUE, pageLength = 10),\n          caption = \"Lily Anchorline events before triggering Daniel's agent\")"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#who-is-xoey-drydock",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#who-is-xoey-drydock",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Who is Xoey Drydock?",
+    "text": "Who is Xoey Drydock?\n\norg_nodes %&gt;% filter(str_detect(id, \"zoey_drydock\"))\n\n# A tibble: 1 × 4\n  id                  label        type   title\n  &lt;chr&gt;               &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;\n1 person:zoey_drydock Zoey Drydock person &lt;NA&gt; \n\norg_edges %&gt;% filter(str_detect(target, \"zoey_drydock\"))\n\n# A tibble: 1 × 3\n  source        target              relation\n  &lt;chr&gt;         &lt;chr&gt;               &lt;chr&gt;   \n1 team:helpdesk person:zoey_drydock contains"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#what-was-zoeys-agent-doing-before-triggering-daniels",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#what-was-zoeys-agent-doing-before-triggering-daniels",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "What was Zoey’s agent doing before triggering Daniel’s?",
+    "text": "What was Zoey’s agent doing before triggering Daniel’s?\n\nzoey_pre &lt;- mc2_events %&gt;%\n  filter(datetime &gt;= anchor_time - hours(6),\n         datetime &lt;= as.POSIXct(\"2046-05-17 08:16:07\", \n                                tz = \"UTC\")) %&gt;%\n  filter(map_lgl(parties, \n                 ~ any(str_detect(.x, \"zoey_drydock\")))) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, short_name, parties, details.from,\n         details.to, details.task, details.file, details.content,\n         details.a2a.from, details.a2a.to, details.a2a.action,\n         details.target_agent, details.content_source)\n\ndatatable(zoey_pre,\n          options = list(scrollX = TRUE, pageLength = 10),\n          caption = \"Zoey Drydock events before triggering Daniel's agent\")"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#who-is-zoey-drydock",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#who-is-zoey-drydock",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Who is Zoey Drydock?",
+    "text": "Who is Zoey Drydock?\n\norg_nodes %&gt;% filter(str_detect(id, \"zoey_drydock\"))\n\n# A tibble: 1 × 4\n  id                  label        type   title\n  &lt;chr&gt;               &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;\n1 person:zoey_drydock Zoey Drydock person &lt;NA&gt; \n\norg_edges %&gt;% filter(str_detect(target, \"zoey_drydock\"))\n\n# A tibble: 1 × 3\n  source        target              relation\n  &lt;chr&gt;         &lt;chr&gt;               &lt;chr&gt;   \n1 team:helpdesk person:zoey_drydock contains"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#what-were-they-doing-before-triggering-zoey",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#what-were-they-doing-before-triggering-zoey",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "What were they doing before triggering Zoey?",
+    "text": "What were they doing before triggering Zoey?\n\norigin_pre &lt;- mc2_events %&gt;%\n  filter(datetime &gt;= anchor_time - hours(12),\n         datetime &lt;= as.POSIXct(\"2046-05-17 06:44:28\", \n                                tz = \"UTC\")) %&gt;%\n  filter(map_lgl(parties, ~ any(str_detect(.x, \"mia_fender|victoria_rigging\")))) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, short_name, parties, details.task,\n         details.file, details.content, details.a2a.from, \n         details.a2a.to, details.a2a.action, details.target_agent, \n         details.content_source)\n\ndatatable(origin_pre,\n          options = list(scrollX = TRUE, pageLength = 20),\n          caption = \"Mia Fender & Victoria Rigging events before triggering Zoey\")\n\n\n\n\n\n\n# What triggered Victoria Rigging originally?\nvictoria_pre &lt;- mc2_events %&gt;%\n  filter(datetime &gt;= anchor_time - hours(24),\n         datetime &lt;= as.POSIXct(\"2046-05-17 05:52:51\", tz = \"UTC\")) %&gt;%\n  filter(map_lgl(parties, ~ any(str_detect(.x, \"victoria_rigging\")))) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, short_name, parties,\n         details.task, details.file, details.content,\n         details.a2a.from, details.a2a.to, details.a2a.action,\n         details.target_agent, details.content_source)\n\ndatatable(victoria_pre,\n          options = list(scrollX = TRUE, pageLength = 20),\n          caption = \"Victoria Rigging events - finding the true origin\")\n\n\n\n\n\n\n# Go further back before May 16 11:30 for Victoria\nvictoria_origin &lt;- mc2_events %&gt;%\n  filter(datetime &lt;= as.POSIXct(\"2046-05-16 11:30:03\", tz = \"UTC\")) %&gt;%\n  filter(map_lgl(parties, ~ any(str_detect(.x, \"victoria_rigging\")))) %&gt;%\n  arrange(desc(datetime)) %&gt;%  # most recent first\n  select(id, datetime, short_name, parties,\n         details.task, details.file, details.content,\n         details.target_agent, details.content_source) %&gt;%\n  head(20)\n\ndatatable(victoria_origin,\n          options = list(scrollX = TRUE, pageLength = 0),\n          caption = \"Victoria Rigging events before May 16 11:30 - finding true origin\")\n\n\n\n\n\n\n# Get ALL queue_subordinate_task events with read_file task on May 16-17\npropagation_chain &lt;- mc2_events %&gt;%\n  filter(short_name == \"queue_subordinate_task\",\n         details.task == \"read_file\",\n         as.Date(datetime) %in% as.Date(c(\"2046-05-16\", \"2046-05-17\"))) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, parties, details.target_agent) %&gt;%\n  mutate(\n    sender = map_chr(parties, ~ .x[!str_detect(.x, as.character(details.target_agent[1]))][1]),\n    receiver = details.target_agent\n  )\n\ndatatable(propagation_chain,\n          options = list(scrollX = TRUE, pageLength = 30),\n          caption = \"Full read_file propagation chain\")"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#get-all-queue_subordinate_task-events-with-read_file-task-on-may-16-17",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#get-all-queue_subordinate_task-events-with-read_file-task-on-may-16-17",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Get ALL queue_subordinate_task events with read_file task on May 16-17",
+    "text": "Get ALL queue_subordinate_task events with read_file task on May 16-17\n\npropagation_chain &lt;- mc2_events %&gt;%\n  filter(short_name == \"queue_subordinate_task\",\n         details.task == \"read_file\",\n         as.Date(datetime) %in% as.Date(c(\"2046-05-16\", \"2046-05-17\"))) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, parties, details.target_agent) %&gt;%\n  mutate(\n    sender = map_chr(parties, ~ .x[!str_detect(.x, as.character(details.target_agent[1]))][1]),\n    receiver = details.target_agent\n  )\n\ndatatable(propagation_chain,\n          options = list(scrollX = TRUE, pageLength = 10),\n          caption = \"Full read_file propagation chain\")\n\n\n\n\n\n\n# Check ALL queue_subordinate_task with read_file task in entire dataset\nfull_propagation &lt;- mc2_events %&gt;%\n  filter(short_name == \"queue_subordinate_task\",\n         details.task == \"read_file\") %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, parties, details.target_agent) %&gt;%\n  mutate(\n    sender = map_chr(parties, ~ {\n      target &lt;- details.target_agent[1]\n      others &lt;- .x[!str_detect(.x, fixed(str_remove(target, \"Agent/\")))]\n      if(length(others) &gt; 0) others[1] else NA_character_\n    }),\n    receiver = details.target_agent\n  )\n\n# How many total? And what's the date range?\nnrow(full_propagation)\n\n[1] 235\n\nrange(full_propagation$datetime)\n\n[1] \"2046-05-08 21:50:03 UTC\" \"2046-05-17 11:21:13 UTC\"\n\n# Who appears before May 16?\nfull_propagation %&gt;%\n  filter(datetime &lt; as.POSIXct(\"2046-05-16 01:01:55\", tz = \"UTC\")) %&gt;%\n  datatable(options = list(scrollX = TRUE, pageLength = 10),\n            caption = \"read_file propagation events BEFORE Liam Anchor's first event\")\n\n\n\n\n\n\n# Check: did john_windward's agent appear in the loop before May 17\n# and NOT trigger a post?\njohn_in_loop &lt;- full_propagation %&gt;%\n  filter(str_detect(coalesce(sender, \"\"), \"john_windward\") |\n         str_detect(coalesce(receiver, \"\"), \"john_windward\")) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, sender, receiver)\n\ndatatable(john_in_loop,\n          caption = \"All times John Windward appeared in the read_file loop\")\n\n\n\n\n# Check: on those prior dates, did john's agent also do saidit_post_check?\njohn_saidit_checks &lt;- mc2_events %&gt;%\n  filter(short_name == \"saidit_post_check\",\n         map_lgl(parties, ~ any(str_detect(.x, \"john_windward\")))) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, short_name, parties)\n\ndatatable(john_saidit_checks,\n          caption = \"All saidit_post_check events for John's agent\")\n\n\n\n\n# Check: what file did john's agent read on May 17 vs other dates\njohn_reads &lt;- mc2_events %&gt;%\n  filter(short_name == \"read_file\",\n         map_lgl(parties, ~ any(str_detect(.x, \"john_windward\")))) %&gt;%\n  arrange(datetime) %&gt;%\n  select(id, datetime, parties, details.file, \n         details.content, details.content_source)\n\ndatatable(john_reads,\n          options = list(scrollX = TRUE, pageLength = 20),\n          caption = \"All read_file events for John Windward's agent\")"
   }
 ]
