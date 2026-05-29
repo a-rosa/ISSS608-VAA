@@ -1993,5 +1993,89 @@
     "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
     "section": "Conclusion on the anomalous post",
     "text": "Conclusion on the anomalous post\nThe post has short_name as saidit_post but under parties as Agent/person:john_windward,system:saidit which is weird as concluded that saidit_post should be posted by the person so John himself. But parties shows that its posted by John’s agent instead.\nIn addition based on John’s event on May 17, there was only check_email. He was also not active on 4:21 am, which means his agent acted autonomously."
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#inpect-structure",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#inpect-structure",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Inpect structure",
+    "text": "Inpect structure\n\nstr(org_raw, max.level = 2)\n\nList of 5\n $ directed  : logi TRUE\n $ multigraph: logi FALSE\n $ graph     :List of 1\n  ..$ name: chr \"Tenant Thread Organization Tree\"\n $ nodes     :'data.frame': 75 obs. of  4 variables:\n  ..$ id   : chr [1:75] \"company:tenant_thread\" \"department:executive_suite\" \"department:products\" \"department:human_resources\" ...\n  ..$ label: chr [1:75] \"Tenant Thread\" \"Executive Suite\" \"Products\" \"Human Resources\" ...\n  ..$ type : chr [1:75] \"company\" \"department\" \"department\" \"department\" ...\n  ..$ title: chr [1:75] NA NA NA NA ...\n $ edges     :'data.frame': 74 obs. of  3 variables:\n  ..$ source  : chr [1:74] \"company:tenant_thread\" \"company:tenant_thread\" \"company:tenant_thread\" \"company:tenant_thread\" ...\n  ..$ target  : chr [1:74] \"department:executive_suite\" \"department:products\" \"department:human_resources\" \"department:legal\" ...\n  ..$ relation: chr [1:74] \"contains\" \"contains\" \"contains\" \"contains\" ...\n\nnames(org_raw)\n\n[1] \"directed\"   \"multigraph\" \"graph\"      \"nodes\"      \"edges\""
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#inspect-nodes-and-links-only",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#inspect-nodes-and-links-only",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Inspect nodes and links only",
+    "text": "Inspect nodes and links only\n\norg_nodes &lt;- as_tibble(org_raw$nodes)\norg_links &lt;- as_tibble(org_raw$links)\n\nglimpse(org_nodes)\n\nRows: 75\nColumns: 4\n$ id    &lt;chr&gt; \"company:tenant_thread\", \"department:executive_suite\", \"departme…\n$ label &lt;chr&gt; \"Tenant Thread\", \"Executive Suite\", \"Products\", \"Human Resources…\n$ type  &lt;chr&gt; \"company\", \"department\", \"department\", \"department\", \"department…\n$ title &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …\n\nglimpse(org_links)\n\nRows: 0\nColumns: 0"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#check-types-of-nodes",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#check-types-of-nodes",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Check types of nodes",
+    "text": "Check types of nodes\n\norg_nodes %&gt;% count(type, sort = TRUE)\n\n# A tibble: 4 × 2\n  type           n\n  &lt;chr&gt;      &lt;int&gt;\n1 person        49\n2 team          19\n3 department     6\n4 company        1"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#inspect-nodes-and-edges-only",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#inspect-nodes-and-edges-only",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Inspect nodes and edges only",
+    "text": "Inspect nodes and edges only\n\norg_nodes &lt;- as_tibble(org_raw$nodes)\norg_edges &lt;- as_tibble(org_raw$edges)\n\nglimpse(org_nodes)\n\nRows: 75\nColumns: 4\n$ id    &lt;chr&gt; \"company:tenant_thread\", \"department:executive_suite\", \"departme…\n$ label &lt;chr&gt; \"Tenant Thread\", \"Executive Suite\", \"Products\", \"Human Resources…\n$ type  &lt;chr&gt; \"company\", \"department\", \"department\", \"department\", \"department…\n$ title &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …\n\nglimpse(org_edges)\n\nRows: 74\nColumns: 3\n$ source   &lt;chr&gt; \"company:tenant_thread\", \"company:tenant_thread\", \"company:te…\n$ target   &lt;chr&gt; \"department:executive_suite\", \"department:products\", \"departm…\n$ relation &lt;chr&gt; \"contains\", \"contains\", \"contains\", \"contains\", \"contains\", \"…"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#check-relations-type-for-edges",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#check-relations-type-for-edges",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Check relations type for edges",
+    "text": "Check relations type for edges\n\norg_edges %&gt;% count(relation, sort = TRUE)\n\n# A tibble: 2 × 2\n  relation     n\n  &lt;chr&gt;    &lt;int&gt;\n1 contains    69\n2 led_by       5"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#find-john-windward",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#find-john-windward",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Find John Windward",
+    "text": "Find John Windward\n\norg_nodes %&gt;% filter(str_detect(id, \"john_windward\"))\n\n# A tibble: 1 × 4\n  id                   label         type   title          \n  &lt;chr&gt;                &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt;          \n1 person:john_windward John Windward person Department Lead"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#check-johns-connections-in-the-org",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#check-johns-connections-in-the-org",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Check John’s connections in the org",
+    "text": "Check John’s connections in the org\n\norg_edges %&gt;%\n  filter(str_detect(source, \"john_windward\") |\n           str_detect(target, \"john_windward\"))\n\n# A tibble: 1 × 3\n  source                      target               relation\n  &lt;chr&gt;                       &lt;chr&gt;                &lt;chr&gt;   \n1 department:customer_support person:john_windward led_by"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#see-all-people-with-their-titles",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#see-all-people-with-their-titles",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "See all people with their titles",
+    "text": "See all people with their titles"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#find-others-in-customer-support",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#find-others-in-customer-support",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Find others in Customer Support",
+    "text": "Find others in Customer Support\n\norg_edges %&gt;%\n  filter(str_detect(source, \"customer_support\")) %&gt;%\n  left_join(org_nodes, by = c(\"target\" = \"id\")) %&gt;%\n  select(source, target, label, type, title, relation)\n\n# A tibble: 5 × 6\n  source                      target                label   type  title relation\n  &lt;chr&gt;                       &lt;chr&gt;                 &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   \n1 department:customer_support team:phone_center     Phone … team  &lt;NA&gt;  contains\n2 department:customer_support team:billing          Billing team  &lt;NA&gt;  contains\n3 department:customer_support team:concierge        Concie… team  &lt;NA&gt;  contains\n4 department:customer_support team:public_relations Public… team  &lt;NA&gt;  contains\n5 department:customer_support person:john_windward  John W… pers… Depa… led_by"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#who-else-is-in-customer-support",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#who-else-is-in-customer-support",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Who else is in Customer Support",
+    "text": "Who else is in Customer Support\n\norg_edges %&gt;%\n  filter(str_detect(source, \"customer_support\")) %&gt;%\n  left_join(org_nodes, by = c(\"target\" = \"id\")) %&gt;%\n  select(source, target, label, type, title, relation)\n\n# A tibble: 5 × 6\n  source                      target                label   type  title relation\n  &lt;chr&gt;                       &lt;chr&gt;                 &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   \n1 department:customer_support team:phone_center     Phone … team  &lt;NA&gt;  contains\n2 department:customer_support team:billing          Billing team  &lt;NA&gt;  contains\n3 department:customer_support team:concierge        Concie… team  &lt;NA&gt;  contains\n4 department:customer_support team:public_relations Public… team  &lt;NA&gt;  contains\n5 department:customer_support person:john_windward  John W… pers… Depa… led_by"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#what-teamspeople-does-johns-department-contain",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#what-teamspeople-does-johns-department-contain",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "What teams/people does John’s department contain",
+    "text": "What teams/people does John’s department contain\n\norg_edges %&gt;%\n  filter(str_detect(source, \"customer_support\") |\n           str_detect(target, \"customer_support\")) %&gt;%\n  left_join(org_nodes, by = c(\"target\" = \"id\"))\n\n# A tibble: 6 × 6\n  source                      target                  relation label type  title\n  &lt;chr&gt;                       &lt;chr&gt;                   &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;\n1 company:tenant_thread       department:customer_su… contains Cust… depa… &lt;NA&gt; \n2 department:customer_support team:phone_center       contains Phon… team  &lt;NA&gt; \n3 department:customer_support team:billing            contains Bill… team  &lt;NA&gt; \n4 department:customer_support team:concierge          contains Conc… team  &lt;NA&gt; \n5 department:customer_support team:public_relations   contains Publ… team  &lt;NA&gt; \n6 department:customer_support person:john_windward    led_by   John… pers… Depa…"
+  },
+  {
+    "objectID": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#context-of-johns-world",
+    "href": "Take_Home_Ex/Take_Home_Ex2/Take_Home_Ex2.html#context-of-johns-world",
+    "title": "Take-Home Exercise 2 - VAST Mini Challenge 2",
+    "section": "Context of John’s World",
+    "text": "Context of John’s World\nJohn leads Customer Support which contains 4 teams: Phone Center, Billing, Concierge and Public Relations. The Customer Support sits directly under company:tenant_thread."
   }
 ]

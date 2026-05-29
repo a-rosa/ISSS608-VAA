@@ -29,7 +29,7 @@ mc2_raw <- fromJSON("mc2_data/MC2_data.json", flatten = TRUE)
 org_raw <- fromJSON("mc2_data/org_chart.json", flatten = TRUE)
 ```
 
-# Inspect MC2 Raw Data
+# Inspect MC2 Data
 
 ## Inspect structure
 
@@ -39,18 +39,21 @@ names(mc2_raw)
 ```
 
 ## Inspect desciption and events only
+
 ```{r}
 mc2_desc <- mc2_raw$description
 mc2_events <- as_tibble(mc2_raw$events)
 ```
 
 ## Parse timestamp into readable datetime
+
 ```{r}
 mc2_events <- mc2_events %>%
   mutate(datetime = as_datetime(when))
 ```
 
 ## Quick sanity checks
+
 ```{r}
 glimpse(mc2_events)
 range(mc2_events$datetime)
@@ -59,6 +62,7 @@ mc2_events %>% count(short_name, sort = TRUE) %>% print (n = 24)
 ```
 
 ## Find the anomalous SaidIT post
+
 ```{r}
 saidit_post <- mc2_events %>%
   filter(!is.na(details.forum)) %>%
@@ -69,6 +73,7 @@ print(saidit_post)
 ```
 
 ## Confirm John Windwar's event on May 17
+
 ```{r}
 john_may17 <- mc2_events %>%
   filter(map_lgl(parties, ~ "person:john_windward" %in% .x)) %>%
@@ -84,6 +89,7 @@ datatable(john_may17,
 ```
 
 ## Narrow down to specific anomalous post
+
 ```{r}
 anomalous_post <- mc2_events %>%
   filter(short_name %in% c("saidit_post", "post_saidit")) %>%
@@ -101,10 +107,11 @@ datatable(anomalous_post,
 ::: callout-note
 ### Key Finding
 
-The anomalous post is event ID 373902, posted at 2046-05-17T11:21:15Z but this is in UTC which in US Eastern time is on 4.21am, which matches the challenge description. In addition `details.forum`:`general` coincide with the challenge description that its posted in a random forum. 
+The anomalous post is event ID 373902, posted at 2046-05-17T11:21:15Z but this is in UTC which in US Eastern time is on 4.21am, which matches the challenge description. In addition `details.forum`:`general` coincide with the challenge description that its posted in a random forum.
 :::
 
 ## Find difference between saidit_post and post_saidit
+
 ```{r}
 bind_rows(
   mc2_events %>% filter(short_name == "saidit_post") %>% head(5),
@@ -120,15 +127,70 @@ bind_rows(
 ::: callout-note
 ### Key Findings
 
-`saidit_post` events show `parties` as `person:...` and `post_saidit` events show `parties` as `Agent/person:...,system:saidit`, which means `saidit_post` should be posted by the person themselves and `post_saidit` are posted by an agent on behalf of the person. 
+`saidit_post` events show `parties` as `person:...` and `post_saidit` events show `parties` as `Agent/person:...,system:saidit`, which means `saidit_post` should be posted by the person themselves and `post_saidit` are posted by an agent on behalf of the person.
 :::
 
 ## Conclusion on the anomalous post
 
-The post has `short_name` as `saidit_post` but under `parties` as `Agent/person:john_windward,system:saidit` which is weird as concluded that `saidit_post` should be posted by the person so John himself. But `parties` shows that its posted by John's agent instead. 
+The post has `short_name` as `saidit_post` but under `parties` as `Agent/person:john_windward,system:saidit` which is weird as concluded that `saidit_post` should be posted by the person so John himself. But `parties` shows that its posted by John's agent instead.
 
 In addition based on John's event on May 17, there was only `check_email`. He was also not active on 4:21 am, which means his agent acted autonomously.
 
-# Inspect 
+# Inspect organisation chart
+
+## Inpect structure
+
+```{r}
+str(org_raw, max.level = 2)
+names(org_raw)
+```
+
+## Inspect nodes and edges only
+
+```{r}
+org_nodes <- as_tibble(org_raw$nodes)
+org_edges <- as_tibble(org_raw$edges)
+
+glimpse(org_nodes)
+glimpse(org_edges)
+```
+
+## Check relations type for edges 
+
+```{r}
+org_edges %>% count(relation, sort = TRUE)
+```
+
+## Check types of nodes
+
+```{r}
+org_nodes %>% count(type, sort = TRUE)
+```
+
+## Find John Windward
+
+```{r}
+org_nodes %>% filter(str_detect(id, "john_windward"))
+```
+
+## Check John's connections in the org
+
+```{r}
+org_edges %>%
+  filter(str_detect(source, "john_windward") |
+           str_detect(target, "john_windward"))
+```
+
+## What teams/people does John's department contain
+```{r}
+org_edges %>%
+  filter(str_detect(source, "customer_support") |
+           str_detect(target, "customer_support")) %>%
+  left_join(org_nodes, by = c("target" = "id"))
+```
+
+## Context of John's World
+
+John leads Customer Support which contains 4 teams: Phone Center, Billing, Concierge and Public Relations. The Customer Support sits directly under `company:tenant_thread`.
 
 
