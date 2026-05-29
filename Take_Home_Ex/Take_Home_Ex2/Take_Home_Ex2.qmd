@@ -1,0 +1,134 @@
+---
+title: "Take-Home Exercise 2 - VAST Mini Challenge 2"
+author: "Amelia Rosalind"
+date: "May 29, 2026"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
+
+# Overview
+
+# Getting Started
+
+## Installing of required packages
+
+```{r}
+pacman::p_load(tidyverse, jsonlite, igraph, tidygraph, 
+               ggraph, visNetwork, plotly, DT,
+               gganimate, tidytext, stringdist, knitr)
+```
+
+## Importing data
+
+```{r}
+mc2_raw <- fromJSON("mc2_data/MC2_data.json", flatten = TRUE)
+org_raw <- fromJSON("mc2_data/org_chart.json", flatten = TRUE)
+```
+
+# Inspect MC2 Raw Data
+
+## Inspect structure
+
+```{r}
+str(mc2_raw, max.level = 2)
+names(mc2_raw)
+```
+
+## Inspect desciption and events only
+```{r}
+mc2_desc <- mc2_raw$description
+mc2_events <- as_tibble(mc2_raw$events)
+```
+
+## Parse timestamp into readable datetime
+```{r}
+mc2_events <- mc2_events %>%
+  mutate(datetime = as_datetime(when))
+```
+
+## Quick sanity checks
+```{r}
+glimpse(mc2_events)
+range(mc2_events$datetime)
+n_distinct(mc2_events$short_name)
+mc2_events %>% count(short_name, sort = TRUE) %>% print (n = 24)
+```
+
+## Find the anomalous SaidIT post
+```{r}
+saidit_post <- mc2_events %>%
+  filter(!is.na(details.forum)) %>%
+  select(id, datetime, short_name, parties, details.forum,
+         details.poster_id, details.content, details.timestamp)
+
+print(saidit_post)
+```
+
+## Confirm John Windwar's event on May 17
+```{r}
+john_may17 <- mc2_events %>%
+  filter(map_lgl(parties, ~ "person:john_windward" %in% .x)) %>%
+  filter(as.Date(datetime) == as.Date("2046-05-17")) %>%
+  arrange(datetime) %>%
+  select(id, datetime, short_name, details.from, details.to,
+         details.content, details.forum, details.poster_id,
+         details.a2a.from, details.a2a.to, details.a2a.action)
+
+datatable(john_may17,
+          options = list(scrollX = TRUE, pageLength = 10),
+          caption = "John Windward's Events on May 17, 2046")
+```
+
+## Narrow down to specific anomalous post
+```{r}
+anomalous_post <- mc2_events %>%
+  filter(short_name %in% c("saidit_post", "post_saidit")) %>%
+  filter(as.Date(datetime) == as.Date("2046-5-17")) %>%
+  arrange(datetime) %>%
+  select(id, datetime, short_name, parties, details.forum,
+         details.poster_id, details.content, 
+         details.content_source)
+
+datatable(anomalous_post, 
+          options = list(scrollX = TRUE, pageLength = 10),
+          caption = "SaidIT Posts on May 17, 2046")
+```
+
+::: callout-note
+### Key Finding
+
+The anomalous post is event ID 373902, posted at 2046-05-17T11:21:15Z but this is in UTC which in US Eastern time is on 4.21am, which matches the challenge description. In addition `details.forum`:`general` coincide with the challenge description that its posted in a random forum. 
+:::
+
+## Find difference between saidit_post and post_saidit
+```{r}
+bind_rows(
+  mc2_events %>% filter(short_name == "saidit_post") %>% head(5),
+  mc2_events %>% filter(short_name == "post_saidit") %>% head(5)
+) %>%
+  select(id, datetime, short_name, parties, details.forum,
+         details.poster_id, details.content,
+         details.content_source) %>%
+  datatable(options = list(scrollX = TRUE, pageLength = 5),
+           caption = "Comparing saidit_post vs post_saidit action types")
+```
+
+::: callout-note
+### Key Findings
+
+`saidit_post` events show `parties` as `person:...` and `post_saidit` events show `parties` as `Agent/person:...,system:saidit`, which means `saidit_post` should be posted by the person themselves and `post_saidit` are posted by an agent on behalf of the person. 
+:::
+
+## Conclusion on the anomalous post
+
+The post has `short_name` as `saidit_post` but under `parties` as `Agent/person:john_windward,system:saidit` which is weird as concluded that `saidit_post` should be posted by the person so John himself. But `parties` shows that its posted by John's agent instead. 
+
+In addition based on John's event on May 17, there was only `check_email`. He was also not active on 4:21 am, which means his agent acted autonomously.
+
+# Inspect 
+
+
