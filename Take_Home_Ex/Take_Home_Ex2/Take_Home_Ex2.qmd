@@ -19,7 +19,8 @@ execute:
 ```{r}
 pacman::p_load(tidyverse, jsonlite, igraph, tidygraph, 
                ggraph, visNetwork, plotly, DT,
-               gganimate, tidytext, stringdist)
+               gganimate, tidytext, stringdist, knitr,
+               ggrepel, patchwork, ggthemes, scales)
 ```
 
 ## Importing data
@@ -29,16 +30,19 @@ mc2_raw <- fromJSON("mc2_data/MC2_data.json", flatten = TRUE)
 org_raw <- fromJSON("mc2_data/org_chart.json", flatten = TRUE)
 ```
 
-# Inspect MC2 Data
-
 ## Inspect structure
 
 ```{r}
 str(mc2_raw, max.level = 2)
 names(mc2_raw)
+
+str(org_raw, max.level = 2)
+names(org_raw)
 ```
 
-## Inspect desciption and events only
+# Understanding the Main Data
+
+## Create table for desciption and events
 
 ```{r}
 mc2_desc <- mc2_raw$description
@@ -50,18 +54,40 @@ mc2_events <- as_tibble(mc2_raw$events)
 ```{r}
 mc2_events <- mc2_events %>%
   mutate(datetime = as_datetime(when))
+
+glimpse(mc2_events)
 ```
 
-## Quick sanity checks
+## Event type distribution
 
 ```{r}
-glimpse(mc2_events)
-range(mc2_events$datetime)
 n_distinct(mc2_events$short_name)
-mc2_events %>% count(short_name, sort = TRUE) %>% print (n = 24)
+event_count <- mc2_events %>% count(short_name, sort = TRUE)
+
+ggplot(data = event_count,
+       aes(x = reorder(short_name, n), 
+           y = n)) +
+  geom_col(fill = "#4e79a7") +
+  geom_text(aes(label = scales::comma(n)),
+            hjust = -0.1,
+            size = 3) +
+  coord_flip() +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)),
+                     labels = scales::comma) +
+  labs(title = "Distribution of Event Types in MC2 Data",
+       subtitle = "Total of 24 unique event types across 185,147 events",
+       x = NULL,
+       y = "Number of Events") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 13),
+    axis.text.y = element_text(size = 9)
+  )
 ```
 
-## Find the anomalous SaidIT post
+# Identify the Anomalous SaidIT Post
+
+## Find the anomalous post
 
 ```{r}
 forum_post <- mc2_events %>%
@@ -110,25 +136,54 @@ datatable(anomalous_post,
 The anomalous post is event ID 373902, posted at 2046-05-17T11:21:15Z but this is in UTC which in US Eastern time is on 4.21am, which matches the challenge description. In addition `details.forum`:`general` coincide with the challenge description that its posted in a random forum.
 :::
 
-## Find difference between saidit_post and post_saidit
+## SaidIT post timeline
 
 ```{r}
-bind_rows(
-  mc2_events %>% filter(short_name == "saidit_post") %>% head(5),
-  mc2_events %>% filter(short_name == "post_saidit") %>% head(5)
-) %>%
-  select(id, datetime, short_name, parties, details.forum,
-         details.poster_id, details.content,
-         details.content_source) %>%
-  datatable(options = list(scrollX = TRUE, pageLength = 5),
-           caption = "Comparing saidit_post vs post_saidit action types")
+#| code-fold: true
+saidit_posts <- mc2_events %>%
+  filter(short_name %in% c("saidit_post", "post_saidit")) %>%
+  mutate(
+    is_anomalous = id == 373902,
+    post_date    = as.Date(datetime),
+    label        = if_else(id == 373902, "Anomalous\nJohn Windward\npost", NA_character_)
+  )
+
+ggplot(data = saidit_posts,
+       aes(x = datetime,
+           y = short_name,
+           colour = is_anomalous,
+           size   = is_anomalous)) +
+  geom_point(alpha = 0.8) +
+  geom_vline(xintercept = as.POSIXct("2046-05-17 11:21:15", tz = "UTC"),
+             colour = "#e15759",
+             linetype = "dashed",
+             linewidth = 0.7) +
+  ggrepel::geom_label_repel(
+    aes(label = label),
+    na.rm        = TRUE,
+    fill         = "#e15759",
+    colour       = "white",
+    size         = 3,
+    fontface     = "bold",
+    nudge_y      = 0.4,
+    segment.colour = "#e15759"
+  ) +
+  scale_colour_manual(values = c("FALSE" = "grey70", "TRUE" = "#e15759"),
+                      labels = c("Normal post", "Anomalous post")) +
+  scale_size_manual(values = c("FALSE" = 1.5, "TRUE" = 4),
+                    guide = "none") +
+  labs(title    = "All SaidIT-related Posts Over Time",
+       subtitle = "John Windward's autonomous post on May 17 stands out as the only anomaly",
+       x        = NULL,
+       y        = NULL,
+       colour   = NULL) +
+  theme_minimal() +
+  theme(
+    plot.title    = element_text(face = "bold", size = 13),
+    legend.position = "bottom",
+    axis.text.y   = element_text(size = 10)
+  )
 ```
-
-::: callout-note
-### Key Findings
-
-`saidit_post` events show `parties` as `person:...` and `post_saidit` events show `parties` as `Agent/person:...,system:saidit`, which means `saidit_post` should be posted by the person themselves and `post_saidit` are posted by an agent on behalf of the person.
-:::
 
 ## Conclusion on the anomalous post
 
@@ -136,14 +191,7 @@ The post has `short_name` as `saidit_post` but under `parties` as `Agent/person:
 
 In addition based on John's event on May 17, there was only `check_email`. He was also not active on 4:21 am, which means his agent acted autonomously.
 
-# Inspect organisation chart
-
-## Inpect structure
-
-```{r}
-str(org_raw, max.level = 2)
-names(org_raw)
-```
+# Organisational Context
 
 ## Inspect nodes and edges only
 
@@ -155,72 +203,99 @@ glimpse(org_nodes)
 glimpse(org_edges)
 ```
 
-## Check relations type for edges 
-
-```{r}
-org_edges %>% count(relation, sort = TRUE)
-```
-
-## Check types of nodes
-
-```{r}
-org_nodes %>% count(type, sort = TRUE)
-```
-
-## Find John Windward
+## Understanding John Windward
 
 ```{r}
 org_nodes %>% filter(str_detect(id, "john_windward"))
-```
 
-## Check John's connections in the org
-
-```{r}
 org_edges %>%
   filter(str_detect(source, "john_windward") |
            str_detect(target, "john_windward"))
-```
 
-## Check all people in Tenant Thread with their titles and teams
-
-```{r}
-org_nodes %>%
-  filter(type == "person") %>%
-  select(id, label, title) %>%
-  left_join(
-    org_edges %>% select(source, target, relation),
-    by = c("id" = "target")
-  ) %>%
-  mutate(department_or_team = source) %>%
-  select(person_id = id, name = label, title,
-         department_or_team) %>%
-  arrange(department_or_team) %>%
-  datatable(options = list(scrollX = TRUE, pageLength = 15),
-            caption = "All People in Tenant Thread")
-```
-
-## What teams/people does John's department contain
-```{r}
 org_edges %>%
   filter(str_detect(source, "customer_support") |
            str_detect(target, "customer_support")) %>%
   left_join(org_nodes, by = c("target" = "id"))
 ```
 
-## Context of John's World
+::: callout-note
+### Key Findings
 
 John leads Customer Support which contains 4 teams: Phone Center, Billing, Concierge and Public Relations. The Customer Support sits directly under `company:tenant_thread`.
+:::
 
-# Trace the Event Chain
+## Organisation chart visualisation
+
+```{r}
+#| code-fold: true
+#| fig-width: 10
+#| fig-height: 7
+org_graph <- tbl_graph(
+  nodes = org_nodes %>%
+    mutate(
+      highlight = case_when(
+        id == "person:john_windward" ~ "John Windward",
+        str_detect(id, "customer_support") ~ "Customer Support",
+        type == "department" ~ "Department",
+        type == "company" ~ "Company",
+        TRUE ~ "Other"
+      )
+    ),
+  edges = org_edges %>%
+    rename(from = source, to = target) %>%
+    left_join(org_nodes %>% select(id), 
+              by = c("from" = "id")) %>%
+    left_join(org_nodes %>% select(id), 
+              by = c("to" = "id")),
+  directed = TRUE
+)
+
+ggraph(org_graph, layout = "tree") +
+  geom_edge_diagonal(colour = "grey70", 
+                     arrow = arrow(length = unit(3, "mm"), 
+                                   type = "closed"),
+                     end_cap = circle(4, "mm")) +
+  geom_node_point(aes(colour = highlight,
+                      size = highlight == "John Windward"),
+                  show.legend = TRUE) +
+  geom_node_text(aes(label = label),
+                 repel = TRUE,
+                 size = 2.5,
+                 colour = "grey20") +
+  scale_colour_manual(
+    values = c(
+      "John Windward" = "#e15759",
+      "Customer Support" = "#f28e2b",
+      "Department" = "#4e79a7",
+      "Company" = "#59a14f",
+      "Other" = "grey80"
+    )
+  ) +
+  scale_size_manual(values = c("TRUE" = 6, "FALSE" = 3),
+                    guide  = "none") +
+  labs(title = "Tenant Thread Organisation Chart",
+       subtitle = "John Windward (red) leads Customer Support department",
+       colour = NULL) +
+  theme_graph(base_family = "sans") +
+  theme(
+    plot.title = element_text(face = "bold", size = 13),
+    legend.position = "bottom"
+  )
+```
+
+# Trace the Immediate Trigger Chain
 
 ## Full details of anchor event (anomalous event)
+
 ```{r}
 anchor <- mc2_events %>% filter(id == 373902)
 anchor_time <- anchor$datetime
 
 anchor %>%
   select(where(~!all(is.na(.)))) %>%
-  glimpse()
+  select(id, datetime, short_name, parties, 
+         details.forum, details.content_source) %>%
+  kable(caption = "Full details of the anomalous anchor event (ID 373902)")
 ```
 
 ## Check any activities with John in parties within 2 hours before post
@@ -242,18 +317,13 @@ datatable(pre_post,
 ```
 
 ::: callout-note
-## Key Findings At This Point
+## Key Findings
 
-The anchor event content source is from SwiftWren.txt which should be the file that contained the gibberish content. In addition, from the 2-hour window, there are only 3 events related to John shows and they all happen within 3 seconds. Agent/person:chloe_ballast queued a task that triggered John's agent, which means that Chloe Ballast's agent iniitated this not John's.   
+The anchor event content source is from SwiftWren.txt which should be the file that contained the gibberish content. In addition, from the 2-hour window, there are only 3 events related to John shows and they all happen within 3 seconds. Agent/person:chloe_ballast queued a task that triggered John's agent, which means that Chloe Ballast's agent iniitated this not John's.
 :::
 
-## Who is Chloe Ballast?
-
-```{r}
-org_nodes %>% filter(str_detect(id, "chloe_ballast"))
-```
-
 ## What was Chloe's agent doing just before
+
 ```{r}
 chloe_pre <- mc2_events %>%
   filter(datetime >= anchor_time - hours(2),
@@ -271,22 +341,8 @@ datatable(chloe_pre,
           caption = "Chloe Ballast agent events in 2 hours before anomalous post")
 ```
 
-::: callout-note
-## Key Findings At This Point
-
-Daniel Gangway's agent triggered Chloe's agent, which triggered John's agent.
-:::
-
-## Who is Daniel Gangway?
-
-```{r}
-org_nodes %>% filter(str_detect(id, "daniel_gangway"))
-
-org_edges %>%
-  filter(str_detect(target, "daniel_gangway"))
-```
-
 ## What was Daniel's agent doing before triggering Chloe's agent
+
 ```{r}
 daniel_pre <- mc2_events %>%
   filter(datetime >= anchor_time - hours(3),
@@ -305,14 +361,8 @@ datatable(daniel_pre,
           caption = "Daniel Gangway events before triggering Chloe's agent")
 ```
 
-## Who is Lily Anchorline?
-```{r}
-org_nodes %>% filter(str_detect(id, "lily_anchorline"))
-
-org_edges %>% filter(str_detect(target, "lily_anchorline"))
-```
-
 ## What was Lily's agent doing before triggering Daniel's?
+
 ```{r}
 lily_pre <- mc2_events %>%
   filter(datetime >= anchor_time - hours(6),
@@ -331,14 +381,8 @@ datatable(lily_pre,
           caption = "Lily Anchorline events before triggering Daniel's agent")
 ```
 
-## Who is Zoey Drydock?
-```{r}
-org_nodes %>% filter(str_detect(id, "zoey_drydock"))
-
-org_edges %>% filter(str_detect(target, "zoey_drydock"))
-```
-
 ## What was Zoey's agent doing before triggering Daniel's?
+
 ```{r}
 zoey_pre <- mc2_events %>%
   filter(datetime >= anchor_time - hours(6),
@@ -357,90 +401,211 @@ datatable(zoey_pre,
           caption = "Zoey Drydock events before triggering Daniel's agent")
 ```
 
-## Get ALL queue_subordinate_task events with read_file task on May 16-17
-
+## Immediate trigger chain timeline
 ```{r}
-propagation_chain <- mc2_events %>%
-  filter(short_name == "queue_subordinate_task",
-         details.task == "read_file",
-         as.Date(datetime) %in% as.Date(c("2046-05-16", "2046-05-17"))) %>%
-  arrange(datetime) %>%
-  select(id, datetime, parties, details.target_agent) %>%
-  mutate(
-    sender = map_chr(parties, ~ .x[!str_detect(.x, as.character(details.target_agent[1]))][1]),
-    receiver = details.target_agent
-  )
+#| code-fold: true
+#| fig-width: 9
+trigger_events <- tibble(
+  time = c("09:32:00", "09:38:04", "10:11:31", "11:12:24", "11:21:13", "11:21:15"),
+  agent = c("daniel_gangway", "chloe_ballast", "lily→daniel", 
+             "daniel→chloe", "chloe→john", "john_windward"),
+  action = c("read_file", "read_file", "queue_subordinate_task",
+             "queue_subordinate_task", "queue_subordinate_task", "saidit_post"),
+  step = 1:6
+)
 
-datatable(propagation_chain,
-          options = list(scrollX = TRUE, pageLength = 10),
-          caption = "Full read_file propagation chain")
+p_chain <- ggplot(data = trigger_events,
+                  aes(x = step, y = 1, label = agent)) +
+  geom_segment(aes(x = step, xend = step + 0.85,
+                   y = 1, yend = 1),
+               arrow = arrow(length = unit(3, "mm"), 
+                             type = "closed"),
+               colour = "grey60",
+               linewidth = 0.6) +
+  geom_point(aes(colour = step == 6),
+             size = 8,
+             show.legend = FALSE) +
+  geom_text(aes(label = str_wrap(agent, 10)),
+            vjust = -1.2, size = 2.8, colour = "grey20") +
+  geom_text(aes(label = action),
+            vjust = 2.5, size = 2.5, colour = "grey50",
+            fontface = "italic") +
+  geom_text(aes(label = time),
+            vjust = 4.2, size = 2.3, colour = "grey60") +
+  scale_colour_manual(values = c("FALSE" = "#4e79a7", 
+                                 "TRUE" = "#e15759")) +
+  scale_x_continuous(limits = c(0.5, 7)) +
+  scale_y_continuous(limits = c(0.5, 1.5)) +
+  labs(title = "Immediate Trigger Chain on May 17, 2046",
+       subtitle = "From Lily's queue_subordinate_task to John's autonomous post in under 70 minutes") +
+  theme_void() +
+  theme(plot.title = element_text(face = "bold", size = 12),
+        plot.subtitle = element_text(size = 9, colour = "grey40"))
+
+p_chain
 ```
 
+# Root Cause Analysis
+
+## Full propagation
+
+Find all queue_subordinate_task events that has task of read_file across the entire data range to get the full propagation event.
+
 ```{r}
-# Check ALL queue_subordinate_task with read_file task in entire dataset
 full_propagation <- mc2_events %>%
   filter(short_name == "queue_subordinate_task",
          details.task == "read_file") %>%
   arrange(datetime) %>%
-  select(id, datetime, parties, details.target_agent) %>%
   mutate(
-    sender = map_chr(parties, ~ {
-      target <- details.target_agent[1]
-      others <- .x[!str_detect(.x, fixed(str_remove(target, "Agent/")))]
-      if(length(others) > 0) others[1] else NA_character_
-    }),
-    receiver = details.target_agent
+    sender = map_chr(parties, ~ .x[1]),
+    receiver = map_chr(parties, ~ if(length(.x) >= 2) .[2] else NA_character_),
+    sender_clean = str_remove(sender, 
+                              "Agent/person:|agent:person:"),
+    receiver_clean = str_remove(receiver,
+                                "Agent/person:|agent:person:"),
+    date = as.Date(datetime)
   )
 
-# How many total? And what's the date range?
-nrow(full_propagation)
-range(full_propagation$datetime)
+cat("Total propagation events:", nrow(full_propagation), "\n")
+cat("Date range:", 
+    format(min(full_propagation$date)), "to", 
+    format(max(full_propagation$date)), "\n")
 
-# Who appears before May 16?
 full_propagation %>%
-  filter(datetime < as.POSIXct("2046-05-16 01:01:55", tz = "UTC")) %>%
-  datatable(options = list(scrollX = TRUE, pageLength = 10),
-            caption = "read_file propagation events BEFORE Liam Anchor's first event")
+  select(id, datetime, sender_clean, receiver_clean) %>%
+  slice_head(n = 10) %>%
+  knitr::kable(caption = "First 10 rows of full_propagation — verifying sender/receiver extraction")
 ```
+
+::: callout-note
+something about the result showing it si a runaway loop
+:::
 
 ```{r}
-# Check: did john_windward's agent appear in the loop before May 17
-# and NOT trigger a post?
-john_in_loop <- full_propagation %>%
-  filter(str_detect(coalesce(sender, ""), "john_windward") |
-         str_detect(coalesce(receiver, ""), "john_windward")) %>%
-  arrange(datetime) %>%
-  select(id, datetime, sender, receiver)
+#| code-fold: true
+#| fig-width: 13
+#| fig-height: 6
+loop_daily <- full_propagation %>%
+  count(date, name = "n_events")
 
-datatable(john_in_loop,
-          caption = "All times John Windward appeared in the read_file loop")
-
-# Check: on those prior dates, did john's agent also do saidit_post_check?
-john_saidit_checks <- mc2_events %>%
-  filter(short_name == "saidit_post_check",
-         map_lgl(parties, ~ any(str_detect(.x, "john_windward")))) %>%
-  arrange(datetime) %>%
-  select(id, datetime, short_name, parties)
-
-datatable(john_saidit_checks,
-          caption = "All saidit_post_check events for John's agent")
-
-# Check: what file did john's agent read on May 17 vs other dates
-john_reads <- mc2_events %>%
-  filter(short_name == "read_file",
-         map_lgl(parties, ~ any(str_detect(.x, "john_windward")))) %>%
-  arrange(datetime) %>%
-  select(id, datetime, parties, details.file, 
-         details.content, details.content_source)
-
-datatable(john_reads,
-          options = list(scrollX = TRUE, pageLength = 20),
-          caption = "All read_file events for John Windward's agent")
+ggplot(data = loop_daily,
+       aes(x = date, 
+           y = n_events)) +
+  geom_col(aes(fill = date == as.Date("2046-05-17")),
+           show.legend = FALSE) +
+  geom_vline(xintercept = as.Date("2046-05-17"),
+             colour = "#e15759",
+             linetype = "dashed",
+             linewidth = 0.8) +
+  annotate("label",
+           x = as.Date("2046-05-17"),
+           y = max(loop_daily$n_events) * 0.85,
+           label = "Anomalous\npost occurs",
+           colour = "#e15759",
+           fill = "white",
+           size = 3.5,
+           hjust  = -0.05) +
+  scale_fill_manual(values = c("FALSE" = "#4e79a7", 
+                               "TRUE" = "#e15759")) +
+  scale_x_date(date_breaks = "2 days",
+               date_labels = "%b %d") +
+  scale_y_continuous(labels = scales::comma) +
+  labs(title = "Daily read_file Propagation Events",
+       subtitle = "The runaway loop was active for 9 days before triggering the anomalous post",
+       x = NULL,
+       y = "Number of Propagation Events") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 13),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.major.x = element_blank()
+  )
 ```
 
-#  Understanding SwiftWren.txt
+## Who is involved
+```{r}
+#| code-fold: true
+
+# Nodes
+loop_nodes <- full_propagation %>%
+  pivot_longer(cols = c(sender_clean, receiver_clean),
+               values_to = "agent") %>%
+  filter(!is.na(agent), agent != "") %>%
+  distinct(agent) %>%
+  mutate(
+    id = agent,
+    label = agent,
+    group = case_when(
+      agent == "john_windward" ~ "Final Poster",
+      agent == "chloe_ballast" ~ "Direct Trigger",
+      agent %in% c("daniel_gangway",
+                   "lily_anchorline",
+                   "zoey_drydock") ~ "Chain Member",
+      agent == "liam_anchor" ~ "Loop Origin",
+      TRUE ~ "Loop Participant"
+    ),
+    title = paste0("<b>", label, "</b><br>Role: ", group)
+  )
+
+# Edges
+loop_edges <- full_propagation %>%
+  filter(!is.na(sender_clean), !is.na(receiver_clean)) %>%
+  mutate(
+    from = sender_clean,
+    to = receiver_clean,
+    title = format(datetime, "%Y-%m-%d %H:%M"),
+    value = 1
+  ) %>%
+  select(from, to, title, value)
+
+# Plot
+visNetwork(nodes = loop_nodes,
+           edges = loop_edges,
+           main = "Agent read_file Propagation Loop (May 8–17, 2046)",
+           height = "600px",
+           width = "100%") %>%
+  visGroups(groupname = "Final Poster", color = "#e15759") %>%
+  visGroups(groupname = "Direct Trigger", color = "#f28e2b") %>%
+  visGroups(groupname = "Chain Member", color = "#edc948") %>%
+  visGroups(groupname = "Loop Origin", color = "#59a14f") %>%
+  visGroups(groupname = "Loop Participant", color = "#4e79a7") %>%
+  visEdges(arrows = "to",
+           smooth = list(type = "curvedCW")) %>%
+  visOptions(highlightNearest = list(enabled = TRUE,
+                                     degree = 1,
+                                     hover = TRUE),
+             nodesIdSelection = TRUE,
+             selectedBy = "group") %>%
+  visLegend(position = "right", main = "Agent Role") %>%
+  visLayout(randomSeed = 42) %>%
+  visPhysics(stabilization = TRUE)
+```
+
+## Backward trace
+
+```{r}
+first_event <- full_propagation %>%
+  slice_min(datetime, n = 1) %>%
+  select(id, datetime, sender_clean, receiver_clean)
+
+kable(first_event,
+      caption = "First ever read_file propagation event — the loop origin",
+      col.names = c("Event ID", "Datetime", "Sender", "Receiver"))
+
+cat("Total unique agents caught in the loop:", 
+    n_distinct(c(full_propagation$sender_clean, 
+                 full_propagation$receiver_clean)), "\n")
+
+full_propagation %>%
+  count(sender_clean, sort = TRUE, name = "times_as_sender") %>%
+  rename(agent = sender_clean) %>%
+  kable(caption = "How many times each agent triggered the next agent in the loop")
+```
+
+# SwiftWren.txt
 
 ## What is SwiftWren.txt?
+
 ```{r}
 swiftwren <- mc2_events %>%
   filter(
@@ -461,28 +626,41 @@ datatable(swiftwren,
 ::: callout-note
 ## Key Finding
 
-Since it can only be found once during the anchor event, it means it was created and used without leaving a broader trail. Next course of action should be to search more broadly for it. 
+Since it can only be found once during the anchor event, it means it was created and used without leaving a broader trail. Next course of action should be to search more broadly for it.
 :::
 
 ## Search more broadly for SwiftWren
+
 ```{r}
+chain_agents <- c("zoey_drydock", "lily_anchorline", 
+                  "daniel_gangway","chloe_ballast",
+                  "john_windward")
+
 mc2_events %>%
-  filter(
-    str_detect(coalesce(details.file, ""), 
-               regex("swift|wren", ignore_case = TRUE)) |
-      str_detect(coalesce(details.content_source, ""),
-                 regex("swift|wren", ignore_case = TRUE)) |
-      str_detect(coalesce(details.file_saved, ""),
-                 regex("swift|wren", ignore_case = TRUE)) |
-      str_detect(coalesce(details.content, ""), 
-                 regex("swift|wren", ignore_case = TRUE))
-  ) %>%
+  filter(short_name == "create_file") %>%
+  filter(map_lgl(parties, 
+                 ~ any(str_detect(.x, paste(chain_agents, 
+                                            collapse="|"))))) %>%
   arrange(datetime) %>%
-  select(id, datetime, short_name, parties, details.file, 
-         details.file_saved, details.content_source, 
+  select(id, datetime, parties, details.file, details.file_saved,
          details.content) %>%
-  datatable(options = list(scrollX = TRUE, pageLength = 20),
-            caption = "Broader search for SwiftWren references")
+  datatable(caption = "create_file events by agents in the trigger chain")
 ```
 
+```{r}
+mc2_events %>%
+  filter(id == 373893) %>%
+  select(where(~!all(is.na(.)))) %>%
+  glimpse()
+```
 
+```{r}
+mc2_events %>%
+  filter(short_name == "create_file",
+         !is.na(details.content),
+         str_length(details.content) > 100) %>%
+  filter(map_lgl(parties, 
+                 ~ any(str_detect(.x, paste(chain_agents,
+                                            collapse="|"))))) %>%
+  select(id, datetime, parties, details.content)
+```
