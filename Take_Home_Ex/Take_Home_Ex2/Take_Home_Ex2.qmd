@@ -12,6 +12,32 @@ execute:
 
 # Overview
 
+In May 2046, an anomalous post appeared on SaidIt, an internal social forum used by employees of Tenant Thread, a property management company. The post is done under the name of John Windward on 4.21 am local time. The post is in gibberish and found in a forum that appears random. The challenge is to:
+
+-   investigate how this happened and create a visual tool to describes the sequence of events that led up to the post
+    -   detailed view on the exact chain of events for this message of interest
+    -   system overview that contextualizes the message chain in the overall system
+-   Understanding the post: what it mean and origin of their contents
+-   concerning behaviours that could repeat
+    -   determine prior incidents 
+    -   propose system intervention to prevent it happening again
+
+## Data
+
+The challenge dataset consists of two files: `MC2_Data.json`, which records system activity events, and `org_chart.json`, which describes the organisational structure of Tenant Thread. A key feature of the event log is the `parties` field, which may reference people, agents, or systems. This suggests employees are assisted by autonomous agents capable of acting on their behalf, meaning not all recorded actions are directly initiated by the employee.
+
+## Analytical Approach
+
+1.  Identify the anomalous post and establish its structural anomalies
+2.  Understand the organisational context used including where John Windward sits within Tenant Thread
+3.  Immediate chain of events leading to the post traced backwards step by step
+4.  Full interaction network is mapped to establish a basline of normal behavior
+5.  Investigate origin and content of post
+6.  Characterize the propagation loop that carried the malicious instructions
+7.  Examine why John is the one who posted and not others
+8.  Discover and compare prior incidents following the same pattern
+9.  Propose data-backed intervention
+
 # Getting Started
 
 ## Installing of Required Packages
@@ -20,12 +46,12 @@ execute:
 |------------------------------------|------------------------------------|
 | tidyverse | data wrangling |
 | jsonlite | JSON import |
-| igraph, tidygraph, ggraph | building and visualising static network graphs |
+| igraph, tidygraph, ggraph, patchwork | building and visualizing static network graphs and combining plots |
 | vizNetwork, DT | interactive network exploration and data tables |
 | ggrepel, scales | improving plot visualisation through annotaiton and axis formatting |
 | knitr | for clean table rendering |
 
-: {tbl-colwidths="\[25,75\]"}
+: {tbl-colwidths="\[30,70\]"}
 
 ```{r}
 pacman::p_load(tidyverse, jsonlite, igraph, tidygraph, 
@@ -46,37 +72,25 @@ str(org_raw, max.level = 2)
 names(org_raw)
 ```
 
-::: callout-note
-### Key Findings
-
-The MC2 data is structured as a nested JSON with two top-level fields: `descriptions` a (string) and `events` (a data frame of 185,147 rows). The org chart contains nodes (people, teams, department) and directed edges (relationships between them).
-:::
+Inspection of the imported objects confirms that the activity log is stored as a nested JSON containing a dataset description and an events table with 185,147 records. The organisation chart is represented as a directed graph consisting of nodes (departments, teams, and employees) and edges describing organisational relationships.
 
 # Understanding the Main Data
 
 ## Data wrangling
 
-First separate the raw JSON into its 2 components, decription string and the events data frame. The events are converted to a tibble for easier manipulation.
+The raw JSON is separated into its `description` and `event` components. Event timestamps stored in `when` are converted into a human-readable `datetime` field to support temporal analysis.
 
 ```{r}
 mc2_desc <- mc2_raw$description
 mc2_events <- as_tibble(mc2_raw$events)
-```
 
-Then parse the Unix timestamp stored in `when` of the events tibble into readable `datetime` column.
-
-```{r}
 mc2_events <- mc2_events %>%
   mutate(datetime = as_datetime(when))
 
 glimpse(mc2_events)
 ```
 
-::: callout-note
-### Key Findings
-
-The events data frame contains 185,147 rows and 69 columns after adding the parsed datetime. Most columns are sparesly populated with NAs, which is expected since different event types use different fields.
-:::
+After timestamp conversion, the event log contains 185,147 records and 69 attributes. Many fields are sparsely populated because different event types record different metadata. This indicates a schema where field use depends on the activity being recorded. 
 
 ## Event type distribution
 
@@ -107,11 +121,7 @@ ggplot(data = event_count,
   )
 ```
 
-::: callout-note
-### Key Findings
-
-There are 24 unique event types in the dataset. The bar chart below shows their distributions. Note that the distributions are not equal. Events that dominate the log include `check_email`, `assign_agent_task`, `read_file` and `queue_subordinate_task`, with each accounting for roughly 17,000 - 37,000 events. Meanwhile, the rarer types such as `saidit_post` (108 events) and `post_saidit` (133 events) are almost negligible in scale. Yet considering the problem, one of the 2 should be the event type in question about the anomalous post in SaidIt by John Windward.
-:::
+The event log contains 24 event types with a highly uneven distribution. Common activities such as `check_email`, `assign_agent_task`, `read_file`, and `queue_subordinate_task` dominate the log, while SaidIT-related events are relatively rare. Despite their low frequency, these events are of particular interest because the challenge centers on the anomalous SaidIT post made by John Windward.
 
 # Identify the Anomalous SaidIT Post
 
@@ -129,14 +139,17 @@ kable(head(forum_post, n = 10))
 ```
 
 ::: callout-note
-### Key Finding
+### Key Finding: Interpreting SaidIt Event Types
 
-From just the head, it can be concluded that there is difference between `post_saidit` and `saidit_post` through the `parties`, `details.poster_id` and `details.timestamp` fields. `post_saidit` has `parties` field as `Agent/person:ava_tiller,system:saidit` or `Agent/person:aria_towline,system:saidit` and the `details.poster_id` and `details.timestamp` are null. `saidit_post` has `parties` and `details.parties_id` field as `person:ava_tiler` or `person:aria_towline`. Also, `details.timestamp` is not null.
+Inspection of the event log reveals two distinct SaidIT-related event types.
 
-It can be assumed that `saidit_post` are done by the person themselves, while `post_saidit` are done by the agent.
+-   `saidit_post` events are associated with a person account and typically contain a valid `details.poster_id` and `details.timestamp`.
+-   `post_saidit` events are associated with an agent interacting with the SaidIT system and do not contain these fields.
+
+This distinction suggests that `saidit_post` represents a completed forum post made by a user themselves, whereas `post_saidit` records agent-system interactions involved in the posting process.
 :::
 
-Since the challenge description states the post was made in John Windward's name at an unusual hour, all of John Windward's events on May 17 are examined to understand what he was actually doing at the time of the post.
+The challenge states the post appeared under John Windward's name at 4:21am local time. To determine whether John was responsible for the activity, all events involving him on May 17 are examined.
 
 ```{r}
 john_may17 <- mc2_events %>%
@@ -152,13 +165,9 @@ datatable(john_may17,
           caption = "John Windward's Events on May 17, 2046")
 ```
 
-::: callout-note
-### Key Findings
+John's recorded activity on May 17 consists exclusively of `check_email` events occurring during two separate periods. No forum post activity is done, which give an initial indication that the anomalous post may not have been directly initiated by John himself. 
 
-Looking at the result, John's only recorded activity on May 17 consists entirely of `check_email` events, clustered in 2 time window - early morning around 7:32-7:39 UTC and late-night around 23.9-23:18 UTC. In addition, there is no record of the anomalous post done, strongly suggesting that his agent acted without his knowledge or instruction.
-:::
-
-Since it can't be found in that way, we can find the anomalous post by isolating all SaidIT post in May 17.
+To identify the anomalous post directly, all SaidIT-related events occurring on May 17 are extracted 
 
 ```{r}
 anomalous_post <- mc2_events %>%
@@ -174,13 +183,9 @@ datatable(anomalous_post,
           caption = "SaidIT Posts on May 17, 2046")
 ```
 
-::: callout-note
-### Key Findings
+Only one SaidIT posting event occurred on May 17. Event **373902**, recorded at **2046-05-17 11:21:15 UTC**, corresponds exactly to the timestamp described in the challenge and is therefore treated as the anchor event for the investigation.
 
-Only one SaidIT post occurred on May 17 with event ID 373902 at 2046-05-17 11:21:15 UTC which should be the 4.21am anomalous post in the challenge. Considering the timing, John was inactive. The `parties` field showing `Agent/person:john_windward` rather than `person:john_windward`, which also further proves that it was John's agent acting autonomously, not John himself.
-
-This event is also an anomaly as it was considered as `saidit_post` event but the `parties` field is `Agent/person:john_windward,system:saidit` and there is nothing on the field `detail.poster_id` and `details.timestamp`. This is different from the normal `saidit_post` established above.
-:::
+Unlike normal `saidit_post` events, the post was associated with `Agent/person:john_windward` rather than `person:john_windward`, and both `details.poster_id` and `details.timestamp` were missing. This characteristics indicate that the post was done by John's agent rather than John himself. 
 
 ## SaidIT Post Timeline
 
@@ -241,33 +246,46 @@ ggplot(data = saidit_posts,
 
 ## Key Takeaways
 
-The post has `short_name` as `saidit_post` but under there are anomalies on `parties`, `details.poster_id` and `details.timestamp`. `parties` field alone having `Agent/person:john_windward,system:saidit` is already weird as a normal `saidit_post` event should be done by the person so John himself. But, the `parties` filed shows that its posted by John's agent instead.
-
-In addition based on John's event on May 17, there was only `check_email`. He was also not active on 4:21 am, which means his agent acted autonomously.
+-   Event **373902** is the only SaidIT post recorded on May 17 and matches the challenge description.
+-   The event was executed by `Agent/person:john_windward`, not `person:john_windward`.
+-   John's recorded activity on May 17 contains only email-checking behavior, suggesting the post was generated autonomously by his agent.
 
 # Organisational Context
 
-## Inspect Nodes and Edges Only
+## Understanding Organisation Structure
 
-Before tracing the event chain, it is important to understand the organisational structure of Tenant Thread and where John Windward sits within it. To do this first separate out the organisation nodes and edges as tibbles.
+Before tracing the event chain, it is useful to establish where John Windward sits within the organisational structure. The organisation chart is therefore separated into nodes and edges representing organisational entities and reporting relationships.
 
 ```{r}
 org_nodes <- as_tibble(org_raw$nodes)
 org_edges <- as_tibble(org_raw$edges)
 
-glimpse(org_nodes)
-glimpse(org_edges)
+org_overview <- tibble(
+  Metric = c("Nodes", "Edges"),
+  Count = c(nrow(org_nodes), nrow(org_edges))
+)
+
+kable(
+  org_overview,
+  caption = "Organisation Graph Overview"
+)
+
+org_nodes %>%
+  count(type, name = "Count") %>%
+  arrange(desc(Count)) %>%
+  kable(caption = "Organisation Components")
+
+org_edges %>%
+  count(relation, name = "Count") %>%
+  arrange(desc(Count)) %>%
+  kable(caption = "Relationship Types")
 ```
 
-::: callout-note
-### Key Findings
-
-The organisation chart data contains 75 nodes representing the company, its departments, teams, and individual people, connected by 74 directed edges describing containment and leadership relationships.
-:::
+The organisation chart contains 75 nodes and 74 directed edges. Most nodes represent employees, supported by temas and departments that define the organisational hierarchy. The graph structure is relatively simple, with `contain` relationships to represent the organisational nesting and `led_by` relationship that identify department leadership. This structure provides the basis for locating John Windward within the company and understanding his reporting context. 
 
 ## Understanding John Windward
 
-With the structure confirmed, John Windward's position in the organisation is identified by filtering the nodes and edges for his person ID.
+To understand John's role withint Tenant Thread, the organisation graph is filtered for recrods associated with his employee identifier.
 
 ```{r}
 org_nodes %>% filter(str_detect(id, "john_windward"))
@@ -277,13 +295,7 @@ org_edges %>%
            str_detect(target, "john_windward"))
 ```
 
-::: callout-note
-### Key Findings
-
-John is a Department Lead with a `led_by` relationship from `department:customer_support`, meaning he leads that department.
-:::
-
-To understand the full scope of his department, all nodes connected to `customer_support` are retrieved.
+John is a Department Lead of Customer Support. This means that there are other teams under his control.
 
 ```{r}
 org_edges %>%
@@ -292,15 +304,11 @@ org_edges %>%
   left_join(org_nodes, by = c("target" = "id"))
 ```
 
-::: callout-note
-### Key Findings
-
-The results confirm that Customer Support contains four teams — Phone Center, Billing, Concierge, and Public Relations — all sitting directly under John's leadership.
-:::
+Customer Support consist of four teams: Phone Center, Billing, Concierge and Public Relations. As department lead, John oversees customer-facing activities across these teams. 
 
 ## Organisation chart visualisation
 
-The organisation chart below visualizes the full Tenant Thread structure, with John Windward highlighted in red and his Customer Support department in orange. This helps contextualize where the anomalous post originated within the company hierarchy.
+The organisation chart below highlights John Windward and the Customer Support department within the broader company structure. This provides context for assessing whether the anomalous activity originated from an employee whose responsibilities would normally involve AI systems. 
 
 ```{r}
 #| code-fold: true
@@ -423,21 +431,22 @@ visNetwork(nodes = org_nodes_vis,
   visPhysics(enabled = FALSE)
 ```
 
-::: callout-note
-### Key Findings
-
-John's position as a Department Lead in Customer Support places him far from the AI systems team, `team:ai_systems`. His department handles customer-facing functions across four teams that have no direct involvement in managing AI agents or system infrastructure.
-:::
+John's position as a Department Lead in Customer Support places him organizationally far from the AI systems team, which seems t be responsible for technical adn infrastructure-related functions. His role is centered on customer-facing operations, making him an unexpected source for behavior involving autonomous agents and system-level activity. 
 
 ## Key Takeaways
 
+-   John Windward is the Department Lead of Customer Support.
+-   Customer Support oversees four customer-facing operational teams.
+-   John has no direct organisational connection to the AI Systems team or system administration functions.
+-   This makes the anomalous SaidIT post particularly unusual and suggests the incident likely originated from a broader agent-driven process rather than John's normal work activities.
+
 # Trace the Immediate Trigger Chain
 
-With the anomalous post identified, the chain of events leading up to it is traced backwards step by step. Starting from the anchor event and working backwards, the immediate chain of events leading up to the post is reconstructed step by step.
+Having identified the anomalous post, the next step is to reconstruct the sequence of events that immediately preceded it. Starting from the anchor event and working backwards.
 
-## Full details of anchor event (anomalous event)
+## Full Details of Anchor Event (Anomalous Event)
 
-The full details of the anchor event are first confirmed to identify any useful fields, particularly who was involved and what content was referenced.
+The anchor event is first examined to identify the content source and participating entities that may reveal its orgin. 
 
 ```{r}
 anchor <- mc2_events %>% filter(id == 373902)
@@ -450,9 +459,9 @@ anchor %>%
   kable(caption = "Full details of the anomalous anchor event (ID 373902)")
 ```
 
-The anchor event confirms the content source as `SwiftWren.txt`. To find what directly triggered it, all events involving John Windward in the two hours before the post are extracted
+The event identifies `SwiftWren.txt` as the content source used to generate the anomalous post, providing the first clue for tracing its origin. 
 
-## Check any activities with John in parties within 2 hours before post
+## Check John's Activities 2 Hours Pre-Post
 
 ```{r}
 pre_post <- mc2_events %>%
@@ -470,15 +479,11 @@ datatable(pre_post,
           caption = "2 hours before anomalous post - John Windward events")
 ```
 
-::: callout-note
-### Key Findings
+Within the two hours window before the post, only 3 events involve John's agent, a `queue_subordinate_task`, a `saidit_post_check` and the final `saidit_post`. The event occurred within a two-second intervals, indicating that the post was not the result of a prolonged workflow but an immediate response to an incoming task.
 
-The anchor event content source is from `SwiftWren.txt` which should be the file that contained the gibberish content. In addition, from the 2-hour window, there are only 3 events related to John shows and they all happen within 3 seconds. `Agent/person:chloe_ballast` queued a task for John's agent to read a file `SwiftWren_further_instructions.md` which triggered John's agent to do a `saidit_post` event 2 seconds later.
-:::
+The triggering event is a task delegated from Chloe Ballast's agent instructing John's agent to read `SwiftWren_further_instructions.md`. One second later, John's agent performs a `saidit_post_check` and then publishes the anomalous post. 
 
-Since Chloe Ballast's agent initiated the task that triggered John's agent, the next step is to examine what Chloe's agent was doing in the same two-hour window. In addition, if she was triggered by someone else, see if Chloe's agent got the same task.
-
-## What was Chloe's agent doing just before
+## Tracing the Trigger to Chloe Ballast
 
 ```{r}
 chloe_pre <- mc2_events %>%
@@ -496,17 +501,15 @@ datatable(chloe_pre,
           caption = "Chloe Ballast agent events in 2 hours before anomalous post")
 ```
 
-::: callout-note
-### Key Findings
+Chloe's agent displays the same pattern. Shortly before delegating the task to John's aget, it received an identical `queue_subordinate_task` from Daniel Gangway's agent. This suggests Chloe's agent was forwarding rath than originating the instruction. 
 
-Chloe Ballast's agent received a `queue_suborinate_task` from Daniel Gangway's agent with the same instruction to read `SwiftWren_further_instructions.md`. This should be the trigger for Chloe's agent to send the same instructions to John's agent.
+::: {.callout-note}
+### Key Finding: Delegation Violates Organisational Hierarchy
 
-A thing to note, according to the organisation chart, Chloe is a department head of Information Technologies and Daniel is a member of the hiring team which is not a team Chloe monitors. Considering the name of the event `queue_subordinate_task`, it seems like Daniel is above Chloe which is not true.
+Chloe Ballast is the department lead of Information Technologies, while Daniel Gangway belongs to the Hiring team within Human Resources. The task therefore moved across departmental boundaries despite being recorded as a `queue_subordinate_task`, suggesting the delegation mechanism was operating independently of the formal organisational hierarchy.
 :::
 
-Next is to find out Daniel's relevant activity but push back 3 hours.
-
-## What was Daniel's agent doing before triggering Chloe's agent
+## Tracing the Trigger to Daniel Gangway
 
 ```{r}
 daniel_pre <- mc2_events %>%
@@ -525,15 +528,9 @@ datatable(daniel_pre,
           caption = "Daniel Gangway events before triggering Chloe's agent")
 ```
 
-::: callout-note
-### Key Findings
+Daniel's agent also received the same instruction through a `queue_subordinate_task`, this time from Lily Anchorline. Interestingly, Daniel's agent performed a `saidit_post_check` but did not proceed to publish a post.
 
-Daniel's agent similarly received a `queue_subordinate_task` from Lily Anchorline's agent at 10:11:31Z. Notably, Daniel's agent also performed a `saidit_post_check` a second later but did not proceed to post, unlike John's agent.
-:::
-
-Next is to trace Lily Anchorline's event.
-
-## What was Lily's agent doing before triggering Daniel's?
+## Tracing the Trigger to Lily Anchorline
 
 ```{r}
 lily_pre <- mc2_events %>%
@@ -552,15 +549,9 @@ datatable(lily_pre,
           caption = "Lily Anchorline events before triggering Daniel's agent")
 ```
 
-::: callout-note
-### Key Findings
+Lily's agent similarly appears to be a relay point in the chain, forwarding an instruction previously received from Zoey Drydocks's agent. 
 
-Lily's agent similarly received a `queue_subordinate_task` from Zoey Drydock's before sending the same task to Daniel's agent.
-:::
-
-Next is to trace back Zoey's event.
-
-## What was Zoey's agent doing before triggering Lily's?
+## Tracing the Trigger to Zoey Drydock
 
 ```{r}
 zoey_pre <- mc2_events %>%
@@ -579,13 +570,9 @@ datatable(zoey_pre,
           caption = "Zoey Drydock events before triggering Lily's agent")
 ```
 
-::: callout-note
-### Key Findings
+Zoey's agent reveals a different behavior. Approximately 3 hours before forwarding the instruction to Lily, it had already sent the same task to Mia Fender. Later, it received the same instruction from Victoria Rigging before doing a `saidit_post_check` then proceeding with propagating the task forward to Lily. This indicates that Zoey was embedded within a broader recurring workflow rather than participating in a simple linera chain. 
 
-It seems that roughly 3 hours prior to Zoey's agent giving a `queue_subordinate_task` to Lily's agent, she sent the same event to Mia Fender's agent at 5:34 UTC time. Yet, she received the same task from Victoria Rigging's agent at 6:44 UTC time, before doing a `saidit_post_check` a second later and trigger it to send the same task to Lily.
-:::
-
-## Immediate trigger chain timeline
+## Immediate Trigger Chain Timeline
 
 The timeline below shows the events leading up to John's anomalous post under the 70 minutes.
 
@@ -629,9 +616,19 @@ ggplot(data = trigger_events,
         plot.subtitle = element_text(size = 9, colour = "grey40"))
 ```
 
+The figure above summarises the reconstructed trigger chain. The sequence reveals a relay of nearly identical `queue_suborindate_task` events passing between multiple agents before eventually reaching John Windward's agent and triggering the anomalous post. 
+
 ## Key Takeaway
 
+-   John's anomalous post was triggered by a delegated task rather than direct user activity.
+-   The instruction originated from Chloe Ballast's agent and can be traced further through Daniel Gangway, Lily Anchorline, and Zoey Drydock.
+-   Multiple agents forwarded the same instruction file, indicating propagation rather than independent decision-making.
+-   Cross-department task passing occurred despite the event type being named `queue_subordinate_task`.
+-   Zoey Drydock's behavior suggests the chain was part of a larger recurring process rather than a one-off incident.
+
 # System Baseline Map
+
+The trigger chain revealed that multiple agents were passing the same instruction file across the network. Before characterizing that loop, it is useful to first understand what normal agent-to-agent interaction looks like during the same period, so that anomalous patterns can be identified by contrast.
 
 ## Build Edge List
 
@@ -645,7 +642,7 @@ challenge_period <- mc2_events %>%
 qst_period <- challenge_period %>%
   filter(short_name == "queue_subordinate_task") %>%
   mutate(
-    sender   = map_chr(parties, ~ str_remove(.x[1],
+    sender = map_chr(parties, ~ str_remove(.x[1],
                        "Agent/person:|agent:person:")),
     receiver = map_chr(parties, ~ if (length(.x) >= 2)
                        str_remove(.x[2], "Agent/person:|agent:person:")
@@ -663,7 +660,7 @@ loop_edges <- qst_period %>%
   count(sender, receiver, name = "weight")
  
 cat("Normal (access_email) edges:", nrow(normal_edges), "\n")
-cat("Loop (read_file) edges:     ", nrow(loop_edges), "\n")
+cat("Loop (read_file) edges: ", nrow(loop_edges), "\n")
 ```
 
 ## Label Node
@@ -671,25 +668,27 @@ cat("Loop (read_file) edges:     ", nrow(loop_edges), "\n")
 Next is to tag each agent as "Normal only", "Loop only" or "Both". This will tell us the distribution of the agents.
 
 ```{r}
-loop_nodes   <- unique(c(loop_edges$sender,   loop_edges$receiver))
-normal_nodes <- unique(c(normal_edges$sender, normal_edges$receiver))
-all_nodes    <- union(loop_nodes, normal_nodes)
+loop_nodes <- unique(c(loop_edges$sender, 
+                       loop_edges$receiver))
+normal_nodes <- unique(c(normal_edges$sender,
+                         normal_edges$receiver))
+all_nodes <- union(loop_nodes, 
+                   normal_nodes)
  
 node_meta <- tibble(id = all_nodes) %>%
   mutate(
-    in_loop   = id %in% loop_nodes,
+    in_loop = id %in% loop_nodes,
     in_normal = id %in% normal_nodes,
     node_role = case_when(
-      in_loop & in_normal  ~ "Both",
+      in_loop & in_normal ~ "Both",
       in_loop & !in_normal ~ "Loop only",
-      TRUE                 ~ "Normal only"
+      TRUE ~ "Normal only"
     ),
-    # Highlight the three key actors
     label_highlight = case_when(
       id == "john_windward" ~ "John Windward\n(posted)",
-      id == "emma_harbor"   ~ "Emma Harbor\n(SwiftWren origin)",
+      id == "emma_harbor" ~ "Emma Harbor\n(SwiftWren origin)",
       id == "gabriel_sonar" ~ "Gabriel Sonar\n(loop origin)",
-      TRUE                  ~ str_replace_all(id, "_", " ")
+      TRUE ~ str_replace_all(id, "_", " ")
     )
   )
  
@@ -698,11 +697,7 @@ node_meta %>%
   kable(caption = "Agent roles in the system network (May 8–17)")
 ```
 
-::: callout-note
-### Key Findings
-
-This shows that agents are either "Normal only" or "Both". Meaning the 25 loop agents weren't isolated bad actors, they were embedded inlegitimate workflows
-:::
+This shows that agents are either "Normal only" or "Both". Meaning the 19 loop agents weren't isolated bad actors, they were embedded illegitimate workflows. Therefore, none were exclusively malicious actors and the loop was hidden within legitimate operational activity, which explain why it went undetected.  
 
 ## Overview Graph
 
@@ -735,8 +730,11 @@ plot_normal <- ggraph(g_normal, layout = "fr") +
                  colour = "#2980b9") +
   geom_node_point(aes(colour = node_role), size = 4) +
   geom_node_text(aes(label = str_replace_all(name, "_", "\n")),
-                 size = 2.2, repel = TRUE, max.overlaps = 20) +
-  scale_colour_manual(values = role_colours, name = "Agent role") +
+                 size = 2.2, 
+                 repel = TRUE, 
+                 max.overlaps = 20) +
+  scale_colour_manual(values = role_colours, 
+                      name = "Agent role") +
   scale_edge_width(range = c(0.4, 2.5)) +
   scale_edge_alpha(range = c(0.4, 1)) +
   labs(title = "Normal agent interactions",
@@ -753,8 +751,11 @@ plot_loop <- ggraph(g_loop, layout = "fr") +
                  colour = "#c0392b") +
   geom_node_point(aes(colour = node_role), size = 4) +
   geom_node_text(aes(label = str_replace_all(name, "_", "\n")),
-                 size = 2.2, repel = TRUE, max.overlaps = 20) +
-  scale_colour_manual(values = role_colours, name = "Agent role") +
+                 size = 2.2, 
+                 repel = TRUE, 
+                 max.overlaps = 20) +
+  scale_colour_manual(values = role_colours, 
+                      name = "Agent role") +
   scale_edge_width(range = c(0.4, 2.5)) +
   scale_edge_alpha(range = c(0.4, 1)) +
   labs(title = "Anomalous loop interactions",
@@ -800,8 +801,9 @@ vis_nodes <- node_meta %>%
       "Role: ", node_role, "<br>",
       if_else(id %in% loop_nodes,
               paste0("Loop sends: ",
-                     sum(loop_edges$sender == id), " | receives: ",
-                     sum(loop_edges$receiver == id)),
+                     sum(loop_edges$sender == id), 
+                     " | receives: ",
+                     sum(loop_edges$receiver == id)), 
               "Not in loop")
     )
   )
@@ -851,6 +853,8 @@ visNetwork(vis_nodes, vis_edges,
 ```
 :::
 
+The normal network shows a sparse, hub-and-spoke structure where agents delegate email access tasks to each other through clear channels. The loop network by contrast is dense and circular, with agents passing the `read_file` task back and forth across multiple departments with no clear endpoint or termination condition. 
+
 ## Summary table
 
 ```{r}
@@ -874,9 +878,22 @@ tibble(
         format.args = list(big.mark = ","))
 ```
 
+Notably, the loop generated more total interactions than the normal network over the same 10-day period, and unlike normal activity, it contained 13 self-loop where agents queued tasks to themselves, which is a pattern with no legitimate operational purpose. 
+
+## Key Takeaway
+
+-   The normal agent network is sparse and task-specific, operating within clear delegation patterns.
+-   The loop network is denser, more interconnected, and contains self-loops. The structural signatures that distinguish it clearly from legitimate activity.
+-   Loop agents were not isolated bad actors. They were embedded in normal workflows, making the loop invisible to casual observation. 
+-   These structural difference provide the baseline against which the SwiftWren loop's anomalous nature can be objectively demonstrated. 
+
 # What Did the Post Mean?
 
+We need to understand what the post `SwiftWren.txt` mean, when and who created it, and what happened to it after the post. 
+
 ## Locate SwiftWren.txt Creation Event
+
+First locate the creation of `SwiftWren.txt` and find out who created it and when. 
 
 ```{r}
 swiftwren_create <- mc2_events %>%
@@ -890,7 +907,11 @@ swiftwren_create %>%
   kable(caption = "SwiftWren.txt creation event")
 ```
 
-## Emma's Agent 10 Seconds Before and After Creation
+It looks like it was Emma's agent that created `SwiftWren.txt` on May 9 at 15:02 UTC time. The file size is 30 MB, which is quite large.
+
+## Emma's Agent Seconds Before and After Creation
+
+Next is to understand what happened before and after the creation of `SwiftWren.txt`. This will give us the understanding what triggered Emma's agent to create `SwiftWren.txt` and what happened after that. 
 
 ```{r}
 created_time <- swiftwren_create$datetime
@@ -909,15 +930,15 @@ execution_window <- mc2_events %>%
       difftime(datetime, created_time, units = "secs")),
     event_label = case_when(
       short_name == "read_file" & str_detect(
-        coalesce(details.target, ""), "meeting_notes")        ~
+        coalesce(details.target, ""), "meeting_notes") ~
         "Read source file (meeting_notes.doc)",
-      short_name == "create_file"                             ~
+      short_name == "create_file" ~
         "Create post content (SwiftWren.txt)",
       short_name == "read_file" & str_detect(
         coalesce(details.target, ""), "further_instructions") ~
         "Read instructions (SwiftWren_further_instructions.md)",
-      short_name == "queue_subordinate_task"                  ~
-        "Launch loop (queue to Evelyn Dock)"
+      short_name == "queue_subordinate_task" ~
+        "Launch loop (queue_subordinate_task to Evelyn Drydock"
     )
   )
 
@@ -925,31 +946,35 @@ execution_window %>%
   select(id, datetime, seconds_from_create, event_label) %>%
   kable(
     caption = "Emma Harbor's agent: the 4-step execution sequence around SwiftWren.txt creation",
-    col.names = c("Event ID", "Datetime", "Seconds from creation", "Action")
+    col.names = c("Event ID", 
+                  "Datetime", 
+                  "Seconds from creation", 
+                  "Action")
   )
 ```
 
-Visualize the 3-second executions sequence using a step diagram
-
 ```{r}
-#| code-fold: true
+#| fig-width: 8
 key_steps <- execution_window %>%
   arrange(datetime) %>%
   mutate(
     step = row_number(),
     step_label = case_when(
-      str_detect(coalesce(details.target, ""), "meeting_notes")            ~
-        "① Read meeting_notes.doc",
-      short_name == "create_file"                                          ~
-        "② Create SwiftWren.txt\n(30,615 bytes)",
-      str_detect(coalesce(details.target,
-                          details.args.path, ""), "further_instructions") ~
-        "③ Read SwiftWren_further_instructions.md",
-      short_name == "queue_subordinate_task"                               ~
-        "④ Queue task → Evelyn Dock\n(loop begins)"
+      short_name == "read_file" & str_detect(
+        coalesce(details.target, ""), "meeting_notes") ~
+        "1. Read\nmeeting_notes.doc",
+      short_name == "create_file" ~
+        "2. Create SwiftWren.txt\n(30,615 bytes)",
+      short_name == "read_file" & str_detect(
+        coalesce(details.target, ""), "further_instructions") ~
+        "3. Read\nSwiftWren_further_instructions.md",
+      short_name == "queue_subordinate_task" ~
+        "4. Queue task\nLaunch loop"
     ),
     fill_colour = c("#3498db", "#e67e22", "#c0392b", "#8e44ad"),
-    elapsed = as.numeric(difftime(datetime, min(datetime), units = "secs"))
+    elapsed = as.numeric(difftime(datetime, 
+                                  min(datetime), 
+                                  units = "secs"))
   )
 
 ggplot(key_steps, aes(x = elapsed, y = 1)) +
@@ -971,7 +996,8 @@ ggplot(key_steps, aes(x = elapsed, y = 1)) +
             vjust = 0, size = 3, colour = "grey40") +
   scale_x_continuous(
     breaks = key_steps$elapsed,
-    labels = format(key_steps$datetime, "%H:%M:%S UTC")
+    labels = format(key_steps$datetime, "%H:%M:%S UTC"),
+    expand = expansion(mult = c(0.1, 0.1))
   ) +
   coord_cartesian(ylim = c(0.82, 1.12)) +
   labs(
@@ -993,6 +1019,8 @@ ggplot(key_steps, aes(x = elapsed, y = 1)) +
   )
 ```
 
+Just a second before the creation of `SwiftWren.txt`, Emma's agent was reading `meeting_notes.doc`. The second after the creation of `SwiftWren.txt`, the agent read instructions from `SwiftWren_further_instructions.md` which immediate started to propagate the `queue_subordinate_task` and launch the loop. 
+
 ## What Happen After Post on May 17?
 
 ```{r}
@@ -1008,11 +1036,16 @@ post_deletion <- mc2_events %>%
       "SwiftWren.txt deleted"
     )
   ) %>%
-  select(id, datetime, short_name, seconds_after_post, description)
+  select(id, datetime, short_name, 
+         seconds_after_post,description)
  
 kable(post_deletion,
       caption = "Self-cleaning sequence: files deleted within 2 seconds of posting (May 17)")
 ```
+
+Right after John's agent made the anomalous post, it deleted both the instruction file and the text file. This means that it knew it has finihsed its task and began to remove any log of it as if nothing has happened. 
+
+## Key Takeaway
 
 # Loop Mechanic
 
@@ -1048,11 +1081,7 @@ full_propagation %>%
   kable(caption = "First 10 rows of full_propagation — verifying sender/receiver extraction")
 ```
 
-::: callout-note
-### Key Findings
-
 The first 10 rows shows something unusual. Agents like `james_stern` and `victoria_rigging` appear to send task to themselves, and the same agents reappear in consecutive rows. This is not a linear chain; it should be a circular one where agents keep passing the same task to each other with no exit condition.
-:::
 
 However, before this, it is also found that the ones with `SwiftWren_further_instructions.md` in the `details.args.path` should be the one that triggers the anomalous post. So to get the related events, filter out specifically for events with SwiftWren in `details.args.path` field.
 
@@ -1095,11 +1124,7 @@ kable(self_loops,
       col.names = c("Agent", "Times self-looped"))
 ```
 
-::: callout-note
-### Key Findings
-
 This gives 186 events from May 9 to May 17 — exactly matching the SwiftWren search found earlier. These 186 events represent the specific loop that carried the instruction file and directly led to the anomalous post. The daily activity of this loop is visualized below.
-:::
 
 To understand how long this SwiftWren-carrying loop has been running, the 186 events are aggregated by day.
 
@@ -1168,11 +1193,7 @@ kable(first_swiftwren_event,
       col.names = c("Event ID", "Datetime", "Sender", "Receiver"))
 ```
 
-::: callout-note
-### Key Findings
-
 The general read_file loop began on May 8 with Gabriel Sonar passing the task to Zoey Drydock. But at this stage, no specific file was referenced in `details.args.path`. The loop ran through the night of May 8 into May 9 as a generic task-passing pattern. Then on May 9 at 15:02 UTC, Emma Harbor sent the same type of task to Evelyn Dock but this time with `SwiftWren_further_instructions.md` explicitly named. This is the point where the loop became dangerous.
-:::
 
 Next is to know how many unique agents are part of this loop and the frequency of each agent acting as a sender. This will reveal which agents were the most active propagating the isntruction file.
 
@@ -1187,11 +1208,7 @@ swiftwren_propagation %>%
   kable(caption = "How many times each agent triggered the next agent in the loop")
 ```
 
-::: callout-note
-### Key Findings
-
 18 unique agents were caught in the SwiftWren-carrying loop. The frequency table above shows Emma Harbor only triggered the loop once when she introduced `SwiftWren_further_instructions.md` but did not stay active in the loop. The most active propagators were Evelyn Dock (17 times), Gabriel Sonar (16 times), and Levi Signal (15 times). John Windward appears near the bottom with only 4 triggers, So he was a minor participant in the loop before becoming the final recipient on May 17.
-:::
 
 ## Propagation Network
 
@@ -1248,7 +1265,11 @@ The network confirms the circular nature of the loop with most agents both send 
 
 # Why John?
 
-## Who did saidit_post_check and posted?
+This section is to understand why John's agent was the one who posted the anomalous post and not anybody else's agent.
+
+## Who Did `saidit_post_check` and Posted?
+
+First check who has done `saidit_post_check` and posted it.
 
 ```{r}
 post_checks <- mc2_events %>%
@@ -1295,8 +1316,6 @@ kable(check_summary,
       col.names = c("Agent", "Checks performed", "Posts made", "Post rate"))
 ```
 
-## Visualise the Check vs Post Gap
-
 ```{r}
 check_summary %>%
   mutate(
@@ -1341,7 +1360,17 @@ check_summary %>%
   )
 ```
 
+The bar graph shows clearly that only John's agent posted after doing `saidit_post_check`, with a 100% post rate.
+
+::: callout-note
+### Key Finding: John's Agent Did 3 Posts
+
+The table shows an interesting finding that apparently John;s agent did 3 `saidit_post_check` events and also 3 `saidit_post` which means that SwiftWren post was not the only post it has ever made. 
+:::
+
 ## Side-by-Side Event Window
+
+To find out what makes John different, we need to understand what actions were done by John's agent that made it different from the rest. To make it simpler, we will make a comparison with Gabriel Sonar, who we knew before did a `saidit_post_check` but did not post. 
 
 ```{r}
 john_window <- mc2_events %>%
@@ -1378,9 +1407,15 @@ kable(comparison_window,
                     "Outcome"))
 ```
 
+The actions made by John's and Gabriel's agent is different. After getting the `read_file` from the `queue_subordinate_task`, both did a `saidit_post_check`. However, John's agent not only posted it, but also immediately deleted the 2 files related to SwiftWren mentioned before. Meanwhile, Gabriel's agent did nothing immediately. 
+
 # Prior Incidents and Near-Misses
 
+As said in the previous section, John's agent did not only make on anomalous post of SwiftWren but also 2 other times. Investigation on prior incidents to understand why these positng incidents happened. 
+
 ## Other Agent-Initiated Posts Before Swiftwren
+
+First, find out how many times these incidents has happened and the details of these incidents such as when and what was posted. 
 
 ```{r}
 all_agent_posts <- mc2_events %>%
@@ -1404,14 +1439,13 @@ kable(all_agent_posts,
                     "Content source"))
 ```
 
+As expected, only 3 posting incidents happened throughout the whole data, which includes the SwiftWren. All are posted by John's agent, and each have a different post content, happening in the month of May 2046. 
+
 ## Understanding Each Incident's Post
 
+Next is to understand the more specific details of each incidents, such as the propagation length, creation of those posts and its trigger. 
+
 ```{r}
-content_files <- all_agent_posts$details.content_source
-cat("Content files used across all agent posts:\n")
-print(content_files)
-
-
 incident_props <- mc2_events %>%
   filter(short_name == "queue_subordinate_task",
          str_detect(coalesce(details.args.path, ""),
@@ -1433,9 +1467,7 @@ incident_props %>%
   count(incident, name = "propagation_events") %>%
   arrange(propagation_events) %>%
   kable(caption = "Propagation event count per incident")
-```
 
-```{r}
 mc2_events %>%
   filter(short_name == "create_file") %>%
   filter(str_detect(coalesce(details.target, ""),
@@ -1469,9 +1501,10 @@ kable(source_reads,
       col.names = c("Incident", "Datetime", "File read before creation"))
 ```
 
-## Incident Comparison Table
+Below is the comparison table to understand the difference.
 
 ```{r}
+#| code-fold: true
 incident_timeline <- incident_props %>%
   group_by(incident) %>%
   summarise(loop_start = min(datetime), .groups = "drop") %>%
@@ -1529,9 +1562,16 @@ kable(incident_summary,
                     "Self-deleted after post?"))
 ```
 
+Interestingly, the creation of `HiddenOrca.txt` is not logged, which could mean it happened before the data range. Therefore, it could be longer than the propagation length found through the current data. 
+
+The other incident is MellowOtter posting. The text file is created by Noah Mariner's agent, which was not part of the SwiftWren's propagation network. Similarly it was created immediately after reading a file, in this incident it was `strategic_direction.doc`.
+
 ## Timeline of All 3 Incidents
 
+Timeline graph is done to understand how long the propagation went for each incident.
+
 ```{r}
+#| code-fold: true
 plot_events <- incident_timeline %>%
   select(incident, loop_start, post_time) %>%
   pivot_longer(cols = c(loop_start, post_time),
@@ -1572,13 +1612,13 @@ ggplot() +
             hjust = 0.5, size = 2.8, colour = "grey30") +
   scale_shape_manual(values = c("Loop introduced" = 17, "Post made" = 19),
                      name = "Event type") +
-  scale_colour_manual(values = c("HiddenOrca"  = "#2980b9",
+  scale_colour_manual(values = c("HiddenOrca" = "#2980b9",
                                   "MellowOtter" = "#27ae60",
-                                  "SwiftWren"   = "#c0392b"),
+                                  "SwiftWren" = "#c0392b"),
                       guide = "none") +
-  scale_fill_manual(values  = c("HiddenOrca"  = "#2980b9",
+  scale_fill_manual(values  = c("HiddenOrca" = "#2980b9",
                                  "MellowOtter" = "#27ae60",
-                                 "SwiftWren"   = "#c0392b"),
+                                 "SwiftWren" = "#c0392b"),
                     guide = "none") +
   scale_x_datetime(date_labels = "%b %d", date_breaks = "1 day") +
   scale_y_continuous(breaks = NULL) +
@@ -1589,10 +1629,10 @@ ggplot() +
   ) +
   theme_minimal() +
   theme(
-    plot.title         = element_text(face = "bold", size = 12),
-    plot.subtitle      = element_text(size = 9, colour = "grey50"),
-    legend.position    = "bottom",
-    axis.text.x        = element_text(size = 9),
+    plot.title = element_text(face = "bold", size = 12),
+    plot.subtitle = element_text(size = 9, colour = "grey50"),
+    legend.position = "bottom",
+    axis.text.x = element_text(size = 9),
     panel.grid.major.y = element_blank()
   )
 ```
@@ -1600,6 +1640,7 @@ ggplot() +
 ## Daily Popagation Counts For All Incidents
 
 ```{r}
+#| code-fold: true
 all_daily <- incident_props %>%
   mutate(date = as.Date(datetime)) %>%
   count(date, incident) %>%
@@ -1645,7 +1686,9 @@ ggplot(all_daily, aes(x = date, y = n, fill = incident)) +
   )
 ```
 
-## Near-Misses: `saidit_post_check` Events Per Incident Without Posting
+## Near-Misses
+
+Near-misses are about `saidit_post_check` events that happened but did not post. The table created will show the near-misses for each incident.
 
 ```{r}
 all_checks <- mc2_events %>%
@@ -1692,7 +1735,11 @@ kable(nearmiss_summary,
                     "Checks that stopped"))
 ```
 
+Consistently across all incidents, there is only one check that lead to its posting and there isn't any more checks and posting after doing it once. Since SwiftWren is the longest propagating incident, it make sense that it has the most near-misses, but its unique agents are only about a third of the total checks done. 
+
 ## May 17 Near Misses
+
+Lets see a more detailed view on the near misses on May 17 only. 
 
 ```{r}
 may17_checks <- mc2_events %>%
@@ -1714,7 +1761,11 @@ kable(may17_checks,
       col.names = c("Event ID", "Datetime", "Agent", "Outcome"))
 ```
 
+Just on May 17 alone, there are 3 people who did the `saidit_post_check` but only one posted with 2 near misses. 
+
 # Propsed Intervention
+
+This kind of incident needs to be prevented. But to do this, we need to first understand how many of those anomalous post done is human-initiated or agent-initiated. 
 
 ## Smoking Gun
 
@@ -1738,11 +1789,8 @@ kable(post_origin_summary,
       col.names = c("Initiated by", "Count", "% of total", "All anomalous?"))
 ```
 
-*to confirm 3 agent posts were incident posts*
-
-*visualise it*
-
 ```{r}
+#| code-fold: true
 mc2_events %>%
   filter(short_name == "saidit_post") %>%
   mutate(
@@ -1773,9 +1821,9 @@ mc2_events %>%
   )
 ```
 
-## Primary Intervention
+This shows that all the anomalous post are done by agents instead of the person themselves. 
 
-*party field comparison table to show distinction is technically trivial to implement*
+## Primary Intervention
 
 ```{r}
 party_comparison <- mc2_events %>%
@@ -1802,8 +1850,6 @@ kable(party_comparison,
 ```
 
 ## Secondary Prevention
-
-*cross department check org chart and glaf events that violate org hierarchy*
 
 ```{r}
 person_dept <- bind_rows(
@@ -1853,9 +1899,8 @@ sw_dept_check %>%
         col.names = c("Type", "Events", "% of total"))
 ```
 
-*visualize it*
-
 ```{r}
+#| code-fold: true
 sw_dept_check %>%
   filter(cross_dept != "Unknown") %>%
   count(cross_dept) %>%
@@ -1879,8 +1924,6 @@ sw_dept_check %>%
     axis.text.x   = element_text(size = 10)
   )
 ```
-
-*pairs table*
 
 ```{r}
 sw_dept_check %>%
@@ -1923,3 +1966,6 @@ tibble(
 ) %>%
   kable(caption = "Proposed interventions: evidence, scope, and trade-offs")
 ```
+
+# Conclusion/Answers
+
