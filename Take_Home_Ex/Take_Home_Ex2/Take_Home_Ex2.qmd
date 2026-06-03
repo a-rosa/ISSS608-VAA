@@ -1765,9 +1765,11 @@ Just on May 17 alone, there are 3 people who did the `saidit_post_check` but onl
 
 # Propsed Intervention
 
-This kind of incident needs to be prevented. But to do this, we need to first understand how many of those anomalous post done is human-initiated or agent-initiated. 
+This kind of incident needs to be prevented.
 
 ## Smoking Gun
+
+One of thing we need to verify first, before going into intervention, is whether all anomalous post are agent-initiated or not. 
 
 ```{r}
 post_origin_summary <- mc2_events %>%
@@ -1821,9 +1823,11 @@ mc2_events %>%
   )
 ```
 
-This shows that all the anomalous post are done by agents instead of the person themselves. 
+The table and bar graph show that all the anomalous post are done by agents instead of the person themselves. 
 
 ## Primary Intervention
+
+An easy intervention is to check and reaffirm the parties under the `saidit_post` which should have been human-initiated `person:` and not agent-initiated `Agent/person:`. 
 
 ```{r}
 party_comparison <- mc2_events %>%
@@ -1850,6 +1854,8 @@ kable(party_comparison,
 ```
 
 ## Secondary Prevention
+
+The second prevention is to do cross-department checks. The SwiftWren propagation events shows that the propagation occurred crossed department boundaries. By doing checks, it will flag `queue_subordinate_task` events that violate the organisation hierarchy which can be done by using `org_edges`.
 
 ```{r}
 person_dept <- bind_rows(
@@ -1926,6 +1932,7 @@ sw_dept_check %>%
 ```
 
 ```{r}
+#| code-fold: true
 sw_dept_check %>%
   filter(cross_dept == "Cross-department") %>%
   count(sender, sender_dept, receiver, receiver_dept,
@@ -1938,6 +1945,8 @@ sw_dept_check %>%
                   "Receiver dept", "Times")
   )
 ```
+
+As you can see, the table above shows the top 10 specific sender-receiver pairs that crossed departments. The event from Daniel to Chloe found from the previous section Trace the Immediate Trigger Chain is also another concrete evidence. 
 
 ## Summary Table
 
