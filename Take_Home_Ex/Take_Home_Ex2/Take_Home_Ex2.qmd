@@ -92,6 +92,11 @@ glimpse(mc2_events)
 
 After timestamp conversion, the event log contains 185,147 records and 69 attributes. Many fields are sparsely populated because different event types record different metadata. This indicates a schema where field use depends on the activity being recorded. 
 
+::: callout-note
+
+The `parties` field is stored as a list-column where each row may contain multiple party identifiers. `map_lgl()` and `map_chr()` from the `purrr` package is used throughout to apply string operations across each list element wherever `parties` is filtered or extracted
+:::
+
 ## Event type distribution
 
 Check to see how many unique event types are in the dataset and its distribution.
@@ -431,7 +436,7 @@ visNetwork(nodes = org_nodes_vis,
   visPhysics(enabled = FALSE)
 ```
 
-John's position as a Department Lead in Customer Support places him organizationally far from the AI systems team, which seems t be responsible for technical adn infrastructure-related functions. His role is centered on customer-facing operations, making him an unexpected source for behavior involving autonomous agents and system-level activity. 
+John's position as a Department Lead in Customer Support places him organizationally far from the AI systems team, which seems t be responsible for technical and infrastructure-related functions. His role is centered on customer-facing operations, making him an unexpected source for behavior involving autonomous agents and system-level activity. 
 
 ## Key Takeaways
 
@@ -946,10 +951,8 @@ execution_window %>%
   select(id, datetime, seconds_from_create, event_label) %>%
   kable(
     caption = "Emma Harbor's agent: the 4-step execution sequence around SwiftWren.txt creation",
-    col.names = c("Event ID", 
-                  "Datetime", 
-                  "Seconds from creation", 
-                  "Action")
+    col.names = c("Event ID", "Datetime", 
+                  "Seconds from creation", "Action")
   )
 ```
 
@@ -1104,7 +1107,10 @@ swiftwren_propagation <- mc2_events %>%
                                 "Agent/person:|agent:person:"),
     date = as.Date(datetime)
   )
+```
 
+```{r}
+#| code-fold: true
 cat("Total SwiftWren propagation events:", 
     nrow(swiftwren_propagation), "\n")
 cat("Date range:", 
@@ -1321,13 +1327,17 @@ check_summary <- check_results %>%
                              paste0(round(times_posted / checks_performed * 100), "%"),
                              "0%")) %>%
   arrange(desc(checks_performed))
- 
+```
+
+```{r}
+#| code-fold: true
 kable(check_summary,
       caption = "saidit_post_check outcomes by agent: who checked vs who actually posted",
       col.names = c("Agent", "Checks performed", "Posts made", "Post rate"))
 ```
 
 ```{r}
+#| code-fold: true
 check_summary %>%
   mutate(
     agent = str_replace_all(agent, "_", " "),
@@ -1359,7 +1369,7 @@ check_summary %>%
             fontface = "bold") +
   scale_x_continuous(expand = expansion(mult = c(0, 0.2))) +
   labs(
-    title    = "saidit_post_check Outcomes Across All Agents",
+    title = "saidit_post_check Outcomes Across All Agents",
     subtitle = "Grey = checks performed | Coloured = posts actually made\nJohn Windward (red) is the only agent whose checks always resulted in a post",
     x = "Event count", y = NULL
   ) +
@@ -1412,9 +1422,7 @@ comparison_window <- bind_rows(john_window, gabriel_window)
  
 kable(comparison_window,
       caption = "What happens after saidit_post_check: John Windward vs Gabriel Sonar",
-      col.names = c("Agent", 
-                    "Seconds elapsed", 
-                    "Event", 
+      col.names = c("Agent", "Seconds elapsed", "Event", 
                     "Outcome"))
 ```
 
@@ -1444,9 +1452,7 @@ cat("Total agent-initiated saidit_post events:", nrow(all_agent_posts), "\n")
  
 kable(all_agent_posts,
       caption = "All agent-initiated saidit_post events in the dataset",
-      col.names = c("Event ID", 
-                    "Datetime", 
-                    "Agent", 
+      col.names = c("Event ID", "Datetime", "Agent", 
                     "Content source"))
 ```
 
@@ -1473,7 +1479,10 @@ incident_props <- mc2_events %>%
       str_remove(.x[2], "Agent/person:|agent:person:")
       else NA_character_)
   )
- 
+```
+
+```{r}
+#| code-fold: true
 incident_props %>%
   count(incident, name = "propagation_events") %>%
   arrange(propagation_events) %>%
@@ -1594,7 +1603,7 @@ plot_events <- incident_timeline %>%
     y_pos = case_when(
       incident == "HiddenOrca"  ~ 3,
       incident == "MellowOtter" ~ 2,
-      incident == "SwiftWren"   ~ 1
+      incident == "SwiftWren" ~ 1
     )
   )
  
@@ -1615,13 +1624,16 @@ ggplot() +
   geom_text(data = plot_events %>% filter(event_type == "Loop introduced"),
             aes(x = datetime, y = y_pos + 0.38,
                 label = paste0(incident, "\n(",
-                               format(datetime, "%b %d %H:%M"), ")")),
+                               format(datetime, "%b %d %H:%M"),
+                               ")")),
             hjust = 0, size = 3, fontface = "bold") +
-  geom_text(data = plot_events %>% filter(event_type == "Post made"),
+  geom_text(data = plot_events %>% 
+              filter(event_type == "Post made"),
             aes(x = datetime, y = y_pos - 0.38,
                 label = format(datetime, "Post: %b %d %H:%M")),
             hjust = 0.5, size = 2.8, colour = "grey30") +
-  scale_shape_manual(values = c("Loop introduced" = 17, "Post made" = 19),
+  scale_shape_manual(values = c("Loop introduced" = 17, 
+                                "Post made" = 19),
                      name = "Event type") +
   scale_colour_manual(values = c("HiddenOrca" = "#2980b9",
                                   "MellowOtter" = "#27ae60",
@@ -1634,7 +1646,7 @@ ggplot() +
   scale_x_datetime(date_labels = "%b %d", date_breaks = "1 day") +
   scale_y_continuous(breaks = NULL) +
   labs(
-    title    = "Three Incidents, One Pattern (May 8–17, 2046)",
+    title = "Three Incidents, One Pattern (May 8–17, 2046)",
     subtitle = "Triangle = loop introduced | Circle = post made | Bar = loop active duration",
     x = "Date (UTC)", y = NULL
   ) +
@@ -1798,13 +1810,14 @@ post_origin_summary <- mc2_events %>%
   ) %>%
   count(initiated_by, name = "count") %>%
   mutate(
-    pct         = round(count / sum(count) * 100, 1),
+    pct = round(count / sum(count) * 100, 1),
     all_anomalous = c("Yes — all 3 are incident posts", "No")
   )
  
 kable(post_origin_summary,
       caption = "saidit_post breakdown: agent-initiated vs person-initiated",
-      col.names = c("Initiated by", "Count", "% of total", "All anomalous?"))
+      col.names = c("Initiated by", "Count", "% of total", 
+                    "All anomalous?"))
 ```
 
 ```{r}
@@ -1822,28 +1835,28 @@ mc2_events %>%
   geom_col(width = 0.5) +
   geom_text(aes(label = n), vjust = -0.5, fontface = "bold", size = 4.5) +
   scale_fill_manual(values = c(
-    "Agent-initiated\n(all anomalous)"   = "#e74c3c",
+    "Agent-initiated\n(all anomalous)" = "#e74c3c",
     "Person-initiated\n(all legitimate)" = "#2980b9"
   ), guide = "none") +
   scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
   labs(
-    title    = "Every Agent-Initiated Post Was Anomalous",
+    title = "Every Agent-Initiated Post Was Anomalous",
     subtitle = "105 person-initiated posts were all legitimate;\nall 3 agent-initiated posts were attack incidents",
     x = NULL, y = "Number of posts"
   ) +
   theme_minimal() +
   theme(
-    plot.title    = element_text(face = "bold", size = 12),
+    plot.title = element_text(face = "bold", size = 12),
     plot.subtitle = element_text(size = 9, colour = "grey50"),
-    axis.text.x   = element_text(size = 10)
+    axis.text.x = element_text(size = 10)
   )
 ```
 
-Every agent-initiated post was an inicident. Every person-initated post was legitimate. The separation is total and leaves no ambiguity about where the intervention should be applied.
+Every agent-initiated post was an incident. Every person-initiated post was legitimate. The separation is total and leaves no ambiguity about where the intervention should be applied.
 
 ## Primary Intervention
 
-The `parties` field already encodesthe distinction. Requiring that `saidit_post` events only preceed when `parties[1]` begins with `person:` rather than `Agent/person:` would have blocked all three incidents at zero cost to legitimate activity.  
+The `parties` field already encodes the distinction. Requiring that `saidit_post` events only precede when `parties[1]` begins with `person:` rather than `Agent/person:` would have blocked all three incidents at zero cost to legitimate activity.  
 
 ```{r}
 party_comparison <- mc2_events %>%
@@ -1902,15 +1915,15 @@ person_dept_resolved <- person_dept %>%
 
 sw_dept_check <- incident_props %>%
   filter(incident == "SwiftWren") %>%
-  left_join(person_dept_resolved, by = c("sender"   = "person")) %>%
+  left_join(person_dept_resolved, by = c("sender" = "person")) %>%
   rename(sender_dept = department) %>%
   left_join(person_dept_resolved, by = c("receiver" = "person")) %>%
   rename(receiver_dept = department) %>%
   mutate(
     cross_dept = case_when(
       is.na(sender_dept) | is.na(receiver_dept) ~ "Unknown",
-      sender_dept == receiver_dept               ~ "Same department",
-      TRUE                                       ~ "Cross-department"
+      sender_dept == receiver_dept ~ "Same department",
+      TRUE ~ "Cross-department"
     )
   )
  
@@ -1935,15 +1948,15 @@ sw_dept_check %>%
   ), guide = "none") +
   scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
   labs(
-    title    = "SwiftWren Loop Frequently Crossed Department Boundaries",
+    title = "SwiftWren Loop Frequently Crossed Department Boundaries",
     subtitle = "Cross-department task passing violates the queue_subordinate_task intent\nand could be flagged as anomalous by an org-aware validation rule",
     x = NULL, y = "Propagation events"
   ) +
   theme_minimal() +
   theme(
-    plot.title    = element_text(face = "bold", size = 12),
+    plot.title = element_text(face = "bold", size = 12),
     plot.subtitle = element_text(size = 9, colour = "grey50"),
-    axis.text.x   = element_text(size = 10)
+    axis.text.x = element_text(size = 10)
   )
 ```
 
@@ -2008,19 +2021,25 @@ The immediate trigger chain ran: Zoey Drydock -> Lily Anchorline -> Daniel Gangw
 
 The SwiftWren loop involved 18 agents across multiple departments, generating 186 propagation events over 8 days. Unlike normal `access_email` delegation which is sparse and hierarchical, the loop was dense, circular and contained self-loop. Loop agents were embedded in normal workflows, which explains why the loop went undetected. 
 
+---
+
 ## What the Post Meant and Where It Came From
 
 `SwiftWren.txt` was created by Emma Harbor's agent on May 9, one second after reading `meeting_notes.doc`, The content was therefore derived from a legitimate internal document, re-purposed as post material. The `SwiftWren_further_instructions.md` file then directed agents to propagate the task and ultimately post the content to SaidIT with a pre-programmed instruction set embedded within the loop. THe gibberish and random forum selection are consistent with automated content generation from an internal document without human intent or review. 
+
+---
 
 ## Prior Incidents
 
 Two prior incidents were identified, HiddenOrca (posted on May 10) and MellowOtter (posted on May 11), both also posted by John's agent. All three follow the same pattern, an agent reads an instruction file, generates content from a legitimate document, propagates across the network, posts, and self-deletes.
 
-HiddenOrca's file creatin predates the dataset, suggesting the vulnerability has existed longer than the data window. SwiftWren was by far the most sustained, running 8 days, as compared to MellowOtter for 10 hours. 
+HiddenOrca's file creation predates the dataset, suggesting the vulnerability has existed longer than the data window. SwiftWren was by far the most sustained, running 8 days, as compared to MellowOtter for 10 hours. 
+
+---
 
 ## Proposed Intervention
 
-The singel most effective intervention is requiring human approval for any agent-initiated `saidit_post` that has been identified with `Agent/person:` rather than `person:`. This would have stopped all 3 incidents with zero false positives on the 105 legitimate person-initiated posts.
+The single most effective intervention is requiring human approval for any agent-initiated `saidit_post` that has been identified with `Agent/person:` rather than `person:`. This would have stopped all 3 incidents with zero false positives on the 105 legitimate person-initiated posts.
 
-A secondary measure is to flag cross-department `queue_subordinate_task` events. This could disrupt loop propagatin before it reached John's agent, as 39% of SwfitWren's progation events cross department boundaries. 
+A secondary measure is to flag cross-department `queue_subordinate_task` events. This could disrupt loop propagation before it reached John's agent, as 39% of SwfitWren's propagation events cross department boundaries. 
 
