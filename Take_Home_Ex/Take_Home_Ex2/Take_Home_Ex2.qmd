@@ -31,7 +31,7 @@ The challenge dataset consists of two files: `MC2_Data.json`, which records syst
 1.  Identify the anomalous post and establish its structural anomalies
 2.  Understand the organisational context used including where John Windward sits within Tenant Thread
 3.  Immediate chain of events leading to the post traced backwards step by step
-4.  Full interaction network is mapped to establish a basline of normal behavior
+4.  Full interaction network is mapped to establish a baseline of normal behavior
 5.  Investigate origin and content of post
 6.  Characterize the propagation loop that carried the malicious instructions
 7.  Examine why John is the one who posted and not others
@@ -48,7 +48,7 @@ The challenge dataset consists of two files: `MC2_Data.json`, which records syst
 | jsonlite | JSON import |
 | igraph, tidygraph, ggraph, patchwork | building and visualizing static network graphs and combining plots |
 | vizNetwork, DT | interactive network exploration and data tables |
-| ggrepel, scales | improving plot visualisation through annotaiton and axis formatting |
+| ggrepel, scales | improving plot visualization through annotation and axis formatting |
 | knitr | for clean table rendering |
 
 : {tbl-colwidths="\[30,70\]"}
@@ -436,7 +436,7 @@ visNetwork(nodes = org_nodes_vis,
   visPhysics(enabled = FALSE)
 ```
 
-John's position as a Department Lead in Customer Support places him organizationally far from the AI systems team, which seems t be responsible for technical and infrastructure-related functions. His role is centered on customer-facing operations, making him an unexpected source for behavior involving autonomous agents and system-level activity. 
+John's position as a Department Lead in Customer Support places him organizationally far from the AI systems team, which seems to be responsible for technical and infrastructure-related functions. His role is centered on customer-facing operations, making him an unexpected source for behavior involving autonomous agents and system-level activity. 
 
 ## Key Takeaways
 
@@ -451,7 +451,7 @@ Having identified the anomalous post, the next step is to reconstruct the sequen
 
 ## Full Details of Anchor Event (Anomalous Event)
 
-The anchor event is first examined to identify the content source and participating entities that may reveal its orgin. 
+The anchor event is first examined to identify the content source and participating entities that may reveal its origin. 
 
 ```{r}
 anchor <- mc2_events %>% filter(id == 373902)
@@ -554,7 +554,7 @@ datatable(lily_pre,
           caption = "Lily Anchorline events before triggering Daniel's agent")
 ```
 
-Lily's agent similarly appears to be a relay point in the chain, forwarding an instruction previously received from Zoey Drydocks's agent. 
+Lily's agent similarly appears to be a relay point in the chain, forwarding an instruction previously received from Zoey Drydock's agent. 
 
 ## Tracing the Trigger to Zoey Drydock
 
@@ -621,7 +621,7 @@ ggplot(data = trigger_events,
         plot.subtitle = element_text(size = 9, colour = "grey40"))
 ```
 
-The figure above summarises the reconstructed trigger chain. The sequence reveals a relay of nearly identical `queue_suborindate_task` events passing between multiple agents before eventually reaching John Windward's agent and triggering the anomalous post. 
+The figure above summarizes the reconstructed trigger chain. The sequence reveals a relay of nearly identical `queue_subordinate_task` events passing between multiple agents before eventually reaching John Windward's agent and triggering the anomalous post. 
 
 ## Key Takeaway
 
@@ -1024,7 +1024,7 @@ ggplot(key_steps, aes(x = elapsed, y = 1)) +
 
 Just a second before the creation of `SwiftWren.txt`, Emma's agent was reading `meeting_notes.doc`. The second after the creation of `SwiftWren.txt`, the agent read instructions from `SwiftWren_further_instructions.md` which immediate started to propagate the `queue_subordinate_task` and launch the loop. 
 
-## What Happen After Post on May 17?
+## What Happen After the Post on May 17?
 
 ```{r}
 post_deletion <- mc2_events %>%
@@ -1183,7 +1183,7 @@ The chart shows the SwiftWren loop was consistently active from May 9 through to
 
 ## Loop Origin and Scope
 
-With the SwiftWren loop established, the precise origin point is identified by finding the first event where SwiftWren_further_instructions.md appearead.
+With the SwiftWren loop established, the precise origin point is identified by finding the first event where `SwiftWren_further_instructions.md` appeared.
 
 ```{r}
 first_general_event <- full_propagation %>%
@@ -1662,7 +1662,7 @@ ggplot() +
 
 SwiftWren's bar stretches across 8 days while MellowOtter is resolved under 10 hours. HiddenOrca appears short in the chart, but this is misleading as its content file creation was never logged. This means that the loop likely predates the dataset entirely and its true duration is unknown.
 
-## Daily Popagation Counts For All Incidents
+## Daily Propagation Counts For All Incidents
 
 ```{r}
 #| code-fold: true
