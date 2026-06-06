@@ -19,7 +19,7 @@ In May 2046, an anomalous post appeared on SaidIt, an internal social forum used
     -   system overview that contextualizes the message chain in the overall system
 -   Understanding the post: what it mean and origin of their contents
 -   concerning behaviours that could repeat
-    -   determine prior incidents 
+    -   determine prior incidents
     -   propose system intervention to prevent it happening again
 
 ## Data
@@ -90,10 +90,9 @@ mc2_events <- mc2_events %>%
 glimpse(mc2_events)
 ```
 
-After timestamp conversion, the event log contains 185,147 records and 69 attributes. Many fields are sparsely populated because different event types record different metadata. This indicates a schema where field use depends on the activity being recorded. 
+After timestamp conversion, the event log contains 185,147 records and 69 attributes. Many fields are sparsely populated because different event types record different metadata. This indicates a schema where field use depends on the activity being recorded.
 
 ::: callout-note
-
 The `parties` field is stored as a list-column where each row may contain multiple party identifiers. `map_lgl()` and `map_chr()` from the `purrr` package is used throughout to apply string operations across each list element wherever `parties` is filtered or extracted
 :::
 
@@ -170,9 +169,9 @@ datatable(john_may17,
           caption = "John Windward's Events on May 17, 2046")
 ```
 
-John's recorded activity on May 17 consists exclusively of `check_email` events occurring during two separate periods. No forum post activity appears, which give an initial indication that the anomalous post may not have been directly initiated by John himself. 
+John's recorded activity on May 17 consists exclusively of `check_email` events occurring during two separate periods. No forum post activity appears, which give an initial indication that the anomalous post may not have been directly initiated by John himself.
 
-To identify the anomalous post directly, all SaidIT-related events occurring on May 17 are extracted 
+To identify the anomalous post directly, all SaidIT-related events occurring on May 17 are extracted
 
 ```{r}
 anomalous_post <- mc2_events %>%
@@ -190,7 +189,7 @@ datatable(anomalous_post,
 
 Only one SaidIT posting event occurred on May 17. Event **373902**, recorded at **2046-05-17 11:21:15 UTC**, corresponds exactly to the timestamp described in the challenge and is therefore treated as the anchor event for the investigation.
 
-Unlike normal `saidit_post` events, the post was associated with `Agent/person:john_windward` rather than `person:john_windward`, and both `details.poster_id` and `details.timestamp` were missing. This characteristics indicate that the post was done by John's agent rather than John himself. 
+Unlike normal `saidit_post` events, the post was associated with `Agent/person:john_windward` rather than `person:john_windward`, and both `details.poster_id` and `details.timestamp` were missing. This characteristics indicate that the post was done by John's agent rather than John himself.
 
 ## SaidIT Post Timeline
 
@@ -286,7 +285,7 @@ org_edges %>%
   kable(caption = "Relationship Types")
 ```
 
-The organisation chart contains 75 nodes and 74 directed edges. Most nodes represent employees, supported by temas and departments that define the organisational hierarchy. The graph structure is relatively simple, with `contain` relationships to represent the organisational nesting and `led_by` relationship that identify department leadership. This structure provides the basis for locating John Windward within the company and understanding his reporting context. 
+The organisation chart contains 75 nodes and 74 directed edges. Most nodes represent employees, supported by temas and departments that define the organisational hierarchy. The graph structure is relatively simple, with `contain` relationships to represent the organisational nesting and `led_by` relationship that identify department leadership. This structure provides the basis for locating John Windward within the company and understanding his reporting context.
 
 ## Understanding John Windward
 
@@ -300,7 +299,7 @@ org_edges %>%
            str_detect(target, "john_windward"))
 ```
 
-John is a Department Lead of Customer Support. As the Department Lead, this places customer-facing teams under his oversight. 
+John is a Department Lead of Customer Support. As the Department Lead, this places customer-facing teams under his oversight.
 
 ```{r}
 org_edges %>%
@@ -309,11 +308,11 @@ org_edges %>%
   left_join(org_nodes, by = c("target" = "id"))
 ```
 
-Customer Support consist of four teams: Phone Center, Billing, Concierge and Public Relations. As department lead, John oversees customer-facing activities across these teams. 
+Customer Support consist of four teams: Phone Center, Billing, Concierge and Public Relations. As department lead, John oversees customer-facing activities across these teams.
 
 ## Organisation chart visualisation
 
-The organisation chart below highlights John Windward and the Customer Support department within the broader company structure. This provides context for assessing whether the anomalous activity originated from an employee whose responsibilities would normally involve AI systems. 
+The organisation chart below highlights John Windward and the Customer Support department within the broader company structure. This provides context for assessing whether the anomalous activity originated from an employee whose responsibilities would normally involve AI systems.
 
 ```{r}
 #| code-fold: true
@@ -436,7 +435,7 @@ visNetwork(nodes = org_nodes_vis,
   visPhysics(enabled = FALSE)
 ```
 
-John's position as a Department Lead in Customer Support places him organizationally far from the AI systems team, which seems to be responsible for technical and infrastructure-related functions. His role is centered on customer-facing operations, making him an unexpected source for behavior involving autonomous agents and system-level activity. 
+John's position as a Department Lead in Customer Support places him organizationally far from the AI systems team, which seems to be responsible for technical and infrastructure-related functions. His role is centered on customer-facing operations, making him an unexpected source for behavior involving autonomous agents and system-level activity.
 
 ## Key Takeaways
 
@@ -451,7 +450,7 @@ Having identified the anomalous post, the next step is to reconstruct the sequen
 
 ## Full Details of Anchor Event (Anomalous Event)
 
-The anchor event is first examined to identify the content source and participating entities that may reveal its origin. 
+The anchor event is first examined to identify the content source and participating entities that may reveal its origin.
 
 ```{r}
 anchor <- mc2_events %>% filter(id == 373902)
@@ -464,7 +463,7 @@ anchor %>%
   kable(caption = "Full details of the anomalous anchor event (ID 373902)")
 ```
 
-The event identifies `SwiftWren.txt` as the content source used to generate the anomalous post, providing the first clue for tracing its origin. 
+The event identifies `SwiftWren.txt` as the content source used to generate the anomalous post, providing the first clue for tracing its origin.
 
 ## John's Activity 2 Hours Before the Post
 
@@ -486,7 +485,7 @@ datatable(pre_post,
 
 Within the two hours window before the post, only 3 events involve John's agent, a `queue_subordinate_task`, a `saidit_post_check` and the final `saidit_post`. The event occurred within a two-second intervals, indicating that the post was not the result of a prolonged workflow but an immediate response to an incoming task.
 
-The triggering event is a task delegated from Chloe Ballast's agent instructing John's agent to read `SwiftWren_further_instructions.md`. One second later, John's agent performs a `saidit_post_check` and then publishes the anomalous post. 
+The triggering event is a task delegated from Chloe Ballast's agent instructing John's agent to read `SwiftWren_further_instructions.md`. One second later, John's agent performs a `saidit_post_check` and then publishes the anomalous post.
 
 ## Tracing the Trigger to Chloe Ballast
 
@@ -506,9 +505,9 @@ datatable(chloe_pre,
           caption = "Chloe Ballast agent events in 2 hours before anomalous post")
 ```
 
-Chloe's agent displays the same pattern. Shortly before delegating the task to John's agent, it received an identical `queue_subordinate_task` from Daniel Gangway's agent. This suggests Chloe's agent was forwarding rather than source of the instruction. 
+Chloe's agent displays the same pattern. Shortly before delegating the task to John's agent, it received an identical `queue_subordinate_task` from Daniel Gangway's agent. This suggests Chloe's agent was forwarding rather than source of the instruction.
 
-::: {.callout-note}
+::: callout-note
 ### Key Finding: Delegation Violates Organisational Hierarchy
 
 Chloe Ballast is the department lead of Information Technologies, while Daniel Gangway belongs to the Hiring team within Human Resources. The task therefore moved across departmental boundaries despite being recorded as a `queue_subordinate_task`, suggesting the delegation mechanism was operating independently of the formal organisational hierarchy.
@@ -554,7 +553,7 @@ datatable(lily_pre,
           caption = "Lily Anchorline events before triggering Daniel's agent")
 ```
 
-Lily's agent similarly appears to be a relay point in the chain, forwarding an instruction previously received from Zoey Drydock's agent. 
+Lily's agent similarly appears to be a relay point in the chain, forwarding an instruction previously received from Zoey Drydock's agent.
 
 ## Tracing the Trigger to Zoey Drydock
 
@@ -575,7 +574,7 @@ datatable(zoey_pre,
           caption = "Zoey Drydock events before triggering Lily's agent")
 ```
 
-Zoey's agent reveals a different behavior. Approximately 3 hours before forwarding the instruction to Lily, it had already sent the same task to Mia Fender. Later, it received the same instruction from Victoria Rigging before doing a `saidit_post_check` then proceeding with propagating the task forward to Lily. This indicates that Zoey was embedded within a broader recurring workflow rather than participating in a simple linear chain. 
+Zoey's agent reveals a different behavior. Approximately 3 hours before forwarding the instruction to Lily, it had already sent the same task to Mia Fender. Later, it received the same instruction from Victoria Rigging before doing a `saidit_post_check` then proceeding with propagating the task forward to Lily. This indicates that Zoey was embedded within a broader recurring workflow rather than participating in a simple linear chain.
 
 ## Immediate Trigger Chain Timeline
 
@@ -621,7 +620,7 @@ ggplot(data = trigger_events,
         plot.subtitle = element_text(size = 9, colour = "grey40"))
 ```
 
-The figure above summarizes the reconstructed trigger chain. The sequence reveals a relay of nearly identical `queue_subordinate_task` events passing between multiple agents before eventually reaching John Windward's agent and triggering the anomalous post. 
+The figure above summarizes the reconstructed trigger chain. The sequence reveals a relay of nearly identical `queue_subordinate_task` events passing between multiple agents before eventually reaching John Windward's agent and triggering the anomalous post.
 
 ## Key Takeaway
 
@@ -702,7 +701,7 @@ node_meta %>%
   kable(caption = "Agent roles in the system network (May 8–17)")
 ```
 
-This shows that agents are either "Normal only" or "Both". Meaning the 19 loop agents weren't isolated bad actors, they were embedded illegitimate workflows. Therefore, none were exclusively malicious actors and the loop was hidden within legitimate operational activity, which explain why it went undetected.  
+This shows that agents are either "Normal only" or "Both". Meaning the 19 loop agents weren't isolated bad actors, they were embedded illegitimate workflows. Therefore, none were exclusively malicious actors and the loop was hidden within legitimate operational activity, which explain why it went undetected.
 
 ## Overview Graph
 
@@ -858,7 +857,7 @@ visNetwork(vis_nodes, vis_edges,
 ```
 :::
 
-The normal network shows a sparse, hub-and-spoke structure where agents delegate email access tasks to each other through clear channels. The loop network by contrast is dense and circular, with agents passing the `read_file` task back and forth across multiple departments with no clear endpoint or termination condition. 
+The normal network shows a sparse, hub-and-spoke structure where agents delegate email access tasks to each other through clear channels. The loop network by contrast is dense and circular, with agents passing the `read_file` task back and forth across multiple departments with no clear endpoint or termination condition.
 
 ## Summary table
 
@@ -883,22 +882,22 @@ tibble(
         format.args = list(big.mark = ","))
 ```
 
-Notably, the loop generated more total interactions than the normal network over the same 10-day period, and unlike normal activity, it contained 13 self-loop where agents queued tasks to themselves, which is a pattern with no legitimate operational purpose. 
+Notably, the loop generated more total interactions than the normal network over the same 10-day period, and unlike normal activity, it contained 13 self-loop where agents queued tasks to themselves, which is a pattern with no legitimate operational purpose.
 
 ## Key Takeaway
 
 -   The normal agent network is sparse and task-specific, operating within clear delegation patterns.
 -   The loop network is denser, more interconnected, and contains self-loops. The structural signatures that distinguish it clearly from legitimate activity.
--   Loop agents were not isolated bad actors. They were embedded in normal workflows, making the loop invisible to casual observation. 
--   These structural difference provide the baseline against which the SwiftWren loop's anomalous nature can be objectively demonstrated. 
+-   Loop agents were not isolated bad actors. They were embedded in normal workflows, making the loop invisible to casual observation.
+-   These structural difference provide the baseline against which the SwiftWren loop's anomalous nature can be objectively demonstrated.
 
 # What Did the Post Mean?
 
-To understand what the post `SwiftWren.txt` mean, when and who created it, and what happened to it after the post. 
+To understand what the post `SwiftWren.txt` mean, when and who created it, and what happened to it after the post.
 
 ## Locate SwiftWren.txt Creation Event
 
-First locate the creation of `SwiftWren.txt` and find out who created it and when. 
+First locate the creation of `SwiftWren.txt` and find out who created it and when.
 
 ```{r}
 swiftwren_create <- mc2_events %>%
@@ -916,7 +915,7 @@ Emma's agent created `SwiftWren.txt` on May 9 at 15:02 UTC time. The file size i
 
 ## Emma's Agent Seconds Before and After Creation
 
-The next step is to examine what happened before and after the creation of `SwiftWren.txt`. This will give us the understanding what triggered Emma's agent to create `SwiftWren.txt` and what happened after that. 
+The next step is to examine what happened before and after the creation of `SwiftWren.txt`. This will give us the understanding what triggered Emma's agent to create `SwiftWren.txt` and what happened after that.
 
 ```{r}
 created_time <- swiftwren_create$datetime
@@ -1022,7 +1021,7 @@ ggplot(key_steps, aes(x = elapsed, y = 1)) +
   )
 ```
 
-Just a second before the creation of `SwiftWren.txt`, Emma's agent was reading `meeting_notes.doc`. The second after the creation of `SwiftWren.txt`, the agent read instructions from `SwiftWren_further_instructions.md` which immediate started to propagate the `queue_subordinate_task` and launch the loop. 
+Just a second before the creation of `SwiftWren.txt`, Emma's agent was reading `meeting_notes.doc`. The second after the creation of `SwiftWren.txt`, the agent read instructions from `SwiftWren_further_instructions.md` which immediate started to propagate the `queue_subordinate_task` and launch the loop.
 
 ## What Happen After the Post on May 17?
 
@@ -1046,7 +1045,7 @@ kable(post_deletion,
       caption = "Self-cleaning sequence: files deleted within 2 seconds of posting (May 17)")
 ```
 
-Right after John's agent made the anomalous post, it deleted both the instruction file and the text file. This means that it knew it has finished its task and began to remove any log of it as if nothing has happened. 
+Right after John's agent made the anomalous post, it deleted both the instruction file and the text file. This means that it knew it has finished its task and began to remove any log of it as if nothing has happened.
 
 ## Key Takeaway
 
@@ -1258,17 +1257,41 @@ visNetwork(nodes = loop_nodes,
            main = "SwiftWren_further_instructions.md Propagation Network (May 9–17, 2046)",
            height = "600px",
            width = "100%") %>%
-  visGroups(groupname = "Final Poster", color = "#e15759") %>%
-  visGroups(groupname = "File Introducer", color = "#59a14f") %>%
-  visGroups(groupname = "Loop Participant", color = "#4e79a7") %>%
-  visEdges(arrows = "to",
-           smooth = list(type = "curvedCW")) %>%
-  visOptions(highlightNearest = list(enabled = TRUE,
-                                     degree = 1,
-                                     hover = TRUE)) %>%
+  visGroups(groupname = "Final Poster", 
+            color = list(background = "#e15759", border = "#c0392b")) %>%
+  visGroups(groupname = "File Introducer", 
+            color = list(background = "#59a14f", border = "#27ae60")) %>%
+  visGroups(groupname = "Loop Participant",
+            color = list(background = "#4e79a7", border = "#2c5f8a")) %>%
+  visNodes(
+    size = 30, 
+    font = list(size = 30, color = "black", face = "bold"),
+    borderWidth = 2,
+    shadow = TRUE
+  ) %>%
+  visEdges(
+    arrows = list(to = list(enabled = TRUE, scaleFactor = 0.5)),
+    width = 1.5,
+    smooth = list(type = "dynamic"),
+    scaling = list(min = 1, max = 4)
+  ) %>%
+  visOptions(highlightNearest = list(enabled = TRUE, 
+                                     degree = 1, 
+                                     hover = TRUE),
+             nodesIdSelection = list(enabled = TRUE, 
+                            main    = "Select an agent")) %>%
   visLegend(position = "right", main = "Agent Role") %>%
   visLayout(randomSeed = 42) %>%
-  visPhysics(stabilization = TRUE)
+  visPhysics(
+    solver = "forceAtlas2Based",
+    forceAtlas2Based = list(
+      gravitationalConstant = -80,
+      centralGravity = 0.01,
+      springLength = 120,
+      springConstant = 0.05
+    ),
+    stabilization = list(iterations = 200)
+  )
 ```
 
 The network confirms the circular nature of the loop with most agents both send and receive from multiple others and no clear endpoint built in. Emma Harbor appears as a peripheral node having only triggered the file once and she introduced it but did not stay in the loop. John Windward, despite being the agent that made the final post, was himself an active participant in the loop on earlier days before eventually being the one to execute the post.
@@ -1277,7 +1300,7 @@ The network confirms the circular nature of the loop with most agents both send 
 
 -   The `read_file` loop predates SwiftWren, with the earliest record on May 8 from Gabriel Sonar, but SwiftWren started on May 9 when Emma Harbor introduced `SwiftWren_further_instructions.md`.
 -   18 unique agents were caught in the SwiftWren loop over 8 days, generating 186 propagation events with no exit condition.
-- Self-loops, where agents queuing tasks to themselves, appeared 13 times. This is a pattern with no legitimate operational purpose and a clear anomaly signal.
+-   Self-loops, where agents queuing tasks to themselves, appeared 13 times. This is a pattern with no legitimate operational purpose and a clear anomaly signal.
 -   The loop was circular and sustained, not linear, meaning it would have continued indefinitely had John's agent not been the one to finally post.
 
 # Why John?
@@ -1386,12 +1409,12 @@ The bar graph shows clearly that only John's agent posted after doing `saidit_po
 ::: callout-note
 ### Key Finding: John's Agent Did 3 Posts
 
-The table shows an interesting finding that apparently John's agent did 3 `saidit_post_check` events and also 3 `saidit_post` which means that SwiftWren post was not the only post it has ever made. 
+The table shows an interesting finding that apparently John's agent did 3 `saidit_post_check` events and also 3 `saidit_post` which means that SwiftWren post was not the only post it has ever made.
 :::
 
 ## Side-by-Side Event Window
 
-To find out what makes John different, understanding what actions were done by John's agent that made it different from the rest is needed. To make it simpler, a comparison is done with Gabriel Sonar, who is already known to ever did a `saidit_post_check` on May 17 but did not post. 
+To find out what makes John different, understanding what actions were done by John's agent that made it different from the rest is needed. To make it simpler, a comparison is done with Gabriel Sonar, who is already known to ever did a `saidit_post_check` on May 17 but did not post.
 
 ```{r}
 john_window <- mc2_events %>%
@@ -1426,15 +1449,15 @@ kable(comparison_window,
                     "Outcome"))
 ```
 
-The actions made by John's and Gabriel's agent is different. After getting the `read_file` from the `queue_subordinate_task`, both did a `saidit_post_check`. However, John's agent not only posted it, but also immediately deleted the 2 files related to SwiftWren mentioned before. Meanwhile, Gabriel's agent did nothing immediately. 
+The actions made by John's and Gabriel's agent is different. After getting the `read_file` from the `queue_subordinate_task`, both did a `saidit_post_check`. However, John's agent not only posted it, but also immediately deleted the 2 files related to SwiftWren mentioned before. Meanwhile, Gabriel's agent did nothing immediately.
 
 # Prior Incidents and Near-Misses
 
-As said in the previous section, John's agent did not only make on anomalous post of SwiftWren but also 2 other times. Investigation on prior incidents to understand why these posting incidents happened. 
+As said in the previous section, John's agent did not only make on anomalous post of SwiftWren but also 2 other times. Investigation on prior incidents to understand why these posting incidents happened.
 
 ## Other Agent-Initiated Posts Before Swiftwren
 
-First, the number of times these incidents has happened needs to be examined and the details of these incidents such as when and what was posted. 
+First, the number of times these incidents has happened needs to be examined and the details of these incidents such as when and what was posted.
 
 ```{r}
 all_agent_posts <- mc2_events %>%
@@ -1456,11 +1479,11 @@ kable(all_agent_posts,
                     "Content source"))
 ```
 
-As expected, only 3 posting incidents happened throughout the whole data, which includes the SwiftWren. All are posted by John's agent, and each have a different post content, happening in the month of May 2046. 
+As expected, only 3 posting incidents happened throughout the whole data, which includes the SwiftWren. All are posted by John's agent, and each have a different post content, happening in the month of May 2046.
 
 ## Understanding Each Incident's Post
 
-The next step is to examine the specific details of each incidents, such as the propagation length, creation of those posts and its trigger. 
+The next step is to examine the specific details of each incidents, such as the propagation length, creation of those posts and its trigger.
 
 ```{r}
 incident_props <- mc2_events %>%
@@ -1582,7 +1605,7 @@ kable(incident_summary,
                     "Self-deleted after post?"))
 ```
 
-Interestingly, the creation of `HiddenOrca.txt` is not logged, which could mean it happened before the data range. Therefore, it could be longer than the propagation length found through the current data. 
+Interestingly, the creation of `HiddenOrca.txt` is not logged, which could mean it happened before the data range. Therefore, it could be longer than the propagation length found through the current data.
 
 The other incident is MellowOtter posting. The text file is created by Noah Mariner's agent, which was not part of the SwiftWren's propagation network. Similarly it was created immediately after reading a file, in this incident it was `strategic_direction.doc`.
 
@@ -1762,11 +1785,11 @@ kable(nearmiss_summary,
                     "Checks that stopped"))
 ```
 
-Consistently across all incidents, there is only one check that lead to its posting and there isn't any more checks and posting after doing it once. Since SwiftWren is the longest propagating incident, it make sense that it has the most near-misses, but its unique agents are only about a third of the total checks done. 
+Consistently across all incidents, there is only one check that lead to its posting and there isn't any more checks and posting after doing it once. Since SwiftWren is the longest propagating incident, it make sense that it has the most near-misses, but its unique agents are only about a third of the total checks done.
 
 ## May 17 Near Misses
 
-A more detailed view of the near misses that occured on May 17. 
+A more detailed view of the near misses that occured on May 17.
 
 ```{r}
 may17_checks <- mc2_events %>%
@@ -1788,16 +1811,15 @@ kable(may17_checks,
       col.names = c("Event ID", "Datetime", "Agent", "Outcome"))
 ```
 
-Just on May 17 alone, there are 3 people who did the `saidit_post_check` but only one posted with 2 near misses. 
+Just on May 17 alone, there are 3 people who did the `saidit_post_check` but only one posted with 2 near misses.
 
 # Proposed Intervention
 
-The three incidents share a consistent attack pattern: an agent reads an instruction file, generates post content from a legitimate document, propagates the task across the network, and self-deletes all evidence after posting through `saidit_post` event. Two targeted interventions, grounded directly in the event 
-data, would have stopped all three.
+The three incidents share a consistent attack pattern: an agent reads an instruction file, generates post content from a legitimate document, propagates the task across the network, and self-deletes all evidence after posting through `saidit_post` event. Two targeted interventions, grounded directly in the event data, would have stopped all three.
 
 ## Establishing the Pattern
 
-Before proposing fixes, it is important to confirm that the anomalous behavior is structurally distinguishable from normal activity. Filtering all `saidit_post` events by initiator type reveals a clean separation. 
+Before proposing fixes, it is important to confirm that the anomalous behavior is structurally distinguishable from normal activity. Filtering all `saidit_post` events by initiator type reveals a clean separation.
 
 ```{r}
 post_origin_summary <- mc2_events %>%
@@ -1856,7 +1878,7 @@ Every agent-initiated post was an incident. Every person-initiated post was legi
 
 ## Primary Intervention
 
-The `parties` field already encodes the distinction. Requiring that `saidit_post` events only precede when `parties[1]` begins with `person:` rather than `Agent/person:` would have blocked all three incidents at zero cost to legitimate activity.  
+The `parties` field already encodes the distinction. Requiring that `saidit_post` events only precede when `parties[1]` begins with `person:` rather than `Agent/person:` would have blocked all three incidents at zero cost to legitimate activity.
 
 ```{r}
 party_comparison <- mc2_events %>%
@@ -1975,7 +1997,7 @@ sw_dept_check %>%
   )
 ```
 
-The Daniel to Chloe delegation identified in the immediate trigger chain section reappears here at scale, confirming that cross-department task passing was a consistent feature of the loop rather than an isolated occurence. 
+The Daniel to Chloe delegation identified in the immediate trigger chain section reappears here at scale, confirming that cross-department task passing was a consistent feature of the loop rather than an isolated occurence.
 
 ## Summary Table
 
@@ -2005,7 +2027,7 @@ tibble(
   kable(caption = "Proposed interventions: evidence, scope, and trade-offs")
 ```
 
-The 2 interventions are complementary. The first is a hard gate that stops the post from ever being published as its the higher priority fix given zero false positives and low implementation cost. The second operates earlier in the chain by disrupting propagation before it reaches a posting agent, but requires organisation chart integration and would need tuning to avoid flagging legitimate cross-team coordination. Together they address both the symptom and the mechanism. 
+The 2 interventions are complementary. The first is a hard gate that stops the post from ever being published as its the higher priority fix given zero false positives and low implementation cost. The second operates earlier in the chain by disrupting propagation before it reaches a posting agent, but requires organisation chart integration and would need tuning to avoid flagging legitimate cross-team coordination. Together they address both the symptom and the mechanism.
 
 # Findings and Answers
 
@@ -2015,31 +2037,30 @@ The post was not made by John Windward directly, but by his agent. It received a
 
 ### The Immediate Trigger Chain
 
-The immediate trigger chain ran: Zoey Drydock -> Lily Anchorline -> Daniel Gangway -> Chloe Ballast -> John Windward, all via `queue_subordinate_task` events carrying the same instruction file. The entire sequence from first delegation to post took under 2 hours, with the final three events occurring within 2 seconds of each other.
+The immediate trigger chain ran: Zoey Drydock -\> Lily Anchorline -\> Daniel Gangway -\> Chloe Ballast -\> John Windward, all via `queue_subordinate_task` events carrying the same instruction file. The entire sequence from first delegation to post took under 2 hours, with the final three events occurring within 2 seconds of each other.
 
 ### The Broader System Context
 
-The SwiftWren loop involved 18 agents across multiple departments, generating 186 propagation events over 8 days. Unlike normal `access_email` delegation which is sparse and hierarchical, the loop was dense, circular and contained self-loop. Loop agents were embedded in normal workflows, which explains why the loop went undetected. 
+The SwiftWren loop involved 18 agents across multiple departments, generating 186 propagation events over 8 days. Unlike normal `access_email` delegation which is sparse and hierarchical, the loop was dense, circular and contained self-loop. Loop agents were embedded in normal workflows, which explains why the loop went undetected.
 
----
+------------------------------------------------------------------------
 
 ## What the Post Meant and Where It Came From
 
-`SwiftWren.txt` was created by Emma Harbor's agent on May 9, one second after reading `meeting_notes.doc`, The content was therefore derived from a legitimate internal document, re-purposed as post material. The `SwiftWren_further_instructions.md` file then directed agents to propagate the task and ultimately post the content to SaidIT with a pre-programmed instruction set embedded within the loop. THe gibberish and random forum selection are consistent with automated content generation from an internal document without human intent or review. 
+`SwiftWren.txt` was created by Emma Harbor's agent on May 9, one second after reading `meeting_notes.doc`, The content was therefore derived from a legitimate internal document, re-purposed as post material. The `SwiftWren_further_instructions.md` file then directed agents to propagate the task and ultimately post the content to SaidIT with a pre-programmed instruction set embedded within the loop. THe gibberish and random forum selection are consistent with automated content generation from an internal document without human intent or review.
 
----
+------------------------------------------------------------------------
 
 ## Prior Incidents
 
 Two prior incidents were identified, HiddenOrca (posted on May 10) and MellowOtter (posted on May 11), both also posted by John's agent. All three follow the same pattern, an agent reads an instruction file, generates content from a legitimate document, propagates across the network, posts, and self-deletes.
 
-HiddenOrca's file creation predates the dataset, suggesting the vulnerability has existed longer than the data window. SwiftWren was by far the most sustained, running 8 days, as compared to MellowOtter for 10 hours. 
+HiddenOrca's file creation predates the dataset, suggesting the vulnerability has existed longer than the data window. SwiftWren was by far the most sustained, running 8 days, as compared to MellowOtter for 10 hours.
 
----
+------------------------------------------------------------------------
 
 ## Proposed Intervention
 
 The single most effective intervention is requiring human approval for any agent-initiated `saidit_post` that has been identified with `Agent/person:` rather than `person:`. This would have stopped all 3 incidents with zero false positives on the 105 legitimate person-initiated posts.
 
-A secondary measure is to flag cross-department `queue_subordinate_task` events. This could disrupt loop propagation before it reached John's agent, as 39% of SwfitWren's propagation events cross department boundaries. 
-
+A secondary measure is to flag cross-department `queue_subordinate_task` events. This could disrupt loop propagation before it reached John's agent, as 39% of SwfitWren's propagation events cross department boundaries.
