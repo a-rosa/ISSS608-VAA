@@ -277,7 +277,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="getting-started" class="level2">
 <h2 class="anchored" data-anchor-id="getting-started">Getting Started</h2>
-<p>Write a code chunk to check, install and launch the following R packages: scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table and tidyverse.</p>
+<p>Install and launch the following R packages: scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table and tidyverse.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(scales, viridis, lubridate, ggthemes,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               gridExtra, readxl, knitr, data.table,</span>
@@ -300,7 +300,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="importing-the-data" class="level3">
 <h3 class="anchored" data-anchor-id="importing-the-data">Importing the data</h3>
-<p>First, you will use the code chunk below to import eventlog.csv file into R environment and called the data frame as attacks.</p>
+<p>First, use the code chunk below to import eventlog.csv file into R environment and called the data frame as attacks.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>attacks <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/eventlog.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -526,12 +526,12 @@ Note
 <p>Things to learn from the code chunk:</p>
 <ul>
 <li>a tibble data table called grouped is derived by aggregating the attack by <code>wkday</code> and <code>hour</code> fields.</li>
-<li>a new field called <em>n</em> is derived by using <code>group_by()</code> and <code>count()</code> functions.</li>
+<li>a new field called <code>n</code> is derived by using <code>group_by()</code> and <code>count()</code> functions.</li>
 <li><code>na.omit()</code> is used to exclude missing value.</li>
 <li><code>geom_tile()</code> is used to plot tiles (grids) at each x and y position. <code>color</code> and <code>size</code> arguments are used to specify the border color and line size of the tiles.</li>
 <li><a href="https://jrnold.github.io/ggthemes/reference/theme_tufte.html"><code>theme_tufte()</code></a> of <a href="https://jrnold.github.io/ggthemes/reference/index.html"><strong>ggthemes</strong></a> package is used to remove unnecessary chart junk. To learn which visual components of default ggplot2 have been excluded, you are encouraged to comment out this line to examine the default plot.</li>
 <li><code>coord_equal()</code> is used to ensure the plot will have an aspect ratio of 1:1.</li>
-<li><code>scale_fill_gradient()</code> function is used to creates a two colour gradient (low-high).</li>
+<li><code>scale_fill_gradient()</code> function is used to creates a two color gradient (low-high).</li>
 </ul>
 </div>
 </div>
@@ -544,7 +544,7 @@ Note
 <p>In order to identify the top 4 countries with the highest number of attacks, you are required to do the followings:</p>
 <ul>
 <li>count the number of attacks by country,</li>
-<li>calculate the percent of attackes by country, and</li>
+<li>calculate the percent of attacks by country, and</li>
 <li>save the results in a tibble data frame.</li>
 </ul>
 <div class="cell">
@@ -602,7 +602,7 @@ Note
 <section id="step-1-data-import" class="level3">
 <h3 class="anchored" data-anchor-id="step-1-data-import">Step 1: Data Import</h3>
 <p>For the purpose of this hands-on exercise, arrivals_by_air.xlsx will be used.</p>
-<p>The code chunk below imports arrivals_by_air.xlsx by using <code>read_excel()</code> of readxl package and save it as a tibble data frame called air.</p>
+<p>The code chunk below imports arrivals_by_air.xlsx by using <code>read_excel()</code> of <strong>readxl</strong> package and save it as a tibble data frame called air.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>air <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/arrivals_by_air.xlsx"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -631,7 +631,7 @@ Note
 </section>
 <section id="step-5-computing-year-average-arrivals-by-month" class="level3">
 <h3 class="anchored" data-anchor-id="step-5-computing-year-average-arrivals-by-month">Step 5: Computing year average arrivals by month</h3>
-<p>The code chunk below uses <code>group_by()</code> and <code>summarise()</code> of dplyr to compute year average arrivals by month.</p>
+<p>The code chunk below uses <code>group_by()</code> and <code>summarise()</code> of <strong>dplyr</strong> to compute year average arrivals by month.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>hline.data <span class="ot">&lt;-</span> Vietnam <span class="sc">%&gt;%</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">%&gt;%</span></span>

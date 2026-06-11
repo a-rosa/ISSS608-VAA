@@ -12,7 +12,7 @@ execute:
 
 ## Getting Started
 
-Write a code chunk to check, install and launch the following R packages: scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table and tidyverse.
+Install and launch the following R packages: scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table and tidyverse.
 
 ```{r}
 pacman::p_load(scales, viridis, lubridate, ggthemes,
@@ -37,7 +37,7 @@ For the purpose of this hands-on exercise, eventlog.csv file will be used. This 
 
 ### Importing the data
 
-First, you will use the code chunk below to import eventlog.csv file into R environment and called the data frame as attacks.
+First, use the code chunk below to import eventlog.csv file into R environment and called the data frame as attacks.
 
 ```{r}
 attacks <- read_csv("data/eventlog.csv")
@@ -145,12 +145,12 @@ theme(axis.ticks = element_blank(),
 Things to learn from the code chunk:
 
 -   a tibble data table called grouped is derived by aggregating the attack by `wkday` and `hour` fields.
--   a new field called *n* is derived by using `group_by()` and `count()` functions.
+-   a new field called `n` is derived by using `group_by()` and `count()` functions.
 -   `na.omit()` is used to exclude missing value.
 -   `geom_tile()` is used to plot tiles (grids) at each x and y position. `color` and `size` arguments are used to specify the border color and line size of the tiles.
 -   [`theme_tufte()`](https://jrnold.github.io/ggthemes/reference/theme_tufte.html) of [**ggthemes**](https://jrnold.github.io/ggthemes/reference/index.html) package is used to remove unnecessary chart junk. To learn which visual components of default ggplot2 have been excluded, you are encouraged to comment out this line to examine the default plot.
 -   `coord_equal()` is used to ensure the plot will have an aspect ratio of 1:1.
--   `scale_fill_gradient()` function is used to creates a two colour gradient (low-high).
+-   `scale_fill_gradient()` function is used to creates a two color gradient (low-high).
 :::
 
 Then we can simply group the count by hour and wkday and plot it, since we know that we have values for every combination there's no need to further preprocess the data.
@@ -164,7 +164,7 @@ Step 1: Deriving attack by country object
 In order to identify the top 4 countries with the highest number of attacks, you are required to do the followings:
 
 -   count the number of attacks by country,
--   calculate the percent of attackes by country, and
+-   calculate the percent of attacks by country, and
 -   save the results in a tibble data frame.
 
 ```{r}
@@ -222,7 +222,7 @@ In this section, you will learn how to plot a cycle plot showing the time-series
 
 For the purpose of this hands-on exercise, arrivals_by_air.xlsx will be used.
 
-The code chunk below imports arrivals_by_air.xlsx by using `read_excel()` of readxl package and save it as a tibble data frame called air.
+The code chunk below imports arrivals_by_air.xlsx by using `read_excel()` of **readxl** package and save it as a tibble data frame called air.
 
 ```{r}
 air <- read_excel("data/arrivals_by_air.xlsx")
@@ -254,7 +254,7 @@ Vietnam <- air %>%
 
 ### Step 5: Computing year average arrivals by month
 
-The code chunk below uses `group_by()` and `summarise()` of dplyr to compute year average arrivals by month.
+The code chunk below uses `group_by()` and `summarise()` of **dplyr** to compute year average arrivals by month.
 
 ```{r}
 hline.data <- Vietnam %>%
