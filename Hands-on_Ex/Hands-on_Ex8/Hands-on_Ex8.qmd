@@ -176,7 +176,7 @@ attacks_by_country <- count(
 
 Step 2: Preparing the tidy data frame
 
-In this step, you are required to extract the attack records of the top 4 countries from *attacks* data frame and save the data in a new tibble data frame (i.e. *top4_attacks*).
+In this step, you are required to extract the attack records of the top 4 countries from attacks data frame and save the data in a new tibble data frame (i.e. top4_attacks).
 
 ```{r}
 top4 <- attacks_by_country$source_country[1:4]
@@ -220,9 +220,9 @@ In this section, you will learn how to plot a cycle plot showing the time-series
 
 ### Step 1: Data Import
 
-For the purpose of this hands-on exercise, *arrivals_by_air.xlsx* will be used.
+For the purpose of this hands-on exercise, arrivals_by_air.xlsx will be used.
 
-The code chunk below imports *arrivals_by_air.xlsx* by using `read_excel()` of **readxl** package and save it as a tibble data frame called *air*.
+The code chunk below imports arrivals_by_air.xlsx by using `read_excel()` of readxl package and save it as a tibble data frame called air.
 
 ```{r}
 air <- read_excel("data/arrivals_by_air.xlsx")
@@ -230,7 +230,7 @@ air <- read_excel("data/arrivals_by_air.xlsx")
 
 ### Step 2: Deriving month and year fields
 
-Next, two new fields called *month* and *year* are derived from *Month-Year* field.
+Next, two new fields called `month` and `year` are derived from `Month-Year` field.
 
 ```{r}
 air$month <- factor(month(air$`Month-Year`),
@@ -254,7 +254,7 @@ Vietnam <- air %>%
 
 ### Step 5: Computing year average arrivals by month
 
-The code chunk below uses `group_by()` and `summarise()` of **dplyr** to compute year average arrivals by month.
+The code chunk below uses `group_by()` and `summarise()` of dplyr to compute year average arrivals by month.
 
 ```{r}
 hline.data <- Vietnam %>%
@@ -284,14 +284,15 @@ ggplot() +
   labs(axis.text.x = element_blank(),
        title = "Visitor arrivals from Vietnam by air, Jan 2010-Dec 2019") +
   xlab("") +
-  ylab("No. of Visitors")
+  ylab("No. of Visitors") +
+  theme_tufte(base_family = "Helvetica")
 ```
 
 ## Plotting Slopegraph
 
 In this section you will learn how to plot a [slopegraph](https://www.storytellingwithdata.com/blog/2020/7/27/what-is-a-slopegraph) by using R.
 
-Before getting start, make sure that **CGPfunctions** has been installed and loaded onto R environment. Then, refer to [Using newggslopegraph](https://cran.r-project.org/web/packages/CGPfunctions/vignettes/Using-newggslopegraph.html) to learn more about the function. Lastly, read more about `newggslopegraph()` and its arguments by referring to this [link](https://www.rdocumentation.org/packages/CGPfunctions/versions/0.6.3/topics/newggslopegraph).
+Before getting start, make sure that CGPfunctions has been installed and loaded onto R environment. Then, refer to [Using newggslopegraph](https://cran.r-project.org/web/packages/CGPfunctions/vignettes/Using-newggslopegraph.html) to learn more about the function. Lastly, read more about `newggslopegraph()` and its arguments by referring to this [link](https://www.rdocumentation.org/packages/CGPfunctions/versions/0.6.3/topics/newggslopegraph).
 
 ### Step 1: Data Import
 
@@ -319,6 +320,6 @@ rice %>%
 ::: callout-note
 Thing to learn from the code chunk above:
 
-For effective data visualization design, `factor()` is used convert the value type of *Year* field from numeric to factor.
+For effective data visualization design, `factor()` is used convert the value type of `Year` field from numeric to factor.
 :::
 

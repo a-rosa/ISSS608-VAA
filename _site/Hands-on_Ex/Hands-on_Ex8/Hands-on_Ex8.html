@@ -554,7 +554,7 @@ Note
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Step 2: Preparing the tidy data frame</p>
-<p>In this step, you are required to extract the attack records of the top 4 countries from <em>attacks</em> data frame and save the data in a new tibble data frame (i.e.&nbsp;<em>top4_attacks</em>).</p>
+<p>In this step, you are required to extract the attack records of the top 4 countries from attacks data frame and save the data in a new tibble data frame (i.e.&nbsp;top4_attacks).</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>top4 <span class="ot">&lt;-</span> attacks_by_country<span class="sc">$</span>source_country[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>top4_attacks <span class="ot">&lt;-</span> attacks <span class="sc">%&gt;%</span></span>
@@ -601,15 +601,15 @@ Note
 <p>In this section, you will learn how to plot a cycle plot showing the time-series patterns and trend of visitor arrivals from Vietnam programmatically by using ggplot2 functions.</p>
 <section id="step-1-data-import" class="level3">
 <h3 class="anchored" data-anchor-id="step-1-data-import">Step 1: Data Import</h3>
-<p>For the purpose of this hands-on exercise, <em>arrivals_by_air.xlsx</em> will be used.</p>
-<p>The code chunk below imports <em>arrivals_by_air.xlsx</em> by using <code>read_excel()</code> of <strong>readxl</strong> package and save it as a tibble data frame called <em>air</em>.</p>
+<p>For the purpose of this hands-on exercise, arrivals_by_air.xlsx will be used.</p>
+<p>The code chunk below imports arrivals_by_air.xlsx by using <code>read_excel()</code> of readxl package and save it as a tibble data frame called air.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>air <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/arrivals_by_air.xlsx"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="step-2-deriving-month-and-year-fields" class="level3">
 <h3 class="anchored" data-anchor-id="step-2-deriving-month-and-year-fields">Step 2: Deriving month and year fields</h3>
-<p>Next, two new fields called <em>month</em> and <em>year</em> are derived from <em>Month-Year</em> field.</p>
+<p>Next, two new fields called <code>month</code> and <code>year</code> are derived from <code>Month-Year</code> field.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>air<span class="sc">$</span>month <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">month</span>(air<span class="sc">$</span><span class="st">`</span><span class="at">Month-Year</span><span class="st">`</span>),</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">levels=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>,</span>
@@ -631,7 +631,7 @@ Note
 </section>
 <section id="step-5-computing-year-average-arrivals-by-month" class="level3">
 <h3 class="anchored" data-anchor-id="step-5-computing-year-average-arrivals-by-month">Step 5: Computing year average arrivals by month</h3>
-<p>The code chunk below uses <code>group_by()</code> and <code>summarise()</code> of <strong>dplyr</strong> to compute year average arrivals by month.</p>
+<p>The code chunk below uses <code>group_by()</code> and <code>summarise()</code> of dplyr to compute year average arrivals by month.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>hline.data <span class="ot">&lt;-</span> Vietnam <span class="sc">%&gt;%</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">%&gt;%</span></span>
@@ -657,7 +657,8 @@ Note
 <span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(),</span>
 <span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Visitor arrivals from Vietnam by air, Jan 2010-Dec 2019"</span>) <span class="sc">+</span></span>
 <span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"No. of Visitors"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"No. of Visitors"</span>) <span class="sc">+</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_tufte</span>(<span class="at">base_family =</span> <span class="st">"Helvetica"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display page-columns page-full">
 <div class="page-columns page-full">
 <figure class="figure page-columns page-full">
@@ -671,7 +672,7 @@ Note
 <section id="plotting-slopegraph" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-slopegraph">Plotting Slopegraph</h2>
 <p>In this section you will learn how to plot a <a href="https://www.storytellingwithdata.com/blog/2020/7/27/what-is-a-slopegraph">slopegraph</a> by using R.</p>
-<p>Before getting start, make sure that <strong>CGPfunctions</strong> has been installed and loaded onto R environment. Then, refer to <a href="https://cran.r-project.org/web/packages/CGPfunctions/vignettes/Using-newggslopegraph.html">Using newggslopegraph</a> to learn more about the function. Lastly, read more about <code>newggslopegraph()</code> and its arguments by referring to this <a href="https://www.rdocumentation.org/packages/CGPfunctions/versions/0.6.3/topics/newggslopegraph">link</a>.</p>
+<p>Before getting start, make sure that CGPfunctions has been installed and loaded onto R environment. Then, refer to <a href="https://cran.r-project.org/web/packages/CGPfunctions/vignettes/Using-newggslopegraph.html">Using newggslopegraph</a> to learn more about the function. Lastly, read more about <code>newggslopegraph()</code> and its arguments by referring to this <a href="https://www.rdocumentation.org/packages/CGPfunctions/versions/0.6.3/topics/newggslopegraph">link</a>.</p>
 <section id="step-1-data-import-1" class="level3">
 <h3 class="anchored" data-anchor-id="step-1-data-import-1">Step 1: Data Import</h3>
 <p>Import the rice data set into R environment by using the code chunk below.</p>
@@ -709,7 +710,7 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <p>Thing to learn from the code chunk above:</p>
-<p>For effective data visualization design, <code>factor()</code> is used convert the value type of <em>Year</em> field from numeric to factor.</p>
+<p>For effective data visualization design, <code>factor()</code> is used convert the value type of <code>Year</code> field from numeric to factor.</p>
 </div>
 </div>
 
