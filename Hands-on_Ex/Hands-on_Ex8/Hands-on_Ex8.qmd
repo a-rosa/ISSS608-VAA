@@ -322,4 +322,3 @@ Thing to learn from the code chunk above:
 
 For effective data visualization design, `factor()` is used convert the value type of `Year` field from numeric to factor.
 :::
-
