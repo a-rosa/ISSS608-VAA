@@ -3403,5 +3403,38 @@
       "Exercise 9",
       "Part 2"
     ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex9/Hands-on_Ex9_p3.html",
+    "href": "Hands-on_Ex/Hands-on_Ex9/Hands-on_Ex9_p3.html",
+    "title": "Hands-on Exercise 9 Part 3 - Analytical Mapping",
+    "section": "",
+    "text": "pacman::p_load(tmap, tidyverse, sf)\n\n\n\n\nFor the purpose of this hands-on exercise, a prepared data set called NGA_wp.rds will be used. The data set is a polygon feature data frame providing information on water point of Nigeria at the LGA level.\n\nNGA_wp &lt;- read_rds(\"data/NGA_wp.rds\")",
+    "crumbs": [
+      "Exercise 9",
+      "Part 3"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex9/Hands-on_Ex9_p3.html#getting-started",
+    "href": "Hands-on_Ex/Hands-on_Ex9/Hands-on_Ex9_p3.html#getting-started",
+    "title": "Hands-on Exercise 9 Part 3 - Analytical Mapping",
+    "section": "",
+    "text": "pacman::p_load(tmap, tidyverse, sf)\n\n\n\n\nFor the purpose of this hands-on exercise, a prepared data set called NGA_wp.rds will be used. The data set is a polygon feature data frame providing information on water point of Nigeria at the LGA level.\n\nNGA_wp &lt;- read_rds(\"data/NGA_wp.rds\")",
+    "crumbs": [
+      "Exercise 9",
+      "Part 3"
+    ]
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex9/Hands-on_Ex9_p3.html#basic-choropleth-mapping",
+    "href": "Hands-on_Ex/Hands-on_Ex9/Hands-on_Ex9_p3.html#basic-choropleth-mapping",
+    "title": "Hands-on Exercise 9 Part 3 - Analytical Mapping",
+    "section": "Basic Choropleth Mapping",
+    "text": "Basic Choropleth Mapping\n\nVisualising distribution of non-functional water point\n\np1 &lt;- tm_shape(NGA_wp) +\n  tm_polygons(fill = \"wp_functional\",\n             fill.scale = tm_scale_intervals(\n               style = \"equal\",\n               n = 10,\n               values = \"brewer.blues\"),\n             fill.legend = tm_legend(\n               position = c(\"right\", \"bottom\"))) +\n  tm_borders(lwd = 0.1,\n             fill_alpha = 1) +\n  tm_title(\"Distribution of functional water point by LGAs\")\n\n\np2 &lt;- tm_shape(NGA_wp) +\n  tm_polygons(fill = \"total_wp\",\n              fill.scale = tm_scale_intervals(\n                style = \"equal\",\n                n = 10,\n                values = \"brewer.blues\"),\n              fill.legend = tm_legend(\n                position = c(\"right\", \"bottom\"))) +\n  tm_borders(lwd = 0.1,\n             fill_alpha = 1) +\n  tm_title(\"Distribution of total water point by LGAs\")\n\n\ntmap_arrange(p2, p1, nrow = 1)",
+    "crumbs": [
+      "Exercise 9",
+      "Part 3"
+    ]
   }
 ]

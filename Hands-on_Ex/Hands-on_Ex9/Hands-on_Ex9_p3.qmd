@@ -10,3 +10,55 @@ execute:
   freeze: true
 ---
 
+## Getting Started
+
+### Installing and loading packages
+
+```{r}
+pacman::p_load(tmap, tidyverse, sf)
+```
+
+### Importing data
+
+For the purpose of this hands-on exercise, a prepared data set called *NGA_wp.rds* will be used. The data set is a polygon feature data frame providing information on water point of Nigeria at the LGA level.
+
+```{r}
+NGA_wp <- read_rds("data/NGA_wp.rds")
+```
+
+## Basic Choropleth Mapping
+
+### Visualising distribution of non-functional water point
+
+```{r}
+p1 <- tm_shape(NGA_wp) +
+  tm_polygons(fill = "wp_functional",
+             fill.scale = tm_scale_intervals(
+               style = "equal",
+               n = 10,
+               values = "brewer.blues"),
+             fill.legend = tm_legend(
+               position = c("right", "bottom"))) +
+  tm_borders(lwd = 0.1,
+             fill_alpha = 1) +
+  tm_title("Distribution of functional water point by LGAs")
+```
+
+```{r}
+p2 <- tm_shape(NGA_wp) +
+  tm_polygons(fill = "total_wp",
+              fill.scale = tm_scale_intervals(
+                style = "equal",
+                n = 10,
+                values = "brewer.blues"),
+              fill.legend = tm_legend(
+                position = c("right", "bottom"))) +
+  tm_borders(lwd = 0.1,
+             fill_alpha = 1) +
+  tm_title("Distribution of total water point by LGAs")
+```
+
+```{r}
+tmap_arrange(p2, p1, nrow = 1)
+```
+

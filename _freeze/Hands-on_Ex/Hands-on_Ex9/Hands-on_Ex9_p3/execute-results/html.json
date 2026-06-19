@@ -1,0 +1,17 @@
+{
+  "hash": "4dd8ebe784b1240fec277443b24f26f5",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Hands-on Exercise 9 Part 3 - Analytical Mapping\"\nauthor: \"Amelia Rosalind\"\ndate: \"June 19, 2026\"\ndate-modified: \"last-modified\"\nexecute: \n  eval: true\n  echo: true\n  warning: false\n  freeze: true\n---\n\n## Getting Started\n\n### Installing and loading packages\n\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(tmap, tidyverse, sf)\n```\n:::\n\n\n### Importing data\n\nFor the purpose of this hands-on exercise, a prepared data set called *NGA_wp.rds* will be used. The data set is a polygon feature data frame providing information on water point of Nigeria at the LGA level.\n\n\n::: {.cell}\n\n```{.r .cell-code}\nNGA_wp <- read_rds(\"data/NGA_wp.rds\")\n```\n:::\n\n\n## Basic Choropleth Mapping\n\n### Visualising distribution of non-functional water point\n\n\n::: {.cell}\n\n```{.r .cell-code}\np1 <- tm_shape(NGA_wp) +\n  tm_polygons(fill = \"wp_functional\",\n             fill.scale = tm_scale_intervals(\n               style = \"equal\",\n               n = 10,\n               values = \"brewer.blues\"),\n             fill.legend = tm_legend(\n               position = c(\"right\", \"bottom\"))) +\n  tm_borders(lwd = 0.1,\n             fill_alpha = 1) +\n  tm_title(\"Distribution of functional water point by LGAs\")\n```\n:::\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\np2 <- tm_shape(NGA_wp) +\n  tm_polygons(fill = \"total_wp\",\n              fill.scale = tm_scale_intervals(\n                style = \"equal\",\n                n = 10,\n                values = \"brewer.blues\"),\n              fill.legend = tm_legend(\n                position = c(\"right\", \"bottom\"))) +\n  tm_borders(lwd = 0.1,\n             fill_alpha = 1) +\n  tm_title(\"Distribution of total water point by LGAs\")\n```\n:::\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ntmap_arrange(p2, p1, nrow = 1)\n```\n\n::: {.cell-output-display}\n![](Hands-on_Ex9_p3_files/figure-html/unnamed-chunk-5-1.png){width=672}\n:::\n:::\n\n\n",
+    "supporting": [
+      "Hands-on_Ex9_p3_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
