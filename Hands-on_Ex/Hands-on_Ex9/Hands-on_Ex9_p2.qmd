@@ -1,0 +1,11 @@
+---
+title: "Hands-on Exercise 9 Part 2 - Visualising Geospatial Point Data"
+author: "Amelia Rosalind"
+date: "June 19, 2026"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  warning: false
+  freeze: true
+---
