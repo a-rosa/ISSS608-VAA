@@ -323,3 +323,127 @@ report <- report %>%
   summarize(`Monthly Sales` = list(Sales))
 ```
 
+```{r}
+#| eval: false
+reactable(
+  report,
+  columns = list(
+    Product = colDef(maxWidth = 200),
+    `Monthly Sales` = colDef(
+      cell = react_sparkline(report)
+    )
+  )
+)
+```
+
+### Changing the Page Size
+
+By default, `reactable` displays 10 rows per page. Use `defaultPageSize` to override this:
+
+```{r}
+#| eval: false
+reactable(
+  report,
+  defaultPageSize = 13,
+  columns = list(
+    Product = colDef(maxWidth = 200),
+    `Monthly Sales` = colDef(
+      cell = react_sparkline(report)
+    )
+  )
+)
+```
+
+### Adding Points and Labels
+
+Use `highlight_points` to mark the minimum and maximum values, and `labels` to annotate the first and last data points:
+
+```{r}
+#| eval: false
+reactable(
+  report,
+  defaultPageSize = 13,
+  columns = list(
+    Product = colDef(maxWidth = 200),
+    `Monthly Sales` = colDef(
+      cell = react_sparkline(
+        report,
+        highlight_points = highlight_points(
+          min = "red", max = "blue"),
+        labels = c("first", "last")
+        )
+    )
+  )
+)
+```
+
+### Adding a Reference Line
+
+The `statline` argument overlays a reference line — in this case, the mean:
+
+```{r}
+#| eval: false
+reactable(
+  report,
+  defaultPageSize = 13,
+  columns = list(
+    Product = colDef(maxWidth = 200),
+    `Monthly Sales` = colDef(
+      cell = react_sparkline(
+        report,
+        highlight_points = highlight_points(
+          min = "red", max = "blue"),
+        statline = "mean"
+        )
+    )
+  )
+)
+```
+
+### Adding a Bandline
+
+Instead of a reference line, a bandline can be used to shade a range. Here, the inner quartile range is highlighted:
+
+```{r}
+#| eval: false
+reactable(
+  report,
+  defaultPageSize = 13,
+  columns = list(
+    Product = colDef(maxWidth = 200),
+    `Monthly Sales` = colDef(
+      cell = react_sparkline(
+        report,
+        highlight_points = highlight_points(
+          min = "red", max = "blue"),
+        line_width = 1,
+        bandline = "innerquartiles",
+        bandline_color = "green"
+        )
+    )
+  )
+)
+```
+
+### Changing from Sparkline to Sparkbar
+
+To display values as bars instead of a line, switch from `react_sparkline()` to `react_sparkbar()`:
+
+```{r}
+#| eval: false
+reactable(
+  report,
+  defaultPageSize = 13,
+  columns = list(
+    Product = colDef(maxWidth = 200),
+    `Monthly Sales` = colDef(
+      cell = react_sparkbar(
+        report,
+        highlight_bars = highlight_bars(
+          min = "red", max = "blue"),
+        bandline = "innerquartiles",
+        statline = "mean")
+    )
+  )
+)
+```
